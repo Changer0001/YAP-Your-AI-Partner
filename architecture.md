@@ -29,3 +29,18 @@ This project uses **RAG (Retrieval-Augmented Generation)** to inject private/bus
    - Search the vector DB for relevant chunks
    - Inject retrieved text into prompt
    - Use small LLM (like `phi-2` or OpenAI GPT) to generate an answer
+
+## 🧱 Tech Stack
+
+| Component         | Tool / Library                           |
+|------------------|------------------------------------------|
+| Language          | Python                                   |
+| Document Parsing  | LangChain / PyPDF                        |
+| Embeddings        | SentenceTransformers (MiniLM or similar) |
+| Vector DB         | Chroma                                   |
+| LLM               | `phi-2`, OpenAI API, or similar          |
+| Backend (optional)| FastAPI                                  |
+| Frontend (optional)| React or plain HTML/JS                  |
+
+
+## 🔁 Workflow Diagram
