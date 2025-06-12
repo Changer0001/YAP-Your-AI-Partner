@@ -8,6 +8,14 @@ This project is a prototype for building lightweight, domain-specific LLM (Large
 
 The goal is to create customized AI assistants that can answer questions using a business' internal data - such FAQs, websites, or policy documents - without needing to train large models from scratch.
 
+## ✨ Features
+
+- ✅ Uses **Retrieval-Augmented Generation (RAG)** to provide relevant answers
+- ✅ Supports **internal documents, FAQs, and websites**
+- ✅ No GPU required — works on lightweight servers or locally
+- ✅ Extensible and customizable for any business type
+
+
 ## How It Works
 
 We use **RAG (Retrieval - Augmented Generation)** to enhance a base LLM with business-specific data:
