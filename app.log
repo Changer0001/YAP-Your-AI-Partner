@@ -100,3 +100,38 @@ how many days for international delivery
 Answer:
 
 2025-06-13 00:48:18,082 - DEBUG - Generated answer (HF): 10-15 business days
+2025-06-13 00:48:50,262 - DEBUG - Retrieved documents: ['Welcome to Trendify Store!\n\nAt Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.\n\nWith warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!\n', 'Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging.\n- Proof of purchase is required.\n- Shipping costs are non-refundable.\n\nTo start a return or refund, email support@trendify.com with your order number.\n\nIf the product is defective or damaged, we will cover the return shipping.\n', 'Shipping Information\n\nWe ship to over 50 countries worldwide. All orders are processed within 2-3 business days. Delivery times vary by region:\n- USA: 5-7 business days\n- Europe: 7-10 business days\n- International: 10-15 business days\n\nTracking numbers will be emailed once your order has been dispatched. For express shipping options, please contact us before placing your order.\n']
+2025-06-13 00:48:50,262 - DEBUG - Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Welcome to Trendify Store!
+
+At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.
+
+With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!
+
+---
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+
+To start a return or refund, email support@trendify.com with your order number.
+
+If the product is defective or damaged, we will cover the return shipping.
+
+---
+Shipping Information
+
+We ship to over 50 countries worldwide. All orders are processed within 2-3 business days. Delivery times vary by region:
+- USA: 5-7 busin...
+
+Question:
+how about for US
+Answer:
+
+2025-06-13 00:49:16,418 - DEBUG - Generated answer (HF): Delivery times vary by region: USA: 5-7 business days.
