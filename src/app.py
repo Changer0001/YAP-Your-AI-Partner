@@ -1,10 +1,24 @@
 import os
+import re
+import logging
 from dotenv import load_dotenv
 import chromadb
 from sentence_transformers import SentenceTransformer
 from openai import OpenAI
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+from transformers import logging as hf_logging
 from huggingface_hub import login
+
+# ✅ Configure logging to file
+logging.basicConfig(
+    filename="app.log",
+    filemode="a",  # 'w' to overwrite, 'a' to append
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    level=logging.DEBUG
+)
+
+# ✅ Silence most Hugging Face warnings
+hf_logging.set_verbosity_error()
 
 # 📌 Load environment variables (API keys, tokens)
 load_dotenv()
@@ -16,22 +30,43 @@ client_openai = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 login(token=os.getenv("HF_API_TOKEN"))
 hf_model_id = "microsoft/phi-2"
 hf_tokenizer = AutoTokenizer.from_pretrained(hf_model_id)
+hf_tokenizer.pad_token = hf_tokenizer.eos_token  # Fix pad token warning
 hf_model = AutoModelForCausalLM.from_pretrained(hf_model_id)
-
-# IMPORTANT: Add return_full_text=False to avoid prompt being repeated in output
 hf_pipe = pipeline(
     "text-generation",
     model=hf_model,
     tokenizer=hf_tokenizer,
-    return_full_text=False  # Return only generated text, not prompt + generated text
+    return_full_text=False,
+    pad_token_id=hf_tokenizer.eos_token_id
 )
 
 # ✅ Initialize ChromaDB for document storage & search
 client = chromadb.PersistentClient(path="./chroma_db")
-collection = client.get_or_create_collection(name="business_docs")
+collection = client.get_or_create_collection(name="example_business_docs")
 
 # ✅ Load sentence-transformer model for embeddings
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+
+# 📌 Helper: Chunk large text into smaller chunks (~300 tokens by words)
+def chunk_text(text, max_tokens=300):
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    chunks = []
+    current_chunk = []
+    current_length = 0
+
+    for sentence in sentences:
+        sentence_length = len(sentence.split())
+        if current_length + sentence_length > max_tokens:
+            chunks.append(" ".join(current_chunk))
+            current_chunk = [sentence]
+            current_length = sentence_length
+        else:
+            current_chunk.append(sentence)
+            current_length += sentence_length
+
+    if current_chunk:
+        chunks.append(" ".join(current_chunk))
+    return chunks
 
 # 📂 Ingest documents (text files)
 def load_documents(folder_path):
@@ -43,21 +78,41 @@ def load_documents(folder_path):
                 docs.append(f.read())
     return docs
 
-# 🔢 Embed documents & store them in ChromaDB
+# 🔢 Embed documents & store them in ChromaDB with chunking
 def ingest_and_store(docs):
-    for idx, doc in enumerate(docs):
-        embedding = embedding_model.encode(doc).tolist()
-        collection.add(documents=[doc], embeddings=[embedding], ids=[f"doc_{idx}"])
+    idx = 0
+    for doc in docs:
+        chunks = chunk_text(doc, max_tokens=300)
+        for chunk in chunks:
+            embedding = embedding_model.encode(chunk).tolist()
+            collection.add(documents=[chunk], embeddings=[embedding], ids=[f"doc_{idx}"])
+            idx += 1
+    logging.info(f"Ingested {idx} chunks into ChromaDB.")
 
 # 🔍 Retrieve relevant documents from ChromaDB
 def retrieve(query):
     query_embedding = embedding_model.encode(query).tolist()
     results = collection.query(query_embeddings=[query_embedding], n_results=3)
-    return results['documents'][0]
+    docs = results['documents'][0]
+    logging.debug(f"Retrieved documents: {docs}")
+    combined = "\n---\n".join(docs)
+    if len(combined) > 1000:
+        combined = combined[:1000] + "..."
+    return combined
 
 # 🤖 Generate answer using OpenAI
 def ask_llm_openai(question, context):
-    prompt = f"""Answer the following question using the provided context:\n\nContext:\n{context}\n\nQuestion:\n{question}"""
+    prompt = f"""Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+{context}
+
+Question:
+{question}
+Answer:
+"""
+    logging.debug(f"Prompt sent to OpenAI:\n{prompt}")
     response = client_openai.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -66,15 +121,26 @@ def ask_llm_openai(question, context):
         ],
         max_tokens=300,
     )
-    return response.choices[0].message.content.strip()
+    answer = response.choices[0].message.content.strip()
+    logging.debug(f"Generated answer (OpenAI): {answer}")
+    return answer
 
 # 🤖 Generate answer using Hugging Face (phi-2)
 def ask_llm_hf(question, context):
-    prompt = f"Answer the question based on this context:\n{context}\n\nQuestion: {question}\nAnswer:"
-    print(f"\n[DEBUG] Prompt sent to HF model:\n{prompt}\n")
-    response = hf_pipe(prompt, max_new_tokens=300, do_sample=False)
+    prompt = f"""Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+{context}
+
+Question:
+{question}
+Answer:
+"""
+    logging.debug(f"Prompt sent to HF model:\n{prompt}")
+    response = hf_pipe(prompt, max_new_tokens=150, do_sample=True, temperature=0.7)
     answer = response[0]['generated_text'].strip()
-    print(f"[DEBUG] Generated answer:\n{answer}\n")
+    logging.debug(f"Generated answer (HF): {answer}")
     return answer
 
 # 🚀 Main Execution Flow
@@ -97,8 +163,7 @@ if __name__ == "__main__":
                 break
 
             provider = input("💻 Use OpenAI (o) or Hugging Face (h)? ").strip().lower()
-
-            context = " ".join(retrieve(question))
+            context = retrieve(question)
 
             if provider == 'h':
                 answer = ask_llm_hf(question, context)
@@ -108,4 +173,5 @@ if __name__ == "__main__":
             print(f"\n💬 Answer: {answer}")
 
         except Exception as e:
+            logging.error(f"Error during execution: {e}")
             print(f"⚠️ Error: {e}")
