@@ -26,3 +26,35 @@ DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microso
 DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
 DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
 DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+INFO:root:Ingested 4 chunks into ChromaDB.
+DEBUG:root:Retrieved documents: ['Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ']
+DEBUG:root:Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. 
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...
+
+Question:
+What is the refund policy?
+Answer:
+
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+DEBUG:root:Generated answer (HF): Items must be unused, in original packaging. Proof of purchase is required. Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping.
