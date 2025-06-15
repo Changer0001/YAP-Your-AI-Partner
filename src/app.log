@@ -560,3 +560,341 @@ DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microso
 DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
 DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
 DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+DEBUG:root:Retrieved documents: ['Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ']
+DEBUG:root:Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. 
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...
+
+Question:
+what is our refund policy
+Answer:
+
+DEBUG:root:Generated answer (HF): Items must be unused, in original packaging. Proof of purchase is required. Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping.
+
+
+Based on the rules and context above, we can infer the following:
+
+First, we need to determine what the refund policy is for a damaged or defective product. We know that the policy states "If the product is defective or damaged, we will cover the return shipping." This indicates that if the product is not usable due to a defect or damage, Trendify is willing to pay for the return shipping expenses.
+
+Next, we
+INFO:root:OpenAI client initialized.
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 515
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:Resetting dropped connection: us.i.posthog.com
+DEBUG:root:Retrieved documents: ['Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ']
+DEBUG:root:Prompt sent to OpenAI:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. 
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...
+
+Question:
+our refund policy ?
+Answer:
+
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+DEBUG:openai._base_client:Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-ff6b1970-5240-40e1-a3db-9edcabb423a9', 'json_data': {'messages': [{'role': 'system', 'content': 'You are a helpful assistant for answering business questions.'}, {'role': 'user', 'content': "Answer the question based only on the information provided in the context below.\nIf the answer cannot be found in the context, say 'I don't know.'\n\nContext:\nRefund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. \n---\nPrivacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n\n---\nWelcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...\n\nQuestion:\nour refund policy ?\nAnswer:\n"}], 'model': 'gpt-3.5-turbo', 'max_tokens': 300}}
+DEBUG:openai._base_client:Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
+DEBUG:httpcore.connection:connect_tcp.started host='api.openai.com' port=443 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000011607F24830>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x0000011604E108C0> server_hostname='api.openai.com' timeout=5.0
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000011607EB8690>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 429, b'Too Many Requests', [(b'Date', b'Sun, 15 Jun 2025 17:35:36 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'337'), (b'Connection', b'keep-alive'), (b'vary', b'Origin'), (b'x-request-id', b'req_4a426b7aecd531e0545d26b9c282fcc0'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'cf-cache-status', b'DYNAMIC'), (b'Set-Cookie', b'__cf_bm=XPZxmUkywMJYLHuCZc8wQ1TyXhVeRZHdWh6HyLXEGBQ-1750008936-1.0.1.1-9m3_VwfnvuhybpJVOzn3WZNa1FthVBqf.2DmY2SXCERFMiuG9ciGHkNd3MngHoalh2pQ.pYcqx3UAc5N_Xf13zuBOeQUDrHMNDTI0xbG2iU; path=/; expires=Sun, 15-Jun-25 18:05:36 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), (b'X-Content-Type-Options', b'nosniff'), (b'Set-Cookie', b'_cfuvid=p2QtRlmnYdX4FATmpReBIJaShDCSdt9pYvz.b.J0E3A-1750008936069-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9503d325cc0127cf-SAN'), (b'alt-svc', b'h3=":443"; ma=86400')])
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:openai._base_client:HTTP Response: POST https://api.openai.com/v1/chat/completions "429 Too Many Requests" Headers([('date', 'Sun, 15 Jun 2025 17:35:36 GMT'), ('content-type', 'application/json; charset=utf-8'), ('content-length', '337'), ('connection', 'keep-alive'), ('vary', 'Origin'), ('x-request-id', 'req_4a426b7aecd531e0545d26b9c282fcc0'), ('strict-transport-security', 'max-age=31536000; includeSubDomains; preload'), ('cf-cache-status', 'DYNAMIC'), ('set-cookie', '__cf_bm=XPZxmUkywMJYLHuCZc8wQ1TyXhVeRZHdWh6HyLXEGBQ-1750008936-1.0.1.1-9m3_VwfnvuhybpJVOzn3WZNa1FthVBqf.2DmY2SXCERFMiuG9ciGHkNd3MngHoalh2pQ.pYcqx3UAc5N_Xf13zuBOeQUDrHMNDTI0xbG2iU; path=/; expires=Sun, 15-Jun-25 18:05:36 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), ('x-content-type-options', 'nosniff'), ('set-cookie', '_cfuvid=p2QtRlmnYdX4FATmpReBIJaShDCSdt9pYvz.b.J0E3A-1750008936069-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), ('server', 'cloudflare'), ('cf-ray', '9503d325cc0127cf-SAN'), ('alt-svc', 'h3=":443"; ma=86400')])
+DEBUG:openai._base_client:request_id: req_4a426b7aecd531e0545d26b9c282fcc0
+DEBUG:openai._base_client:Encountered httpx.HTTPStatusError
+Traceback (most recent call last):
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\openai\_base_client.py", line 1017, in request
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\httpx\_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '429 Too Many Requests' for url 'https://api.openai.com/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+DEBUG:openai._base_client:Retrying due to status code 429
+DEBUG:openai._base_client:2 retries left
+INFO:openai._base_client:Retrying request to /chat/completions in 0.499460 seconds
+DEBUG:openai._base_client:Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-ff6b1970-5240-40e1-a3db-9edcabb423a9', 'json_data': {'messages': [{'role': 'system', 'content': 'You are a helpful assistant for answering business questions.'}, {'role': 'user', 'content': "Answer the question based only on the information provided in the context below.\nIf the answer cannot be found in the context, say 'I don't know.'\n\nContext:\nRefund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. \n---\nPrivacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n\n---\nWelcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...\n\nQuestion:\nour refund policy ?\nAnswer:\n"}], 'model': 'gpt-3.5-turbo', 'max_tokens': 300}}
+DEBUG:openai._base_client:Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 429, b'Too Many Requests', [(b'Date', b'Sun, 15 Jun 2025 17:35:37 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'337'), (b'Connection', b'keep-alive'), (b'vary', b'Origin'), (b'x-request-id', b'req_d4cd97016f9532c6a5d4ffa1523ef401'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'cf-cache-status', b'DYNAMIC'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9503d32f586f27cf-SAN'), (b'alt-svc', b'h3=":443"; ma=86400')])
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:openai._base_client:HTTP Response: POST https://api.openai.com/v1/chat/completions "429 Too Many Requests" Headers({'date': 'Sun, 15 Jun 2025 17:35:37 GMT', 'content-type': 'application/json; charset=utf-8', 'content-length': '337', 'connection': 'keep-alive', 'vary': 'Origin', 'x-request-id': 'req_d4cd97016f9532c6a5d4ffa1523ef401', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'cf-cache-status': 'DYNAMIC', 'x-content-type-options': 'nosniff', 'server': 'cloudflare', 'cf-ray': '9503d32f586f27cf-SAN', 'alt-svc': 'h3=":443"; ma=86400'})
+DEBUG:openai._base_client:request_id: req_d4cd97016f9532c6a5d4ffa1523ef401
+DEBUG:openai._base_client:Encountered httpx.HTTPStatusError
+Traceback (most recent call last):
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\openai\_base_client.py", line 1017, in request
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\httpx\_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '429 Too Many Requests' for url 'https://api.openai.com/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+DEBUG:openai._base_client:Retrying due to status code 429
+DEBUG:openai._base_client:1 retry left
+INFO:openai._base_client:Retrying request to /chat/completions in 0.960337 seconds
+DEBUG:openai._base_client:Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-ff6b1970-5240-40e1-a3db-9edcabb423a9', 'json_data': {'messages': [{'role': 'system', 'content': 'You are a helpful assistant for answering business questions.'}, {'role': 'user', 'content': "Answer the question based only on the information provided in the context below.\nIf the answer cannot be found in the context, say 'I don't know.'\n\nContext:\nRefund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. \n---\nPrivacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n\n---\nWelcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...\n\nQuestion:\nour refund policy ?\nAnswer:\n"}], 'model': 'gpt-3.5-turbo', 'max_tokens': 300}}
+DEBUG:openai._base_client:Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 429, b'Too Many Requests', [(b'Date', b'Sun, 15 Jun 2025 17:35:38 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'337'), (b'Connection', b'keep-alive'), (b'vary', b'Origin'), (b'x-request-id', b'req_f324b06cad4dd2e73975d2f6921357d8'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'cf-cache-status', b'DYNAMIC'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9503d3385c9027cf-SAN'), (b'alt-svc', b'h3=":443"; ma=86400')])
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:openai._base_client:HTTP Response: POST https://api.openai.com/v1/chat/completions "429 Too Many Requests" Headers({'date': 'Sun, 15 Jun 2025 17:35:38 GMT', 'content-type': 'application/json; charset=utf-8', 'content-length': '337', 'connection': 'keep-alive', 'vary': 'Origin', 'x-request-id': 'req_f324b06cad4dd2e73975d2f6921357d8', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'cf-cache-status': 'DYNAMIC', 'x-content-type-options': 'nosniff', 'server': 'cloudflare', 'cf-ray': '9503d3385c9027cf-SAN', 'alt-svc': 'h3=":443"; ma=86400'})
+DEBUG:openai._base_client:request_id: req_f324b06cad4dd2e73975d2f6921357d8
+DEBUG:openai._base_client:Encountered httpx.HTTPStatusError
+Traceback (most recent call last):
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\openai\_base_client.py", line 1017, in request
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\httpx\_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '429 Too Many Requests' for url 'https://api.openai.com/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+DEBUG:openai._base_client:Re-raising status error
+INFO:root:OpenAI client initialized.
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 515
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:root:Retrieved documents: ['Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ']
+DEBUG:root:Prompt sent to OpenAI:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. 
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...
+
+Question:
+our refund policy ?
+Answer:
+
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+DEBUG:openai._base_client:Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-dd0ad4c8-23bb-4435-a550-855ca864d41b', 'json_data': {'messages': [{'role': 'system', 'content': 'You are a helpful assistant for answering business questions.'}, {'role': 'user', 'content': "Answer the question based only on the information provided in the context below.\nIf the answer cannot be found in the context, say 'I don't know.'\n\nContext:\nRefund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. \n---\nPrivacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n\n---\nWelcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...\n\nQuestion:\nour refund policy ?\nAnswer:\n"}], 'model': 'gpt-3.5-turbo', 'max_tokens': 300}}
+DEBUG:openai._base_client:Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
+DEBUG:httpcore.connection:connect_tcp.started host='api.openai.com' port=443 local_address=None timeout=5.0 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000297322046E0>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x000002972EFD08C0> server_hostname='api.openai.com' timeout=5.0
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000002973116CCD0>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 429, b'Too Many Requests', [(b'Date', b'Sun, 15 Jun 2025 17:39:03 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'337'), (b'Connection', b'keep-alive'), (b'vary', b'Origin'), (b'x-request-id', b'req_58ded02de5e7f66f4b574e97711a58dd'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'cf-cache-status', b'DYNAMIC'), (b'Set-Cookie', b'__cf_bm=cu4O7dg7BjQXCvk_HrqoO8UIfDkXWdcQ4mRY8yyRlKw-1750009143-1.0.1.1-B4mWomHfzf7EoXhLXnyWKfiwWsZ11xbk4jRNg10TN0uEzI3PB9rZ6lao2jKarGJC107xudTGDG_2OdZV9EWGtfJwMc_Wyi3HqzldqhXeack; path=/; expires=Sun, 15-Jun-25 18:09:03 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), (b'X-Content-Type-Options', b'nosniff'), (b'Set-Cookie', b'_cfuvid=o0Ckrwa9qEs6dKlmTJdIfGKChUVcTT1_2tJWjoGNv5A-1750009143407-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9503d839ca4727d1-SAN'), (b'alt-svc', b'h3=":443"; ma=86400')])
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:openai._base_client:HTTP Response: POST https://api.openai.com/v1/chat/completions "429 Too Many Requests" Headers([('date', 'Sun, 15 Jun 2025 17:39:03 GMT'), ('content-type', 'application/json; charset=utf-8'), ('content-length', '337'), ('connection', 'keep-alive'), ('vary', 'Origin'), ('x-request-id', 'req_58ded02de5e7f66f4b574e97711a58dd'), ('strict-transport-security', 'max-age=31536000; includeSubDomains; preload'), ('cf-cache-status', 'DYNAMIC'), ('set-cookie', '__cf_bm=cu4O7dg7BjQXCvk_HrqoO8UIfDkXWdcQ4mRY8yyRlKw-1750009143-1.0.1.1-B4mWomHfzf7EoXhLXnyWKfiwWsZ11xbk4jRNg10TN0uEzI3PB9rZ6lao2jKarGJC107xudTGDG_2OdZV9EWGtfJwMc_Wyi3HqzldqhXeack; path=/; expires=Sun, 15-Jun-25 18:09:03 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), ('x-content-type-options', 'nosniff'), ('set-cookie', '_cfuvid=o0Ckrwa9qEs6dKlmTJdIfGKChUVcTT1_2tJWjoGNv5A-1750009143407-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), ('server', 'cloudflare'), ('cf-ray', '9503d839ca4727d1-SAN'), ('alt-svc', 'h3=":443"; ma=86400')])
+DEBUG:openai._base_client:request_id: req_58ded02de5e7f66f4b574e97711a58dd
+DEBUG:openai._base_client:Encountered httpx.HTTPStatusError
+Traceback (most recent call last):
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\openai\_base_client.py", line 1017, in request
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\httpx\_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '429 Too Many Requests' for url 'https://api.openai.com/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+DEBUG:openai._base_client:Retrying due to status code 429
+DEBUG:openai._base_client:2 retries left
+INFO:openai._base_client:Retrying request to /chat/completions in 0.474586 seconds
+DEBUG:openai._base_client:Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-dd0ad4c8-23bb-4435-a550-855ca864d41b', 'json_data': {'messages': [{'role': 'system', 'content': 'You are a helpful assistant for answering business questions.'}, {'role': 'user', 'content': "Answer the question based only on the information provided in the context below.\nIf the answer cannot be found in the context, say 'I don't know.'\n\nContext:\nRefund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. \n---\nPrivacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n\n---\nWelcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...\n\nQuestion:\nour refund policy ?\nAnswer:\n"}], 'model': 'gpt-3.5-turbo', 'max_tokens': 300}}
+DEBUG:openai._base_client:Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 429, b'Too Many Requests', [(b'Date', b'Sun, 15 Jun 2025 17:39:04 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'337'), (b'Connection', b'keep-alive'), (b'vary', b'Origin'), (b'x-request-id', b'req_9195e9fbcecb8aa93ecbf1ef63c1c6eb'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'cf-cache-status', b'DYNAMIC'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9503d83e0f3d27d1-SAN'), (b'alt-svc', b'h3=":443"; ma=86400')])
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:openai._base_client:HTTP Response: POST https://api.openai.com/v1/chat/completions "429 Too Many Requests" Headers({'date': 'Sun, 15 Jun 2025 17:39:04 GMT', 'content-type': 'application/json; charset=utf-8', 'content-length': '337', 'connection': 'keep-alive', 'vary': 'Origin', 'x-request-id': 'req_9195e9fbcecb8aa93ecbf1ef63c1c6eb', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'cf-cache-status': 'DYNAMIC', 'x-content-type-options': 'nosniff', 'server': 'cloudflare', 'cf-ray': '9503d83e0f3d27d1-SAN', 'alt-svc': 'h3=":443"; ma=86400'})
+DEBUG:openai._base_client:request_id: req_9195e9fbcecb8aa93ecbf1ef63c1c6eb
+DEBUG:openai._base_client:Encountered httpx.HTTPStatusError
+Traceback (most recent call last):
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\openai\_base_client.py", line 1017, in request
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\httpx\_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '429 Too Many Requests' for url 'https://api.openai.com/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+DEBUG:openai._base_client:Retrying due to status code 429
+DEBUG:openai._base_client:1 retry left
+INFO:openai._base_client:Retrying request to /chat/completions in 0.847543 seconds
+DEBUG:openai._base_client:Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-dd0ad4c8-23bb-4435-a550-855ca864d41b', 'json_data': {'messages': [{'role': 'system', 'content': 'You are a helpful assistant for answering business questions.'}, {'role': 'user', 'content': "Answer the question based only on the information provided in the context below.\nIf the answer cannot be found in the context, say 'I don't know.'\n\nContext:\nRefund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. \n---\nPrivacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n\n---\nWelcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...\n\nQuestion:\nour refund policy ?\nAnswer:\n"}], 'model': 'gpt-3.5-turbo', 'max_tokens': 300}}
+DEBUG:openai._base_client:Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 429, b'Too Many Requests', [(b'Date', b'Sun, 15 Jun 2025 17:39:05 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Content-Length', b'337'), (b'Connection', b'keep-alive'), (b'vary', b'Origin'), (b'x-request-id', b'req_9fba5c4bd9a7256cfd6e390aa3a18f80'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'cf-cache-status', b'DYNAMIC'), (b'X-Content-Type-Options', b'nosniff'), (b'Server', b'cloudflare'), (b'CF-RAY', b'9503d8499d4327d1-SAN'), (b'alt-svc', b'h3=":443"; ma=86400')])
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'POST']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:openai._base_client:HTTP Response: POST https://api.openai.com/v1/chat/completions "429 Too Many Requests" Headers({'date': 'Sun, 15 Jun 2025 17:39:05 GMT', 'content-type': 'application/json; charset=utf-8', 'content-length': '337', 'connection': 'keep-alive', 'vary': 'Origin', 'x-request-id': 'req_9fba5c4bd9a7256cfd6e390aa3a18f80', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'cf-cache-status': 'DYNAMIC', 'x-content-type-options': 'nosniff', 'server': 'cloudflare', 'cf-ray': '9503d8499d4327d1-SAN', 'alt-svc': 'h3=":443"; ma=86400'})
+DEBUG:openai._base_client:request_id: req_9fba5c4bd9a7256cfd6e390aa3a18f80
+DEBUG:openai._base_client:Encountered httpx.HTTPStatusError
+Traceback (most recent call last):
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\openai\_base_client.py", line 1017, in request
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Burak\Documents\GitHub\LLM_Assistance\venv\Lib\site-packages\httpx\_models.py", line 829, in raise_for_status
+    raise HTTPStatusError(message, request=request, response=self)
+httpx.HTTPStatusError: Client error '429 Too Many Requests' for url 'https://api.openai.com/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+DEBUG:openai._base_client:Re-raising status error
+DEBUG:root:Retrieved documents: ['Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ']
+DEBUG:root:Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. 
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...
+
+Question:
+our refund policy ?
+Answer:
+
+DEBUG:root:Generated answer (HF): I don't know. The question is irrelevant to the given context about the refund policy.
+INFO:root:OpenAI client initialized.
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 515
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /tiiuae/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 404 0
+INFO:root:OpenAI client initialized.
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 515
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:root:Retrieved documents: ['Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ']
+DEBUG:root:Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. 
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...
+
+Question:
+our refund policy ?
+Answer:
+
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+DEBUG:root:Generated answer (HF): I don't know.

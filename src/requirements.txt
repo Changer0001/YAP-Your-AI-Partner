@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+python-dotenv
+openai
+transformers
+huggingface_hub
+sentence-transformers
+torch
+chromadb==0.4.15
+
