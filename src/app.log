@@ -1,0 +1,28 @@
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): us.i.posthog.com:443
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:root:Retrieved documents: []
+DEBUG:urllib3.connectionpool:Resetting dropped connection: us.i.posthog.com
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+DEBUG:root:Retrieved documents: []
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0

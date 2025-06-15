@@ -135,3 +135,143 @@ how about for US
 Answer:
 
 2025-06-13 00:49:16,418 - DEBUG - Generated answer (HF): Delivery times vary by region: USA: 5-7 business days.
+2025-06-13 01:07:41,236 - DEBUG - Retrieved documents: ['Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience.\n\nCookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings.\n\nFor any privacy-related concerns, please contact: privacy@trendify.com\n', 'Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging.\n- Proof of purchase is required.\n- Shipping costs are non-refundable.\n\nTo start a return or refund, email support@trendify.com with your order number.\n\nIf the product is defective or damaged, we will cover the return shipping.\n', 'Welcome to Trendify Store!\n\nAt Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.\n\nWith warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!\n']
+2025-06-13 01:07:41,238 - DEBUG - Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience.
+
+Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings.
+
+For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+
+To start a return or refund, email support@trendify.com with your order number.
+
+If the product is defective or damaged, we will cover the return shipping.
+
+---
+Welcome to Trendify Store!
+
+At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bring...
+
+Question:
+what is your contact email
+Answer:
+
+2025-06-13 01:09:02,341 - DEBUG - Generated answer (HF): support@trendify.com
+2025-06-13 01:23:43,140 - DEBUG - Retrieved documents: ['Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience.\n\nCookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings.\n\nFor any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store!\n\nAt Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.\n\nWith warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!\n', 'Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging.\n- Proof of purchase is required.\n- Shipping costs are non-refundable.\n\nTo start a return or refund, email support@trendify.com with your order number.\n\nIf the product is defective or damaged, we will cover the return shipping.\n']
+2025-06-13 01:23:43,141 - DEBUG - Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience.
+
+Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings.
+
+For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store!
+
+At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.
+
+With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!
+
+---
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. ...
+
+Question:
+are cookies used for what ?
+Answer:
+
+2025-06-13 01:24:23,207 - DEBUG - Generated answer (HF): Cookies are used for personalizing content and tracking preferences.
+2025-06-13 01:25:54,315 - DEBUG - Retrieved documents: ['Welcome to Trendify Store!\n\nAt Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.\n\nWith warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!\n', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience.\n\nCookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings.\n\nFor any privacy-related concerns, please contact: privacy@trendify.com\n', 'Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging.\n- Proof of purchase is required.\n- Shipping costs are non-refundable.\n\nTo start a return or refund, email support@trendify.com with your order number.\n\nIf the product is defective or damaged, we will cover the return shipping.\n']
+2025-06-13 01:25:54,316 - DEBUG - Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Welcome to Trendify Store!
+
+At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.
+
+With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!
+
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience.
+
+Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings.
+
+For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. ...
+
+Question:
+What is this business about?
+Answer:
+
+2025-06-13 01:26:27,875 - DEBUG - Generated answer (HF): Trendify is an e-commerce business that sells fashion, gadgets, and home goods.
+2025-06-13 01:26:49,792 - DEBUG - Retrieved documents: ['Welcome to Trendify Store!\n\nAt Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.\n\nWith warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!\n', 'Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging.\n- Proof of purchase is required.\n- Shipping costs are non-refundable.\n\nTo start a return or refund, email support@trendify.com with your order number.\n\nIf the product is defective or damaged, we will cover the return shipping.\n', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience.\n\nCookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings.\n\nFor any privacy-related concerns, please contact: privacy@trendify.com\n']
+2025-06-13 01:26:49,792 - DEBUG - Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Welcome to Trendify Store!
+
+At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service.
+
+With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community!
+
+---
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+
+To start a return or refund, email support@trendify.com with your order number.
+
+If the product is defective or damaged, we will cover the return shipping.
+
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third pa...
+
+Question:
+can you also give me another business ideas
+Answer:
+
+2025-06-13 01:29:50,376 - DEBUG - Generated answer (HF): We are a small business consulting firm specializing in helping entrepreneurs start and grow their businesses. We offer a wide range of services, including market research, business plan development, and marketing strategy consulting. We can help you find the right business idea and provide the support you need to turn your vision into a successful venture.
+
+---
+
+Exercise: Identify the type of business entity for each scenario below.
+
+1. Sarah wants to start a small bakery in her hometown. She plans to hire a few employees and eventually expand to multiple locations.
+
+2. John is passionate about technology and wants to create a software company. He will be the sole owner and will be working full-time on developing and selling his products.
