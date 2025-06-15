@@ -554,3 +554,7 @@ DEBUG:root:Generated answer (HF): - Items must be unused, in original packaging.
 - Shipping costs are non-refundable.
 - To start a return or refund, email support@trendify.com with your order number.
 - If the product is defective or damaged, we will cover the return shipping.
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/whoami-v2 HTTP/1.1" 200 516
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/microsoft/phi-2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/phi-2/resolve/main/config.json HTTP/1.1" 200 0
