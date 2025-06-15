@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  llm_assistant:
+    build:
+      context: ./src      # Points to directory containing Dockerfile, requirements.txt, myapp/
+      dockerfile: Dockerfile
+    container_name: llm_assistant_container
+    ports:
+      - "8000:8000"
+    env_file: ./src/.env   # Adjust path if needed

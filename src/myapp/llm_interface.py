@@ -11,11 +11,22 @@ hf_logging.set_verbosity_error()
 load_dotenv()
 logging.basicConfig(filename="app.log", filemode="a", level=logging.DEBUG)
 
-# ✅ OpenAI
-client_openai = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ✅ OpenAI client initialization with check
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if OPENAI_API_KEY:
+    client_openai = OpenAI(api_key=OPENAI_API_KEY)
+    logging.info("OpenAI client initialized.")
+else:
+    client_openai = None
+    logging.warning("OPENAI_API_KEY not set. OpenAI client will be skipped.")
 
-# ✅ HF phi-2
-login(token=os.getenv("HF_API_TOKEN"))
+# ✅ HF phi-2 initialization (assuming HF_API_TOKEN is set)
+HF_API_TOKEN = os.getenv("HF_API_TOKEN")
+if HF_API_TOKEN:
+    login(token=HF_API_TOKEN)
+else:
+    logging.warning("HF_API_TOKEN not set. HF client might fail if called.")
+
 hf_model_id = "microsoft/phi-2"
 hf_tokenizer = AutoTokenizer.from_pretrained(hf_model_id)
 hf_tokenizer.pad_token = hf_tokenizer.eos_token
@@ -23,6 +34,10 @@ hf_model = AutoModelForCausalLM.from_pretrained(hf_model_id)
 hf_pipe = pipeline("text-generation", model=hf_model, tokenizer=hf_tokenizer, return_full_text=False)
 
 def ask_llm_openai(question, context):
+    if not client_openai:
+        logging.warning("OpenAI client not initialized, skipping call.")
+        return "OpenAI API key not provided. Skipping OpenAI response."
+
     prompt = f"""Answer the question based only on the information provided in the context below.
 If the answer cannot be found in the context, say 'I don't know.'
 

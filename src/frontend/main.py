@@ -11,20 +11,6 @@ st.title("📚 LLM Assistance - Business QA")
 st.sidebar.header("⚙️ Settings")
 provider = st.sidebar.radio("Choose LLM Provider", ["openai", "hf"], index=0)
 
-# Ingest Section
-st.header("📂 Document Ingestion")
-with st.form("ingest_form"):
-    folder_path = st.text_input("Folder path to documents", value="C:/Users/Burak/Documents/GitHub/LLM_Assistance/data/example_business_docs")
-    ingest_submit = st.form_submit_button("Ingest Documents")
-
-    if ingest_submit:
-        with st.spinner("Ingesting documents..."):
-            try:
-                response = requests.post(f"{FASTAPI_URL}/ingest", json={"folder_path": folder_path})
-                response.raise_for_status()
-                st.success(f"✅ Ingested {response.json().get('documents_ingested')} documents successfully!")
-            except Exception as e:
-                st.error(f"❌ Error during ingestion: {e}")
 
 # Ask Section
 st.header("❓ Ask a Question")
