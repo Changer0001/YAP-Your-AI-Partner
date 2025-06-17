@@ -1558,3 +1558,9 @@ Question:
 what is estimated delivery for US
 Answer:
 DEBUG:root:Generated answer (HF): 5-7 business days
+INFO:root:OpenAI client initialized.
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /google/flan-t5-small/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/google/flan-t5-small/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /google/flan-t5-small/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /google/flan-t5-small/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /google/flan-t5-small/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
