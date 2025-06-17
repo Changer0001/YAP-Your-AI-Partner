@@ -1481,3 +1481,80 @@ Question:
 how about email
 Answer:
 DEBUG:root:Generated answer (HF): Support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. --- Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...
+DEBUG:root:Retrieved 3 documents: ['Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ', 'Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ']
+DEBUG:root:Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! 
+---
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To q...
+
+Question:
+what is privacy
+Answer:
+DEBUG:root:Generated answer (HF): Privacy Policy We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com ---
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+INFO:root:OpenAI client initialized.
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /google/flan-t5-small/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "GET /api/models/google/flan-t5-small/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /google/flan-t5-small/resolve/main/config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /google/flan-t5-small/resolve/main/generation_config.json HTTP/1.1" 200 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /google/flan-t5-small/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+DEBUG:root:Retrieved 3 documents: ['Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ', 'Privacy Policy\n\nWe value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com\n', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ']
+DEBUG:root:Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. 
+---
+Privacy Policy
+
+We value your privacy. Your personal information, such as your name, address, and payment details, is securely stored and never sold to third parties. We use your data only to process your orders and improve your shopping experience. Cookies may be used to personalize content and track preferences. You can opt out of cookies at any time through your browser settings. For any privacy-related concerns, please contact: privacy@trendify.com
+
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing y...
+
+Question:
+what is our refund policy
+Answer:
+DEBUG:urllib3.connectionpool:https://us.i.posthog.com:443 "POST /batch/ HTTP/1.1" 200 15
+DEBUG:root:Generated answer (HF): We offer a 14-day refund window from the date of delivery. To qualify for a refund: - Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. --- Privacy Policy We value your privacy. Your personal information, such
+DEBUG:root:Retrieved 3 documents: ['Shipping Information\n\nWe ship to over 50 countries worldwide. All orders are processed within 2-3 business days. Delivery times vary by region:\n- USA: 5-7 business days\n- Europe: 7-10 business days\n- International: 10-15 business days\n\nTracking numbers will be emailed once your order has been dispatched. For express shipping options, please contact us before placing your order. ', 'Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! ', 'Refund Policy\n\nWe offer a 14-day refund window from the date of delivery. To qualify for a refund:\n- Items must be unused, in original packaging. - Proof of purchase is required. - Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ']
+DEBUG:root:Prompt sent to HF model:
+Answer the question based only on the information provided in the context below.
+If the answer cannot be found in the context, say 'I don't know.'
+
+Context:
+Shipping Information
+
+We ship to over 50 countries worldwide. All orders are processed within 2-3 business days. Delivery times vary by region:
+- USA: 5-7 business days
+- Europe: 7-10 business days
+- International: 10-15 business days
+
+Tracking numbers will be emailed once your order has been dispatched. For express shipping options, please contact us before placing your order. 
+---
+Welcome to Trendify Store! At Trendify, we believe shopping should be simple, exciting, and accessible to everyone. Since 2020, we’ve been dedicated to bringing you the latest in fashion, gadgets, and home goods. Our mission is to deliver high-quality products with exceptional customer service. With warehouses located in the US and Europe, we ensure fast and reliable shipping to our global customers. Thank you for being part of our growing community! 
+---
+Refund Policy
+
+We offer a 14-day refund window from the date of delivery. To qualify for a refund:
+- Items must be unused, in original packaging. - Proof ...
+
+Question:
+what is estimated delivery for US
+Answer:
+DEBUG:root:Generated answer (HF): 5-7 business days
