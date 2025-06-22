@@ -21,8 +21,8 @@ def retrieve(query, top_k=3):
         logging.debug(f"✅ Retrieved {len(docs)} documents: {docs}")
 
         combined = "\n---\n".join(docs)
-        if len(combined) > 1000:
-            combined = combined[:1000].rsplit("\n", 1)[0] + "\n...[truncated]"
+        #if len(combined) > 1000:
+         #   combined = combined[:1000].rsplit("\n", 1)[0] + "\n...[truncated]"
 
         return combined
 
