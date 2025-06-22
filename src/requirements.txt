@@ -7,4 +7,6 @@ huggingface_hub
 sentence-transformers
 torch
 chromadb==0.4.15
+optimum[onnxruntime]
+onnxruntime
 

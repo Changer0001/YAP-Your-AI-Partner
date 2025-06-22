@@ -12,6 +12,7 @@ COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir optimum[onnxruntime] onnxruntime  # ✅ Add this line
 
 # Copy the application code into the Docker image
 COPY myapp/ ./myapp/

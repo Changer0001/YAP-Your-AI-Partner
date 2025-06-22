@@ -1,16 +1,14 @@
 import os
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Literal
 from myapp.retriever import retrieve
-from myapp.llm_interface import ask_llm_openai, ask_llm_hf
+from myapp.llm_interface import ask_llm_hf
 
 router = APIRouter()
 
 
 class AskRequest(BaseModel):
     question: str
-    provider: Literal['openai', 'hf'] = 'openai'
 
 
 @router.post("/ask")
@@ -20,10 +18,7 @@ def ask(req: AskRequest):
         if not context:
             raise HTTPException(status_code=404, detail="No relevant context found.")
 
-        if req.provider == 'hf':
-            answer = ask_llm_hf(req.question, context)
-        else:
-            answer = ask_llm_openai(req.question, context)
+        answer = ask_llm_hf(req.question, context)
 
         return {
             "question": req.question,
