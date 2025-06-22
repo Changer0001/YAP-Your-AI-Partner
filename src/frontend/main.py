@@ -1,98 +1,67 @@
 import streamlit as st
 import requests
-import time
 
-# FastAPI base URL
-FASTAPI_URL = "http://127.0.0.1:8000"
-
-# Set page config
-st.set_page_config(page_title="LLM Assistance", layout="centered")
-st.title("📚 LLM Assistance - Business QA")
-
-# Sidebar
-st.sidebar.header("⚙️ Settings")
-provider = st.sidebar.radio("Choose LLM Provider", ["hf"], index=0)
+API_URL = "http://localhost:8000"
 
 # Initialize session state
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-if "prev_question" not in st.session_state:
-    st.session_state.prev_question = ""
-if "current_question" not in st.session_state:
-    st.session_state.current_question = ""
-if "clear_input_flag" not in st.session_state:
-    st.session_state.clear_input_flag = False
+if "token" not in st.session_state:
+    st.session_state.token = None
+if "page" not in st.session_state:
+    st.session_state.page = "login"
 
-# Ask Section
-st.header("❓ Ask a Question")
-
-# Clear input box if flag is set
-if st.session_state.clear_input_flag:
-    st.session_state.current_question = ""
-    st.session_state.clear_input_flag = False
-
-st.text_input("Enter your question", key="current_question")
-
-# Track and update previous question
-if st.session_state.prev_question != st.session_state.current_question:
-    st.session_state.prev_question = st.session_state.current_question
-
-# Handle Answer
-if st.button("Get Answer"):
-    question_text = st.session_state.current_question.strip()
-    if not question_text:
-        st.warning("Please enter a question first.")
-    else:
-        with st.spinner("Generating answer..."):
-            try:
-                payload = {"question": question_text, "provider": provider}
-                response = requests.post(f"{FASTAPI_URL}/ask", json=payload)
-
-                if response.status_code == 404:
-                    st.error("❌ No relevant context found.")
-                else:
-                    response.raise_for_status()
-                    result = response.json()
-
-                    # Add to chat history
-                    st.session_state.chat_history.append({
-                        "question": question_text,
-                        "answer": result["answer"],
-                        "context": result["context_snippet"]
-                    })
-
-                    # ✅ Set flag to clear input on next run
-                    st.session_state.clear_input_flag = True
-                    st.rerun()
-
-            except Exception as e:
-                st.error(f"❌ Error during answering: {e}")
-
-# Show chat history (latest on top)
-if st.session_state.chat_history:
-    st.markdown("### 💬 Chat History")
-
-    reversed_history = list(reversed(st.session_state.chat_history))
-    for i, turn in enumerate(reversed_history):
-        st.markdown(f"**🧑 You:** {turn['question']}")
-
-        if i == 0:
-            # Animate only the latest answer
-            answer_placeholder = st.empty()
-            animated_answer = ""
-            for word in turn["answer"].split():
-                animated_answer += word + " "
-                answer_placeholder.markdown(f"**🤖 Answer:** {animated_answer}▌")
-                time.sleep(0.01)
+# --- Auth Pages ---
+def login():
+    st.title("🔐 Login")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        res = requests.post(f"{API_URL}/login", json={"username": username, "password": password})
+        if res.status_code == 200:
+            st.session_state.token = res.json()["access_token"]
+            st.session_state.page = "ask"
+            st.success("Logged in successfully!")
         else:
-            # Show older answers instantly
-            st.markdown(f"**🤖 Answer:** {turn['answer']}")
+            st.error("Invalid username or password")
 
-        with st.expander("📄 Context Used", expanded=False):
-            st.code(turn["context"])
+    st.button("Go to Register", on_click=lambda: st.session_state.update({"page": "register"}))
 
-    st.markdown("---")
+def register():
+    st.title("📝 Register")
+    username = st.text_input("Choose a username")
+    password = st.text_input("Choose a password", type="password")
+    if st.button("Register"):
+        res = requests.post(f"{API_URL}/register", json={"username": username, "password": password})
+        if res.status_code == 200:
+            st.success("Registered successfully! Please log in.")
+            st.session_state.page = "login"
+        else:
+            st.error(res.json()["detail"])
 
-# Footer
-st.sidebar.markdown("---")
-st.sidebar.markdown("Built with ❤️ by Burak & Sarah")
+    st.button("Go to Login", on_click=lambda: st.session_state.update({"page": "login"}))
+
+# --- Main Ask Page ---
+def ask_page():
+    st.title("📚 LLM Assistance - Ask a Question")
+
+    question = st.text_input("❓ Enter your question")
+    if st.button("Get Answer"):
+        if not question.strip():
+            st.warning("Please enter a question.")
+        else:
+            headers = {"Authorization": f"Bearer {st.session_state.token}"}
+            res = requests.post(f"{API_URL}/ask", json={"question": question}, headers=headers)
+            if res.status_code == 200:
+                data = res.json()
+                st.markdown(f"**Answer:** {data['answer']}")
+            else:
+                st.error(res.json().get("detail", "Failed to get answer"))
+
+    st.button("Logout", on_click=lambda: st.session_state.update({"token": None, "page": "login"}))
+
+# --- Page Routing ---
+if st.session_state.page == "login":
+    login()
+elif st.session_state.page == "register":
+    register()
+else:
+    ask_page()

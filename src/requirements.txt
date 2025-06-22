@@ -9,4 +9,6 @@ torch
 chromadb==0.4.15
 optimum[onnxruntime]
 onnxruntime
+python-jose
+passlib[bcrypt]
 
