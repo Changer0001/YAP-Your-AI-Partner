@@ -1,0 +1,40 @@
+{
+  "admin": [
+    {
+      "question": "refund policy",
+      "answer": "We offer a 14-day refund window from the date of delivery. To qualify for a refund: - Items must be unused, in original packaging. --- Proof of purchase is required. --- Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping. ---"
+    },
+    {
+      "question": "Is Istanbul shipping would be international or US ?",
+      "answer": "US ---"
+    },
+    {
+      "question": "Is Istanbul shipping would be international or US ?",
+      "answer": "US ---"
+    },
+    {
+      "question": "Are you sure?",
+      "answer": "Yes."
+    },
+    {
+      "question": "Do you relate what we are talking ?",
+      "answer": "Yes."
+    },
+    {
+      "question": "What was my first question?",
+      "answer": "Is Istanbul the largest city in Turkey?"
+    },
+    {
+      "question": "Is it ?",
+      "answer": "Yes."
+    },
+    {
+      "question": "Do you know who I am ?",
+      "answer": "I don't know who I am ."
+    },
+    {
+      "question": "Do you know my name ?",
+      "answer": "I don't know"
+    }
+  ]
+}
