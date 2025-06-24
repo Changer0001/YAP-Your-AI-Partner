@@ -1,67 +1,150 @@
 import streamlit as st
 import requests
 
-API_URL = "http://localhost:8000"
+API_URL = "http://127.0.0.1:8000"
 
-# Initialize session state
+# --- Session State Defaults ---
 if "token" not in st.session_state:
     st.session_state.token = None
 if "page" not in st.session_state:
     st.session_state.page = "login"
 
-# --- Auth Pages ---
+
+# --- Login Page ---
 def login():
     st.title("🔐 Login")
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+
+    username = st.text_input("Username", key="login_username")
+    password = st.text_input("Password", type="password", key="login_password")
+
     if st.button("Login"):
-        res = requests.post(f"{API_URL}/login", json={"username": username, "password": password})
-        if res.status_code == 200:
-            st.session_state.token = res.json()["access_token"]
-            st.session_state.page = "ask"
-            st.success("Logged in successfully!")
-        else:
-            st.error("Invalid username or password")
+        if not username or not password:
+            st.warning("Please enter both username and password.")
+            return
 
-    st.button("Go to Register", on_click=lambda: st.session_state.update({"page": "register"}))
+        try:
+            res = requests.post(f"{API_URL}/login", json={"username": username, "password": password})
+            st.code(f"📤 Response: {res.status_code}")
+            st.code(f"📦 Response JSON: {res.json()}")
+            if res.status_code == 200:
+                st.session_state.token = res.json()["access_token"]
+                st.session_state.page = "ask"
+                st.success("✅ Logged in successfully!")
+                st.rerun()
+            else:
+                st.error(res.json().get("detail", "Invalid login."))
+        except requests.exceptions.RequestException as e:
+            st.error(f"Server error: {e}")
 
+    if st.button("Go to Register"):
+        st.session_state.page = "register"
+        st.rerun()
+
+
+# --- Register Page ---
 def register():
     st.title("📝 Register")
-    username = st.text_input("Choose a username")
-    password = st.text_input("Choose a password", type="password")
+
+    username = st.text_input("Choose a username", key="register_username")
+    password = st.text_input("Choose a password", type="password", key="register_password")
+
     if st.button("Register"):
-        res = requests.post(f"{API_URL}/register", json={"username": username, "password": password})
-        if res.status_code == 200:
-            st.success("Registered successfully! Please log in.")
-            st.session_state.page = "login"
-        else:
-            st.error(res.json()["detail"])
+        if not username or not password:
+            st.warning("Username and password are required.")
+            return
 
-    st.button("Go to Login", on_click=lambda: st.session_state.update({"page": "login"}))
+        try:
+            payload = {"username": username, "password": password}
+            st.code(f"📨 Sending payload: {payload}")
+            res = requests.post(f"{API_URL}/register", json=payload)
+            st.code(f"📤 Response: {res.status_code}")
+            st.code(f"📦 Response JSON: {res.json()}")
+            if res.status_code == 200:
+                st.success("✅ Registered successfully! Please log in.")
+                st.session_state.page = "login"
+                st.rerun()
+            else:
+                st.error(res.json().get("detail", "Registration failed."))
+        except requests.exceptions.RequestException as e:
+            st.error(f"Server error: {e}")
 
-# --- Main Ask Page ---
+    if st.button("Go to Login"):
+        st.session_state.page = "login"
+        st.rerun()
+
+
+# --- Ask Page ---
 def ask_page():
     st.title("📚 LLM Assistance - Ask a Question")
 
-    question = st.text_input("❓ Enter your question")
-    if st.button("Get Answer"):
+    if not st.session_state.token:
+        st.warning("⚠️ You must be logged in.")
+        st.session_state.page = "login"
+        st.rerun()
+        return
+
+    with st.form("ask_form"):
+        question = st.text_input("❓ Enter your question", key="question_input")
+        submitted = st.form_submit_button("Get Answer")
+
+    if submitted:
         if not question.strip():
             st.warning("Please enter a question.")
-        else:
-            headers = {"Authorization": f"Bearer {st.session_state.token}"}
+            return
+
+        headers = {
+            "Authorization": f"Bearer {st.session_state.token}"
+        }
+
+        try:
             res = requests.post(f"{API_URL}/ask", json={"question": question}, headers=headers)
+            st.code(f"📤 Response: {res.status_code}")
+            st.code(f"📦 Response JSON: {res.json()}")
+
             if res.status_code == 200:
-                data = res.json()
-                st.markdown(f"**Answer:** {data['answer']}")
+                answer = res.json()["answer"]
+                st.markdown(f"**✅ Answer:**\n\n{answer}")
             else:
-                st.error(res.json().get("detail", "Failed to get answer"))
+                st.error(f"{res.status_code}: {res.json().get('detail', '❌ Failed to get answer.')}")
+        except requests.exceptions.RequestException as e:
+            st.error(f"Connection error: {e}")
 
-    st.button("Logout", on_click=lambda: st.session_state.update({"token": None, "page": "login"}))
+    # --- Chat History Display ---
+    if st.button("🕓 Show Chat History"):
+        headers = {"Authorization": f"Bearer {st.session_state.token}"}
+        try:
+            res = requests.get(f"{API_URL}/history", headers=headers)
+            if res.status_code == 200:
+                history = res.json()
+                if history:
+                    st.subheader("📜 Chat History")
+                    for entry in reversed(history):
+                        st.markdown(f"**🧑 You:** {entry['question']}")
+                        st.markdown(f"**🤖 Assistant:** {entry['answer']}")
+                        st.markdown("---")
+                else:
+                    st.info("No chat history yet.")
+            else:
+                st.warning("Failed to retrieve history.")
+        except requests.exceptions.RequestException as e:
+            st.error(f"Error fetching history: {e}")
 
-# --- Page Routing ---
-if st.session_state.page == "login":
-    login()
-elif st.session_state.page == "register":
-    register()
-else:
-    ask_page()
+    if st.button("Logout"):
+        st.session_state.token = None
+        st.session_state.page = "login"
+        st.rerun()
+
+
+# --- Page Router ---
+def render():
+    page = st.session_state.get("page", "login")
+    if page == "login":
+        login()
+    elif page == "register":
+        register()
+    elif page == "ask":
+        ask_page()
+    else:
+        st.error("🚨 Unknown page.")
+
+render()
