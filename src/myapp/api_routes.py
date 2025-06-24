@@ -4,6 +4,7 @@ from myapp.retriever import retrieve
 from myapp.llm_interface import ask_llm_hf
 from myapp.auth import verify_token, create_token, register_user, authenticate_user
 from myapp.chat_store import save_chat_history, get_user_history
+from myapp.database import SessionLocal, ChatHistory
 
 router = APIRouter()
 

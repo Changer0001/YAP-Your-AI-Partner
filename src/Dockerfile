@@ -1,27 +1,31 @@
 FROM python:3.10-slim-bookworm
 
-# Upgrade pip and install OS dependencies
-RUN apt-get update && apt-get upgrade -y && pip install --upgrade pip && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first to use Docker layer caching
+# Copy requirements first to leverage caching
 COPY requirements.txt .
 
 # Install Python dependencies
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir optimum[onnxruntime] onnxruntime  # ✅ Add this line
+RUN pip install --no-cache-dir optimum[onnxruntime] onnxruntime
 
-# Copy the application code into the Docker image
+# Copy application code
 COPY myapp/ ./myapp/
 
-# Ensure the Python interpreter can find your modules
+# Set PYTHONPATH so FastAPI and modules resolve correctly
 ENV PYTHONPATH=/app
 
-# Expose the port for FastAPI
+# Optionally initialize DB
+# If you want to run init_db() once at container startup, create `init.py` and call it here:
+# RUN python myapp/init_db.py
+
+# Expose FastAPI port
 EXPOSE 8000
 
-# Run the FastAPI app
+# Start FastAPI server
 CMD ["uvicorn", "myapp.app:api", "--host", "0.0.0.0", "--port", "8000"]

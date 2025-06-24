@@ -9,7 +9,6 @@ if "token" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "login"
 
-
 # --- Login Page ---
 def login():
     st.title("🔐 Login")
@@ -24,8 +23,6 @@ def login():
 
         try:
             res = requests.post(f"{API_URL}/login", json={"username": username, "password": password})
-            st.code(f"📤 Response: {res.status_code}")
-            st.code(f"📦 Response JSON: {res.json()}")
             if res.status_code == 200:
                 st.session_state.token = res.json()["access_token"]
                 st.session_state.page = "ask"
@@ -40,7 +37,6 @@ def login():
         st.session_state.page = "register"
         st.rerun()
 
-
 # --- Register Page ---
 def register():
     st.title("📝 Register")
@@ -54,11 +50,7 @@ def register():
             return
 
         try:
-            payload = {"username": username, "password": password}
-            st.code(f"📨 Sending payload: {payload}")
-            res = requests.post(f"{API_URL}/register", json=payload)
-            st.code(f"📤 Response: {res.status_code}")
-            st.code(f"📦 Response JSON: {res.json()}")
+            res = requests.post(f"{API_URL}/register", json={"username": username, "password": password})
             if res.status_code == 200:
                 st.success("✅ Registered successfully! Please log in.")
                 st.session_state.page = "login"
@@ -71,7 +63,6 @@ def register():
     if st.button("Go to Login"):
         st.session_state.page = "login"
         st.rerun()
-
 
 # --- Ask Page ---
 def ask_page():
@@ -92,15 +83,10 @@ def ask_page():
             st.warning("Please enter a question.")
             return
 
-        headers = {
-            "Authorization": f"Bearer {st.session_state.token}"
-        }
+        headers = {"Authorization": f"Bearer {st.session_state.token}"}
 
         try:
             res = requests.post(f"{API_URL}/ask", json={"question": question}, headers=headers)
-            st.code(f"📤 Response: {res.status_code}")
-            st.code(f"📦 Response JSON: {res.json()}")
-
             if res.status_code == 200:
                 answer = res.json()["answer"]
                 st.markdown(f"**✅ Answer:**\n\n{answer}")
@@ -118,9 +104,12 @@ def ask_page():
                 history = res.json()
                 if history:
                     st.subheader("📜 Chat History")
-                    for entry in reversed(history):
+                    for entry in history:
                         st.markdown(f"**🧑 You:** {entry['question']}")
                         st.markdown(f"**🤖 Assistant:** {entry['answer']}")
+                        timestamp = entry.get("timestamp", None)
+                        if timestamp:
+                            st.caption(f"🕒 {timestamp}")
                         st.markdown("---")
                 else:
                     st.info("No chat history yet.")
@@ -133,7 +122,6 @@ def ask_page():
         st.session_state.token = None
         st.session_state.page = "login"
         st.rerun()
-
 
 # --- Page Router ---
 def render():
