@@ -12,7 +12,8 @@ st.session_state.setdefault("history", [])
 
 # --- Stream Answer from Backend ---
 def stream_answer(question):
-    headers = {"Authorization": f"Bearer {st.session_state.token}"}
+    headers = headers = {"token": st.session_state.token}
+
     placeholder = st.empty()
 
     def generate():
@@ -22,7 +23,11 @@ def stream_answer(question):
             headers=headers,
             stream=True,
         ) as res:
-            res.raise_for_status()
+            try:
+                res.raise_for_status()
+            except requests.HTTPError:
+                st.error(f"❌ {res.status_code} - {res.text}")
+                raise
             for chunk in res.iter_lines():
                 if chunk:
                     yield chunk.decode("utf-8")
@@ -34,7 +39,7 @@ def stream_answer(question):
             for char in chunk:
                 full_answer += char
                 placeholder.markdown(f"**✅ Answer:**\n\n{full_answer}")
-                time.sleep(0.008)  # typing effect (char-by-char)
+                time.sleep(0.008)  # Typing effect
 
         duration = time.time() - start
         st.caption(f"⏱️ Answered in {duration:.2f} seconds")
@@ -55,6 +60,7 @@ def login():
             if res.status_code == 200:
                 st.session_state.token = res.json()["access_token"]
                 st.session_state.page = "ask"
+                st.rerun()
             else:
                 st.error(res.json().get("detail", "Login failed."))
         except Exception as e:
@@ -98,7 +104,8 @@ def ask_page():
     question = st.text_input("❓ Enter your question", key="question_input")
 
     if st.button("Get Answer"):
-        if not question.strip():
+        question = st.session_state.question_input.strip()
+        if not question:
             st.warning("Please enter a question.")
             return
 
@@ -137,7 +144,6 @@ def show_history():
             st.error("Failed to fetch history.")
     except Exception as e:
         st.error(f"Connection error: {e}")
-
 
 # --- Page Router ---
 def render():
