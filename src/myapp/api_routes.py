@@ -64,12 +64,18 @@ async def stream(req: AskRequest, user=Depends(verify_token)):
     logging.info(f"🔍 Streaming context: {context[:300]}")
 
     def generate():
+        full_answer = ""
         try:
             for chunk in ask_llm_hf_stream(req.question, context):
-                yield chunk  # ✅ Corrected
+                token = chunk if isinstance(chunk, str) else getattr(chunk, "content", "")
+                full_answer += token
+                yield token
         except Exception as e:
             logging.error(f"❌ Stream error: {e}")
             yield f"\n[ERROR] {e}"
+        finally:
+            # Save after stream ends
+            save_chat_history(user, req.question, full_answer)
 
     return StreamingResponse(generate(), media_type="text/plain")
 
