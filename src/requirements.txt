@@ -1,14 +1,11 @@
 fastapi
 uvicorn
 python-dotenv
-openai
-transformers
+openai  # (optional if not used, but can stay)
 huggingface_hub
 sentence-transformers
 torch
 chromadb==0.4.15
-optimum[onnxruntime]
-onnxruntime
 python-jose
 passlib[bcrypt]
 sqlalchemy

@@ -1,71 +1,81 @@
 import os
-import logging
 import re
+import time
+import logging
 from dotenv import load_dotenv
-from transformers import (
-    AutoTokenizer,
-    pipeline,
-    logging as hf_logging
-)
-from optimum.onnxruntime import ORTModelForSeq2SeqLM
+from huggingface_hub import InferenceClient
 
 # ✅ Load environment variables
 load_dotenv()
 
-# ✅ Configure logging
+# ✅ Logging configuration
 logging.basicConfig(filename="app.log", filemode="a", level=logging.DEBUG)
-hf_logging.set_verbosity_error()
 
-# ✅ Hugging Face model setup (ONNX quantized for CPU)
-hf_model_id = "google/flan-t5-small"
+# ✅ Initialize Hugging Face Inference Client
+HF_API_TOKEN = os.getenv("HF_API_TOKEN")
+client = InferenceClient(model="mistralai/Mistral-7B-Instruct-v0.2", token=HF_API_TOKEN)
 
-try:
-    hf_tokenizer = AutoTokenizer.from_pretrained(hf_model_id)
-
-    hf_model = ORTModelForSeq2SeqLM.from_pretrained(
-        hf_model_id,
-        export=True,
-        provider="CPUExecutionProvider"
-    )
-
-    hf_pipe = pipeline(
-        "text2text-generation",
-        model=hf_model,
-        tokenizer=hf_tokenizer
-    )
-
-    logging.info("✅ Quantized Hugging Face model loaded using ONNX Runtime.")
-
-except Exception as e:
-    logging.exception("❌ Failed to load quantized Hugging Face model:")
-    hf_pipe = None
-
-# ✅ Inference function
+# ✅ Regular (non-streaming) chat-based generation
 def ask_llm_hf(question, context):
-    if not hf_pipe:
-        return "Quantized Hugging Face model not available."
-
-    prompt = f"""Answer the question based only on the information provided in the context below.
-If the answer cannot be found in the context, say 'I don't know.'
+    prompt = f"""Answer the following question using only the context provided.
+If the answer is not in the context, say "I don't know".
 
 Context:
 {context}
 
 Question:
 {question}
-Answer:"""
-
-    logging.debug(f"Prompt sent to HF model:\n{prompt}")
+"""
     try:
-        response = hf_pipe(prompt, max_new_tokens=100)
-        answer = response[0]["generated_text"].strip()
-        logging.debug(f"Generated answer (HF Quantized): {answer}")
-        return answer
+        start_time = time.time()
+        result = client.chat_completion(
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that only answers using the provided context."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=300,
+            temperature=0.7,
+        )
+        elapsed = time.time() - start_time
+        logging.info(f"⏱️ Answer generated in {elapsed:.2f} seconds")
+        return result.choices[0].message.content.strip()
     except Exception as e:
-        logging.error(f"❌ Failed to generate answer: {e}")
-        return f"Sorry, failed to get answer from Hugging Face: {e}"
+        logging.exception("❌ Generation failed:")
+        return f"❌ Error: {e}"
 
-# ✅ Check for incomplete answers
+# ✅ Streaming support using chat API
+def ask_llm_hf_stream(question, context):
+    prompt = f"""Answer the following question using only the context provided.
+If the answer is not in the context, say "I don't know".
+
+Context:
+{context}
+
+Question:
+{question}
+"""
+
+    try:
+        stream = client.chat_completion(
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that only answers using the provided context."},
+                {"role": "user", "content": prompt}
+            ],
+            stream=True,
+            max_tokens=300,
+            temperature=0.7
+        )
+
+        for chunk in stream:
+            if chunk.choices and "content" in chunk.choices[0].delta:
+                yield chunk.choices[0].delta["content"]
+
+    except Exception as e:
+        logging.exception("❌ Streaming failed:")
+        yield f"\n[ERROR] {e}"
+
+
+# ✅ Utility to detect incomplete answers
 def is_incomplete(answer: str) -> bool:
     answer = answer.strip()
     if not answer:
@@ -78,7 +88,7 @@ def is_incomplete(answer: str) -> bool:
         return True
     return False
 
-# ✅ Complete-answer generator with retry
+# ✅ Fallback logic for incomplete responses
 def get_complete_answer(question, context, provider='hf', max_tries=2):
     if provider != 'hf':
         return "Only 'hf' provider supported in this module."
@@ -87,13 +97,19 @@ def get_complete_answer(question, context, provider='hf', max_tries=2):
     tries = 1
 
     while is_incomplete(answer) and tries < max_tries:
-        logging.info(f"[Try {tries}] Incomplete answer detected. Regenerating...")
-        followup_prompt = f"{answer.strip()}\nContinue the answer:"
+        logging.info(f"[Try {tries}] Incomplete answer detected. Retrying...")
+        followup = f"{answer.strip()}\nContinue the answer:"
         try:
-            extension = hf_pipe(followup_prompt, max_new_tokens=100)
-            answer += " " + extension[0]["generated_text"].strip()
+            continuation = client.chat_completion(
+                messages=[
+                    {"role": "user", "content": followup}
+                ],
+                max_tokens=100,
+                temperature=0.7
+            )
+            answer += " " + continuation.choices[0].message.content.strip()
         except Exception as e:
-            logging.error(f"❌ Failed during continuation: {e}")
+            logging.exception("❌ Error during regeneration:")
             break
         tries += 1
 
