@@ -35,6 +35,46 @@
     {
       "question": "Do you know my name ?",
       "answer": "I don't know"
+    },
+    {
+      "question": "refund policy",
+      "answer": "Sorry, failed to get answer from Hugging Face: Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational."
+    },
+    {
+      "question": "refund policy",
+      "answer": "Sorry, failed to get answer from Hugging Face: Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational."
+    },
+    {
+      "question": "refund policy",
+      "answer": "Sorry, failed to get answer: 'InferenceClient' object has no attribute 'conversational'"
+    },
+    {
+      "question": "refund policy",
+      "answer": "Sorry, failed to get answer: Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational."
+    },
+    {
+      "question": "refund policy",
+      "answer": "The refund policy states that items must be unused, in original packaging, and proof of purchase is required to qualify for a refund within 14 days of delivery. Shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, Trendify will cover the return shipping."
+    },
+    {
+      "question": "where is istanbul located",
+      "answer": "Istanbul is located on both Europe and Asia, straddling the Bosphorus Strait. It serves as Turkey's economic, cultural, and historical hub."
+    },
+    {
+      "question": "where is istanbul located",
+      "answer": "Istanbul is located on both Europe and Asia, straddling the Bosphorus Strait. It serves as Turkey's economic, cultural, and historical hub."
+    },
+    {
+      "question": "refund policy",
+      "answer": "To qualify for a refund, items must be unused and in original packaging, proof of purchase is required, and shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, we will cover the return shipping."
+    },
+    {
+      "question": "refund policy",
+      "answer": "To qualify for a refund, items must be unused and still in their original packaging. Proof of purchase is required, and shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, Trendify will cover the return shipping. The refund window lasts for 14 days from the date of delivery."
+    },
+    {
+      "question": "refund policy",
+      "answer": "[Error streaming]: Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational."
     }
   ],
   "burak": [
@@ -45,6 +85,14 @@
     {
       "question": "istanbul loxation",
       "answer": "Proof of purchase is required."
+    },
+    {
+      "question": "refund policy",
+      "answer": "Sorry, failed to get answer from Hugging Face: Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational."
+    },
+    {
+      "question": "refund policy",
+      "answer": "Sorry, failed to get answer from Hugging Face: Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational."
     }
   ]
 }
