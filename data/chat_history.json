@@ -75,6 +75,22 @@
     {
       "question": "refund policy",
       "answer": "[Error streaming]: Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational."
+    },
+    {
+      "question": "what country did own istanbul before turkey",
+      "answer": " The last country that owned Istanbul before Turkey was the Ottoman Empire."
+    },
+    {
+      "question": "before ottoman empire who did own it ",
+      "answer": " Before the Ottoman Empire, Istanbul was the capital of several other empires including the Roman Empire (Constantinople), Byzantine Empire, and Latin Empire."
+    },
+    {
+      "question": "what is refund",
+      "answer": " A refund is the process of returning money to a customer for an purchase they made. According to the context provided, Trendify offers a 14-day refund window from the date of delivery for unused items in original packaging, with proof of purchase, but shipping costs are non-refundable. To initiate a return or refund, customers should email support@trendify.com with their order number. If the product is defective or damaged, Trendify will cover the return shipping."
+    },
+    {
+      "question": "privacy policy",
+      "answer": " According to the context provided, the Privacy Policy states that personal information is securely stored and never sold to third parties. Data is used only to process orders and improve the shopping experience. Cookies may be used to personalize content and track preferences, and users can opt out of cookies through their browser settings. For any privacy-related concerns, contact privacy@trendify.com."
     }
   ],
   "burak": [
@@ -99,6 +115,10 @@
     {
       "question": "refund policy",
       "answer": " The refund policy states that items must be unused and in original packaging to qualify for a refund within 14 days of delivery. Proof of purchase is required and shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, Trendify will cover the return shipping."
+    },
+    {
+      "question": "refund policy",
+      "answer": " The refund policy states that items must be unused and in original packaging to qualify for a refund within 14 days of delivery. Proof of purchase is required and shipping costs are non-refundable. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, the return shipping will be covered."
     }
   ]
 }
