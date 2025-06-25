@@ -120,14 +120,24 @@ def ask_page():
 # --- History Display ---
 def show_history():
     st.subheader("📜 Chat History")
-    if not st.session_state.history:
-        st.info("No history yet.")
-        return
-    for entry in reversed(st.session_state.history):
-        st.markdown(f"**🧑 You:** {entry['question']}")
-        st.markdown(f"**🤖 Assistant:** {entry['answer']}")
-        st.caption(f"🕒 {entry['timestamp']}")
-        st.markdown("---")
+    headers = {"Authorization": f"Bearer {st.session_state.token}"}
+    try:
+        res = requests.get(f"{API_URL}/history", headers=headers)
+        if res.status_code == 200:
+            history_data = res.json()
+            if not history_data:
+                st.info("No history yet.")
+                return
+            for entry in reversed(history_data):
+                st.markdown(f"**🧑 You:** {entry['question']}")
+                st.markdown(f"**🤖 Assistant:** {entry['answer']}")
+                st.caption(f"🕒 {entry['timestamp']}")
+                st.markdown("---")
+        else:
+            st.error("Failed to fetch history.")
+    except Exception as e:
+        st.error(f"Connection error: {e}")
+
 
 # --- Page Router ---
 def render():
