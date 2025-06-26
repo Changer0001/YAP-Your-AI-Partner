@@ -109,6 +109,10 @@
     {
       "question": "refund policy",
       "answer": "Sorry, failed to get answer from Hugging Face: Model mistralai/Mistral-7B-Instruct-v0.2 is not supported for task text-generation and provider featherless-ai. Supported task: conversational."
+    },
+    {
+      "question": "refund policy",
+      "answer": " To qualify for a refund at Trendify, items must be unused and in original packaging, proof of purchase is required, and shipping costs are non-refundable. The refund window is 14 days from the date of delivery. To start a return or refund, email support@trendify.com with your order number. If the product is defective or damaged, Trendify will cover the return shipping."
     }
   ],
   "test": [
