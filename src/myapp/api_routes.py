@@ -4,7 +4,7 @@ from myapp.retriever import retrieve
 from myapp.llm_interface import ask_llm_hf, ask_llm_hf_stream
 from myapp.auth import verify_token, create_token, register_user, authenticate_user
 from myapp.chat_store import save_chat_history, get_user_history
-from myapp.database import SessionLocal, ChatHistory
+from myapp.utils import get_user_id  # 🔹 Add this import
 from starlette.responses import StreamingResponse
 import logging
 
@@ -40,14 +40,15 @@ def login(req: LoginRequest):
 
 # --- Ask (protected) ---
 @router.post("/ask")
-def ask(req: AskRequest, user=Depends(verify_token)):
+def ask(req: AskRequest, username=Depends(verify_token)):
     try:
+        user_id = get_user_id(username)  # 🔹 Convert to user_id
         context = retrieve(req.question)
         logging.info("🔍 Retrieved context: %s", context[:300])
         if not context.strip():
             raise HTTPException(status_code=404, detail="No relevant context found.")
         answer = ask_llm_hf(req.question, context)
-        save_chat_history(user, req.question, answer)
+        save_chat_history(user_id, req.question, answer)  # 🔹 Save with user_id
         return {
             "question": req.question,
             "answer": answer,
@@ -59,7 +60,8 @@ def ask(req: AskRequest, user=Depends(verify_token)):
 
 # --- Streaming Ask ---
 @router.post("/ask/stream")
-async def stream(req: AskRequest, user=Depends(verify_token)):
+async def stream(req: AskRequest, username=Depends(verify_token)):
+    user_id = get_user_id(username)  # 🔹 Convert to user_id
     context = retrieve(req.question)
     logging.info(f"🔍 Streaming context: {context[:300]}")
 
@@ -74,12 +76,12 @@ async def stream(req: AskRequest, user=Depends(verify_token)):
             logging.error(f"❌ Stream error: {e}")
             yield f"\n[ERROR] {e}"
         finally:
-            # Save after stream ends
-            save_chat_history(user, req.question, full_answer)
+            save_chat_history(user_id, req.question, full_answer)  # 🔹 Save with user_id
 
     return StreamingResponse(generate(), media_type="text/plain")
 
 # --- History ---
 @router.get("/history")
-def get_history(user=Depends(verify_token)):
-    return get_user_history(user)
+def get_history(username=Depends(verify_token)):
+    user_id = get_user_id(username)  # 🔹 Convert to user_id
+    return get_user_history(user_id)  # 🔹 Retrieve by user_id
