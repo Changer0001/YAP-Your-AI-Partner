@@ -1,16 +1,18 @@
+import logging
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-from myapp.retriever import retrieve
-from myapp.llm_interface import ask_llm_hf, ask_llm_hf_stream
-from myapp.auth import verify_token, create_token, register_user, authenticate_user
-from myapp.chat_store import save_chat_history, get_user_history
-from myapp.utils import get_user_id  # 🔹 Add this import
 from starlette.responses import StreamingResponse
-import logging
+
+from myapp.auth        import verify_token, register_user, authenticate_user
+from myapp.utils       import get_user_id
+from myapp.chat_store  import save_chat_history, get_user_history, get_recent_history
+from myapp.retriever   import retrieve
+from myapp.llm_interface import ask_llm_hf, ask_llm_hf_stream
 
 router = APIRouter()
+logging.basicConfig(level=logging.INFO)
 
-# --- Models ---
+# ── Request/response models ───────────────────────────────────────────────────
 class RegisterRequest(BaseModel):
     username: str
     password: str
@@ -22,15 +24,15 @@ class LoginRequest(BaseModel):
 class AskRequest(BaseModel):
     question: str
 
-# --- Register ---
+
+# ── Auth endpoints ────────────────────────────────────────────────────────────
 @router.post("/register")
 def register(req: RegisterRequest):
-    success = register_user(req.username, req.password)
-    if not success:
+    if not register_user(req.username, req.password):
         raise HTTPException(status_code=400, detail="Username already exists")
     return {"message": "User registered successfully"}
 
-# --- Login ---
+
 @router.post("/login")
 def login(req: LoginRequest):
     token = authenticate_user(req.username, req.password)
@@ -38,50 +40,65 @@ def login(req: LoginRequest):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"access_token": token}
 
-# --- Ask (protected) ---
+
+# ── /ask (blocking) ───────────────────────────────────────────────────────────
 @router.post("/ask")
 def ask(req: AskRequest, username=Depends(verify_token)):
     try:
-        user_id = get_user_id(username)  # 🔹 Convert to user_id
-        context = retrieve(req.question)
-        logging.info("🔍 Retrieved context: %s", context[:300])
-        if not context.strip():
-            raise HTTPException(status_code=404, detail="No relevant context found.")
-        answer = ask_llm_hf(req.question, context)
-        save_chat_history(user_id, req.question, answer)  # 🔹 Save with user_id
+        user_id = get_user_id(username)
+
+        # 1. personal chat history
+        history_context  = "\n".join(get_recent_history(user_id))
+
+        # 2. retrieved docs specific to this question
+        document_context = retrieve(req.question)
+
+        answer = ask_llm_hf(
+            req.question,
+            history_context,
+            document_context        # <-- now passed correctly
+        )
+
+        save_chat_history(user_id, req.question, answer)
         return {
             "question": req.question,
-            "answer": answer,
-            "context_snippet": context
+            "answer":   answer
         }
+
     except Exception as e:
-        logging.error("❌ Error in /ask: %s", e)
+        logging.exception("❌ /ask failed:")
         raise HTTPException(status_code=500, detail=str(e))
 
-# --- Streaming Ask ---
+
+# ── /ask/stream (streaming) ──────────────────────────────────────────────────
 @router.post("/ask/stream")
 async def stream(req: AskRequest, username=Depends(verify_token)):
-    user_id = get_user_id(username)  # 🔹 Convert to user_id
-    context = retrieve(req.question)
-    logging.info(f"🔍 Streaming context: {context[:300]}")
+    user_id          = get_user_id(username)
+    history_context  = "\n".join(get_recent_history(user_id))
+    document_context = retrieve(req.question)
 
-    def generate():
+    logging.info("🔍 Streaming context snippet: %s", document_context[:120])
+
+    def generator():
         full_answer = ""
         try:
-            for chunk in ask_llm_hf_stream(req.question, context):
-                token = chunk if isinstance(chunk, str) else getattr(chunk, "content", "")
+            for token in ask_llm_hf_stream(
+                    req.question,
+                    history_context,
+                    document_context):
                 full_answer += token
                 yield token
         except Exception as e:
-            logging.error(f"❌ Stream error: {e}")
+            logging.exception("❌ Stream error:")
             yield f"\n[ERROR] {e}"
         finally:
-            save_chat_history(user_id, req.question, full_answer)  # 🔹 Save with user_id
+            save_chat_history(user_id, req.question, full_answer)
 
-    return StreamingResponse(generate(), media_type="text/plain")
+    return StreamingResponse(generator(), media_type="text/plain")
 
-# --- History ---
+
+# ── /history ─────────────────────────────────────────────────────────────────
 @router.get("/history")
-def get_history(username=Depends(verify_token)):
-    user_id = get_user_id(username)  # 🔹 Convert to user_id
-    return get_user_history(user_id)  # 🔹 Retrieve by user_id
+def history(username=Depends(verify_token)):
+    user_id = get_user_id(username)
+    return get_user_history(user_id)
