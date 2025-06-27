@@ -5,111 +5,149 @@ import logging
 from dotenv import load_dotenv
 from huggingface_hub import InferenceClient
 
-# ✅ Load environment variables
+# ── 0. Init ────────────────────────────────────────────────────────────────────
 load_dotenv()
-
-# ✅ Logging configuration
 logging.basicConfig(filename="app.log", filemode="a", level=logging.DEBUG)
 
-# ✅ Initialize Hugging Face Inference Client
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
-client = InferenceClient(model="mistralai/Mistral-7B-Instruct-v0.2", token=HF_API_TOKEN)
+client = InferenceClient(
+    model="mistralai/Mistral-7B-Instruct-v0.2",
+    token=HF_API_TOKEN
+)
 
-# ✅ Regular (non-streaming) chat-based generation
-def ask_llm_hf(question, context):
-    prompt = f"""Answer the following question using only the context provided.
-If the answer is not in the context, say "I don't know".
+SYSTEM_INSTRUCTION = (
+    "You are a helpful assistant. Use the conversation history and the provided "
+    "document context to answer follow-up questions. Answer ONLY from that "
+    "information. If the answer is not there, reply with: I don't know."
+)
 
-Context:
-{context}
+# ── 1. Prompt assembly helpers ────────────────────────────────────────────────
+def build_chat_messages(history: str, question: str, doc_context: str = "") -> list:
+    """
+    Convert history + document context into OpenAI-style chat messages.
+    """
+    messages = [{"role": "system", "content": SYSTEM_INSTRUCTION}]
 
-Question:
-{question}
-"""
+    # Inject retrieved docs (if any) as assistant context
+    if doc_context.strip():
+        messages.append(
+            {"role": "assistant", "content": f"Context:\n{doc_context.strip()}"}
+        )
+
+    # Re-add the last few Q/A pairs (already formatted by chat_store)
+    for block in history.strip().split("\n\n"):
+        if block.startswith("🧑 Q:") and "🤖 A:" in block:
+            try:
+                q, a = block.split("🤖 A:")
+                messages.append({"role": "user", "content": q.replace("🧑 Q:", "").strip()})
+                messages.append({"role": "assistant", "content": a.strip()})
+            except ValueError:
+                continue                        # ignore malformed block
+
+    messages.append({"role": "user", "content": question})
+    return messages
+
+
+# ── 2. Synchronous completion ────────────────────────────────────────────────
+def ask_llm_hf(question: str,
+               history_context: str,
+               doc_context: str = "",
+               max_tokens: int = 300,
+               temperature: float = 0.7) -> str:
+    """
+    Blocking call — returns full answer string.
+    """
     try:
+        messages   = build_chat_messages(history_context, question, doc_context)
         start_time = time.time()
-        result = client.chat_completion(
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant that only answers using the provided context."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=300,
-            temperature=0.7,
+
+        # ─ Debug: dump prompt head (optional) ─
+        logging.debug("🧪 Prompt head:\n%s", "\n".join(
+            f"[{m['role'].upper()}] {m['content'][:160].replace(chr(10), ' ')}"
+            for m in messages[:4]
+        ))
+
+        result  = client.chat_completion(
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature
         )
         elapsed = time.time() - start_time
-        logging.info(f"⏱️ Answer generated in {elapsed:.2f} seconds")
+        logging.info("⏱️ Answer generated in %.2fs", elapsed)
+
         return result.choices[0].message.content.strip()
+
     except Exception as e:
         logging.exception("❌ Generation failed:")
         return f"❌ Error: {e}"
 
-# ✅ Streaming support using chat API
-def ask_llm_hf_stream(question, context):
-    prompt = f"""Answer the following question using only the context provided.
-If the answer is not in the context, say "I don't know".
 
-Context:
-{context}
-
-Question:
-{question}
-"""
-
+# ── 3. Streaming completion ──────────────────────────────────────────────────
+def ask_llm_hf_stream(question: str,
+                      history_context: str,
+                      doc_context: str = "",
+                      max_tokens: int = 300,
+                      temperature: float = 0.7):
+    """
+    Generator that yields partial tokens.
+    """
     try:
-        stream = client.chat_completion(
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant that only answers using the provided context."},
-                {"role": "user", "content": prompt}
-            ],
+        messages = build_chat_messages(history_context, question, doc_context)
+        stream   = client.chat_completion(
+            messages=messages,
             stream=True,
-            max_tokens=300,
-            temperature=0.7
+            max_tokens=max_tokens,
+            temperature=temperature
         )
 
         for chunk in stream:
             if chunk.choices and "content" in chunk.choices[0].delta:
                 yield chunk.choices[0].delta["content"]
 
+    except StopIteration:
+        yield "[ERROR] Streaming not supported for this model."
+
     except Exception as e:
         logging.exception("❌ Streaming failed:")
         yield f"\n[ERROR] {e}"
 
 
-# ✅ Utility to detect incomplete answers
-def is_incomplete(answer: str) -> bool:
-    answer = answer.strip()
-    if not answer:
+# ── 4. Post-filter helpers ───────────────────────────────────────────────────
+_INCOMPLETE_RE = re.compile(r"\b(and|but|or|so|because)$", re.IGNORECASE)
+
+def _is_incomplete(text: str) -> bool:
+    text = text.strip()
+    if not text:
         return True
-    if answer[-1] not in ".!?":
+    if text[-1] not in ".!?":
         return True
-    if re.search(r"\b(and|but|or|so|because)$", answer, re.IGNORECASE):
-        return True
-    if answer.endswith("...") or re.search(r"\b\w{1,3}$", answer):
+    if text.endswith("...") or _INCOMPLETE_RE.search(text):
         return True
     return False
 
-# ✅ Fallback logic for incomplete responses
-def get_complete_answer(question, context, provider='hf', max_tries=2):
-    if provider != 'hf':
-        return "Only 'hf' provider supported in this module."
 
-    answer = ask_llm_hf(question, context)
-    tries = 1
+def get_complete_answer(question: str,
+                        history_context: str,
+                        doc_context: str = "",
+                        max_tries: int = 2) -> str:
+    """
+    Simple retry loop if the model cuts off mid-sentence.
+    """
+    answer = ask_llm_hf(question, history_context, doc_context)
+    tries  = 1
 
-    while is_incomplete(answer) and tries < max_tries:
-        logging.info(f"[Try {tries}] Incomplete answer detected. Retrying...")
-        followup = f"{answer.strip()}\nContinue the answer:"
+    while _is_incomplete(answer) and tries < max_tries:
+        logging.info("🔄 Regenerating continuation (try %d)…", tries + 1)
+        followup = f"{answer.strip()}\n\nContinue:"
         try:
             continuation = client.chat_completion(
-                messages=[
-                    {"role": "user", "content": followup}
-                ],
-                max_tokens=100,
+                messages=[{"role": "user", "content": followup}],
+                max_tokens=120,
                 temperature=0.7
             )
             answer += " " + continuation.choices[0].message.content.strip()
         except Exception as e:
-            logging.exception("❌ Error during regeneration:")
+            logging.exception("❌ Error during continuation:")
             break
         tries += 1
 
