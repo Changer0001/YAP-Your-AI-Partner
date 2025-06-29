@@ -19,11 +19,13 @@ client = InferenceClient(
 
 SYSTEM_INSTRUCTION = (
     "You are a helpful assistant. Use the ENTIRE conversation history plus any "
-    "provided document context. When the user says things like "
-    "‘refer to previous’ or ‘how long does it take,’ infer missing details "
-    "(item, origin, destination, weight, dates) from earlier turns. "
-    "If the answer is not in context, reply with: I don't know."
+    "provided document context. Only answer if you can find the answer in the history or documents. "
+    "When the user says things like 'refer to previous' or 'how long does it take,' infer missing details "
+    "from earlier turns. "
+    "**If the answer is not explicitly found in the context or history, respond only with: 'I don't know.'** "
+    "DO NOT make up or guess information under any circumstances."
 )
+
 
 _INCOMPLETE_RE = re.compile(r"\b(and|but|or|so|because)$", re.IGNORECASE)
 
@@ -37,6 +39,22 @@ def _is_incomplete(text: str) -> bool:
         or text.endswith("...")
         or _INCOMPLETE_RE.search(text)
     )
+
+def should_reject_answer(answer: str, doc_context: str) -> bool:
+    if not answer.strip():
+        return True
+
+    hallucinated_patterns = [
+        "please contact", "you can estimate", "depends on", "we recommend",
+        "as a general guide", "standard shipping", "you may", "your cart", "our team",
+        "visit our website", "during checkout", "language model", "I'm here to help"
+    ]
+
+    context_keywords = set(doc_context.lower().split())
+    answer_words = set(answer.lower().split())
+    match_ratio = len(context_keywords & answer_words) / max(len(context_keywords), 1)
+
+    return match_ratio < 0.05 or any(p in answer.lower() for p in hallucinated_patterns)
 
 
 def format_history_blocks(history: List[Any]) -> str:
@@ -70,10 +88,21 @@ def make_chat_messages(
     """Create chat-compatible message list with system instruction and context."""
     msgs: List[Dict[str, str]] = [{"role": "system", "content": SYSTEM_INSTRUCTION}]
     if doc_context.strip():
-        msgs.append(
-            {"role": "assistant", "content": "Context:\n" + doc_context.strip()}
-        )
+        msgs.append({
+            "role": "assistant",
+            "content": (
+                "Use ONLY the context below to answer. If the answer is not clearly found in this context, say: 'I don't know.'\n\n"
+                "Context:\n" + doc_context.strip()
+            )
+        })
     msgs.extend(blocks_to_messages(history_blocks))
+    msgs.append({
+        "role": "user",
+        "content": (
+            "Important: Answer ONLY if the answer is clearly found in the above context or previous messages. "
+            "Otherwise, say: 'I don't know.'"
+        )
+    })
     msgs.append({"role": "user", "content": question})
     return msgs[-30:]  # keep within token limits
 
@@ -126,16 +155,36 @@ def ask_llm_hf(
 ) -> str:
     msgs = make_chat_messages(history_blocks, question, doc_context)
     answer = _chat_once(msgs)
+
     if _is_incomplete(answer):
         msgs.append({"role": "assistant", "content": answer})
         msgs.append({"role": "user", "content": "Continue:"})
         answer += " " + _chat_once(msgs, max_tokens=120)
+
+    if should_reject_answer(answer, doc_context):
+        logging.warning(f"🤖 Filtered hallucinated answer: {answer}")
+        return "I don't know."
+
     return answer.strip()
 
 
 def ask_llm_hf_stream(
     question: str, history_blocks: str, doc_context: str = ""
 ):
+    if not doc_context.strip() and not history_blocks.strip():
+        yield "I don't know."
+        return
+
     msgs = make_chat_messages(history_blocks, question, doc_context)
-    for token in _chat_stream(msgs):
-        yield token
+
+    for attempt in range(3):
+        try:
+            for token in _chat_stream(msgs):
+                yield token
+            return  # ✅ success, stop further attempts
+        except Exception as e:
+            logging.warning(f"⚠️ Stream attempt {attempt + 1} failed: {e}")
+            time.sleep(2 * (attempt + 1))  # exponential backoff
+
+    # If all retries fail
+    yield "I don't know."
