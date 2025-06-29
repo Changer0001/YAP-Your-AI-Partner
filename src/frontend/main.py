@@ -1,10 +1,21 @@
 import streamlit as st
 import requests
 import time
-
+from streamlit_cookies_manager import EncryptedCookieManager
+import os
 API_URL = "http://127.0.0.1:8000"
 
 # ── Session State ─────────────────────────────────────────────────────────────
+# --- Load cookies ---
+cookies = EncryptedCookieManager(password=os.getenv("COOKIE_PASSWORD", "default-cookie-password"))
+if not cookies.ready():
+    st.stop()
+
+# Restore token from cookie
+if "token" not in st.session_state and cookies.get("token"):
+    st.session_state.token = cookies.get("token")
+    st.session_state.page = "ask"
+
 st.session_state.setdefault("token", None)
 st.session_state.setdefault("page", "login")
 st.session_state.setdefault("question_input", "")
@@ -36,6 +47,11 @@ def stream_answer(payload: dict) -> str:
         return answer
 
 # ── Login / Register views ────────────────────────────────────────────────────
+
+# Initialize once
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
 def login():
     st.title("🔐 Login")
     u = st.text_input("Username", key="login_username")
@@ -49,6 +65,8 @@ def login():
             if r.status_code == 200:
                 st.session_state.token = r.json()["access_token"]
                 st.session_state.page = "ask"
+                cookies["token"] = st.session_state.token  
+                cookies.save()  
                 st.rerun()
             else:
                 st.error(r.json().get("detail", "Login failed."))
@@ -118,6 +136,9 @@ def ask_page():
         st.session_state.page = "login"
         st.session_state.history = []
         st.session_state.last_answer = None  # ✅ clear this too
+        if "token" in cookies:            # ←✅ clear cookie
+            del cookies["token"]
+            cookies.save()
         st.rerun()
 
 
