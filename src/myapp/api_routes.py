@@ -83,8 +83,12 @@ def ask(req: AskRequest, username=Depends(verify_token)):
         context  = format_history_blocks(history)
         doc_ctx  = retrieve(req.question)
 
-        answer   = ask_llm_hf(req.question, context, doc_ctx)
-        save_chat_history(user_id, req.question, answer)   # persist both Q & A
+        if not doc_ctx.strip() and not context.strip():
+            answer = "I don't know."
+        else:
+            answer = ask_llm_hf(req.question, context, doc_ctx)
+
+        save_chat_history(user_id, req.question, answer)
         return {"question": req.question, "answer": answer}
 
     except Exception as e:
