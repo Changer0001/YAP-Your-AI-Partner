@@ -1,6 +1,10 @@
 # myapp/chat_store.py
 
 from myapp.database import SessionLocal, ChatHistory, User
+import csv
+from datetime import datetime
+
+CSV_FILE_PATH = "chat_logs.csv"
 
 def save_chat_history(user_id: int, question: str, answer: str):
     db = SessionLocal()
@@ -8,6 +12,16 @@ def save_chat_history(user_id: int, question: str, answer: str):
         chat = ChatHistory(user_id=user_id, question=question, answer=answer)
         db.add(chat)
         db.commit()
+
+        with open(CSV_FILE_PATH, mode="a", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+            writer.writerow([
+                user_id,
+                question,
+                answer,
+                datetime.utcnow().isoformat()
+            ])
+
     finally:
         db.close()
 
@@ -23,14 +37,14 @@ def get_recent_history(user_id: int, limit: int = 5):
             .limit(limit)
             .all()
         )
-         # Reverse to get oldest-to-newest
-        return "\n".join(reversed([
-         f"🧑 Q: {chat.question}\n🤖 A: {chat.answer}"
-        for chat in chats
-        ]))
+        # Reverse for chronological order
+        pairs = []
+        for chat in reversed(chats):
+            pairs.append({"role": "user", "content": chat.question})
+            pairs.append({"role": "assistant", "content": chat.answer})
+        return pairs
     finally:
         db.close()
-
 
 
 def get_user_history(user_id: int):
