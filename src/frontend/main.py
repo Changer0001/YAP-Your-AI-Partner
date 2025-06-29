@@ -4,95 +4,80 @@ import time
 
 API_URL = "http://127.0.0.1:8000"
 
-# --- Session State ---
+# ── Session State ─────────────────────────────────────────────────────────────
 st.session_state.setdefault("token", None)
 st.session_state.setdefault("page", "login")
 st.session_state.setdefault("question_input", "")
-st.session_state.setdefault("history", [])
+st.session_state.setdefault("history", [])    # [{role, content} …]
 
-# --- Stream Answer from Backend ---
-def stream_answer(question):
-    headers = headers = {"token": st.session_state.token}
-
+# ── Helper: Stream answer from backend ────────────────────────────────────────
+def stream_answer(payload: dict) -> str:
+    headers = {"token": st.session_state.token}
     placeholder = st.empty()
 
     def generate():
-        with requests.post(
-            f"{API_URL}/ask/stream",
-            json={"question": question},
-            headers=headers,
-            stream=True,
-        ) as res:
-            try:
-                res.raise_for_status()
-            except requests.HTTPError:
-                st.error(f"❌ {res.status_code} - {res.text}")
-                raise
+        with requests.post(f"{API_URL}/ask/stream",
+                           json=payload,
+                           headers=headers,
+                           stream=True) as res:
+            res.raise_for_status()
             for chunk in res.iter_lines():
                 if chunk:
                     yield chunk.decode("utf-8")
 
     with st.spinner("🤖 Thinking..."):
         start = time.time()
-        full_answer = ""
+        answer = ""
         for chunk in generate():
-            for char in chunk:
-                full_answer += char
-                placeholder.markdown(f"**✅ Answer:**\n\n{full_answer}")
-                time.sleep(0.008)  # Typing effect
+            answer += chunk
+            placeholder.markdown(f"**✅ Answer:**\n\n{answer}")
+            time.sleep(0.008)
+        st.caption(f"⏱️ Answered in {time.time() - start:.2f} s")
+        return answer
 
-        duration = time.time() - start
-        st.caption(f"⏱️ Answered in {duration:.2f} seconds")
-        return full_answer
-
-# --- Login ---
+# ── Login / Register views ────────────────────────────────────────────────────
 def login():
     st.title("🔐 Login")
-    username = st.text_input("Username", key="login_username")
-    password = st.text_input("Password", type="password", key="login_password")
-
+    u = st.text_input("Username", key="login_username")
+    p = st.text_input("Password", type="password", key="login_password")
     if st.button("Login"):
-        if not username or not password:
+        if not u or not p:
             st.warning("Please enter both fields.")
             return
         try:
-            res = requests.post(f"{API_URL}/login", json={"username": username, "password": password})
-            if res.status_code == 200:
-                st.session_state.token = res.json()["access_token"]
+            r = requests.post(f"{API_URL}/login", json={"username": u, "password": p})
+            if r.status_code == 200:
+                st.session_state.token = r.json()["access_token"]
                 st.session_state.page = "ask"
                 st.rerun()
             else:
-                st.error(res.json().get("detail", "Login failed."))
+                st.error(r.json().get("detail", "Login failed."))
         except Exception as e:
             st.error(f"Connection error: {e}")
-
     if st.button("Go to Register"):
         st.session_state.page = "register"
 
-# --- Register ---
 def register():
     st.title("📝 Register")
-    username = st.text_input("Choose a username", key="register_username")
-    password = st.text_input("Choose a password", type="password", key="register_password")
-
+    u = st.text_input("Choose a username", key="register_username")
+    p = st.text_input("Choose a password", type="password", key="register_password")
     if st.button("Register"):
-        if not username or not password:
+        if not u or not p:
             st.warning("Username and password required.")
             return
         try:
-            res = requests.post(f"{API_URL}/register", json={"username": username, "password": password})
-            if res.status_code == 200:
+            r = requests.post(f"{API_URL}/register", json={"username": u, "password": p})
+            if r.status_code == 200:
                 st.success("✅ Registered! You can now login.")
                 st.session_state.page = "login"
             else:
-                st.error(res.json().get("detail", "Registration failed."))
+                st.error(r.json().get("detail", "Registration failed."))
         except Exception as e:
             st.error(f"Connection error: {e}")
-
     if st.button("Go to Login"):
         st.session_state.page = "login"
 
-# --- Ask Page ---
+# ── Chat view ─────────────────────────────────────────────────────────────────
 def ask_page():
     st.title("📚 LLM Assistant - Ask Anything")
 
@@ -101,21 +86,29 @@ def ask_page():
         st.session_state.page = "login"
         return
 
-    question = st.text_input("❓ Enter your question", key="question_input")
+    question_input = st.text_input("❓ Enter your question", key="question_input")
+
+    # ✅ Show the last answer if it exists
+    if st.session_state.get("last_answer"):
+        st.markdown(f"**✅ Answer:**\n\n{st.session_state.last_answer}")
+        st.session_state.last_answer = None  # Clear after showing
 
     if st.button("Get Answer"):
-        question = st.session_state.question_input.strip()
+        question = question_input.strip()
         if not question:
             st.warning("Please enter a question.")
             return
 
-        response = stream_answer(question)
-        if response:
-            st.session_state.history.append({
-                "question": question,
-                "answer": response,
-                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-            })
+        payload = {"question": question, "history": st.session_state.history}
+        answer = stream_answer(payload)
+
+        if answer:
+            st.session_state.history.extend([
+                {"role": "user", "content": question},
+                {"role": "assistant", "content": answer}
+            ])
+            st.session_state.last_answer = answer  # ✅ Store answer before rerun
+            st.rerun()  # 🔁 trigger rerun to update view
 
     if st.button("🕓 Show Chat History"):
         show_history()
@@ -123,35 +116,30 @@ def ask_page():
     if st.button("Logout"):
         st.session_state.token = None
         st.session_state.page = "login"
+        st.session_state.history = []
+        st.session_state.last_answer = None  # ✅ clear this too
+        st.rerun()
 
-# --- History Display ---
+
+# ── Local history viewer ──────────────────────────────────────────────────────
 def show_history():
-    st.subheader("📜 Chat History")
-    headers = {"Authorization": f"Bearer {st.session_state.token}"}
-    try:
-        res = requests.get(f"{API_URL}/history", headers=headers)
-        if res.status_code == 200:
-            history_data = res.json()
-            if not history_data:
-                st.info("No history yet.")
-                return
-            for entry in reversed(history_data):
-                st.markdown(f"**🧑 You:** {entry['question']}")
-                st.markdown(f"**🤖 Assistant:** {entry['answer']}")
-                st.caption(f"🕒 {entry['timestamp']}")
-                st.markdown("---")
-        else:
-            st.error("Failed to fetch history.")
-    except Exception as e:
-        st.error(f"Connection error: {e}")
+    st.subheader("📜 Chat History (this session)")
+    if not st.session_state.history:
+        st.info("No history yet.")
+        return
+    for msg in reversed(st.session_state.history):
+        prefix = "🧑 You" if msg["role"] == "user" else "🤖 Assistant"
+        st.markdown(f"**{prefix}:** {msg['content']}")
+        st.markdown("---")
 
-# --- Page Router ---
+# ── Page router ───────────────────────────────────────────────────────────────
 def render():
-    if st.session_state.page == "login":
+    page = st.session_state.page
+    if page == "login":
         login()
-    elif st.session_state.page == "register":
+    elif page == "register":
         register()
-    elif st.session_state.page == "ask":
+    elif page == "ask":
         ask_page()
     else:
         st.error("🚨 Unknown page.")
