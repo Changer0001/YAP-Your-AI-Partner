@@ -103,7 +103,19 @@ def make_chat_messages(
             "Otherwise, say: 'I don't know.'"
         )
     })
+
     msgs.append({"role": "user", "content": question})
+    # Tell the model exactly HOW to format the answer ⟶ numbered / bulleted list
+    msgs.append({
+        "role": "user",
+        "content": (
+            "Important:\n"
+            "1️⃣  Only answer if the information is clearly found in the context above or chat history; "
+            "otherwise reply exactly with: I don't know.\n"
+            "2️⃣  **Format the answer as a step-by-step list** (numbered or bulleted) whenever applicable.\n\n"
+            f"Question: {question}"
+        )
+    })
     return msgs[-30:]  # keep within token limits
 
 
