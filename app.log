@@ -275,3 +275,17 @@ Exercise: Identify the type of business entity for each scenario below.
 1. Sarah wants to start a small bakery in her hometown. She plans to hire a few employees and eventually expand to multiple locations.
 
 2. John is passionate about technology and wants to create a software company. He will be the sole owner and will be working full-time on developing and selling his products.
+DEBUG:root:\U0001f4e6 Final messages to LLM (_chat_once):
+[
+  {
+    "role": "system",
+    "content": "You are a helpful assistant that summarizes past chat sessions."
+  },
+  {
+    "role": "user",
+    "content": "Summarize the key topics discussed in the following conversation between a user and an assistant. Be concise and avoid repeating anything irrelevant.\n\n\ud83e\uddd1 Q: How do I return an item?\n\ud83e\udd16 A: You can return any item within 14 days of delivery.\n\ud83e\uddd1 Q: Is shipping refunded too?\n\ud83e\udd16 A: No, shipping costs are non-refundable unless the product is damaged."
+  }
+]
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): d6634fd8af89.ngrok-free.app:443
+DEBUG:urllib3.connectionpool:https://d6634fd8af89.ngrok-free.app:443 "POST /v1/chat/completions HTTP/1.1" 200 805
+INFO:root:\u23f1\ufe0f chat time 1.25s

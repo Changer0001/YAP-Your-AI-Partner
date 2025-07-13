@@ -1,7 +1,10 @@
 import os, re, time, json, logging
-import requests
 from typing import List, Dict, Any
 from dotenv import load_dotenv
+from myapp.memory_store import Memory
+from myapp.database import SessionLocal
+from myapp.llm_core import _chat_stream
+
 
 load_dotenv()
 
@@ -24,6 +27,18 @@ SYSTEM_INSTRUCTION = (
 )
 
 _INCOMPLETE_RE = re.compile(r"\b(and|but|or|so|because)$", re.IGNORECASE)
+
+def fetch_user_memory(user_id: int, limit: int = 3) -> str:
+    db = SessionLocal()
+    memories = (
+        db.query(Memory)
+        .filter(Memory.user_id == user_id)
+        .order_by(Memory.timestamp.desc())
+        .limit(limit)
+        .all()
+    )
+    db.close()
+    return "\n".join(f"- {m.topic}: {m.summary}" for m in memories)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def _is_incomplete(text: str) -> bool:
@@ -86,15 +101,20 @@ def blocks_to_messages(blocks: str) -> List[Dict[str, str]]:
 
     return msgs
 
-def make_chat_messages(
-    history_blocks: str, question: str, doc_context: str = ""
-) -> List[Dict[str, str]]:
+def make_chat_messages(history_blocks: str, question: str, doc_context: str = "", user_id: int = None) -> List[Dict[str, str]]:
     msgs: List[Dict[str, str]] = [{"role": "system", "content": SYSTEM_INSTRUCTION}]
-
+ # Add document context
     if doc_context.strip():
         msgs[0]["content"] += (
             "\n\nUse ONLY the context below to answer. If the answer is not clearly found in this context, say: 'I don't know.'\n\n"
             "Context:\n" + doc_context.strip()
+        )
+ # Add memory context
+    if user_id:
+        memory_context = fetch_user_memory(user_id)
+        if memory_context:
+            msgs[0]["content"] += (
+                "\n\nAdditional memory from previous sessions:\n" + memory_context
         )
     history_msgs = blocks_to_messages(history_blocks)
 
@@ -122,70 +142,11 @@ def make_chat_messages(
     return msgs[-30:]
 
 # ── Core wrappers ─────────────────────────────────────────────────────────────
-def _chat_once(messages, max_tokens=300, temperature=0.7):
-    try:
-        start = time.time()
-        logging.debug("📦 Final messages to LLM (_chat_once):\n%s", json.dumps(messages, indent=2))
-        response = requests.post(
-            f"{VLLM_API_URL}/v1/chat/completions",
-            headers={"Content-Type": "application/json"},
-            json={
-                "model": MODEL_NAME,
-                "messages": messages,
-                "max_tokens": max_tokens,
-                "temperature": temperature,
-                "stream": False
-            }
-        )
-        response.raise_for_status()
-        res = response.json()
-        logging.info("⏱️ chat time %.2fs", time.time() - start)
-        return res["choices"][0]["message"]["content"].strip()
-    except Exception as e:
-        logging.exception("❌ chat_completion failed:")
-        return f"Error: {e}"
 
-def _chat_stream(messages, max_tokens=300, temperature=0.7):
-    try:
-        payload = {
-            "model": MODEL_NAME,
-            "messages": messages,
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-            "stream": True
-        }
-
-        logging.debug("📦 Final messages to LLM (_chat_once):\n%s", json.dumps(messages, indent=2))
-
-        response = requests.post(
-            f"{VLLM_API_URL}/v1/chat/completions",
-            headers={"Content-Type": "application/json"},
-            json=payload,
-            stream=True
-        )
-
-        response.raise_for_status()
-
-        for line in response.iter_lines():
-            if not line or line == b"data: [DONE]":
-                continue
-            delta = line.decode("utf-8").removeprefix("data: ")
-            content = json.loads(delta)["choices"][0]["delta"].get("content", "")
-            yield content
-
-    except requests.exceptions.HTTPError:
-        logging.error("❌ HTTPError: %s", response.text)
-        yield f"\n[ERROR] {response.text}"
-
-    except Exception as e:
-        logging.exception("❌ chat stream failed:")
-        yield f"\n[ERROR] {e}"
 
 # ── Public API ────────────────────────────────────────────────────────────────
-def ask_llm_hf(
-    question: str, history_blocks: str, doc_context: str = ""
-) -> str:
-    msgs = make_chat_messages(history_blocks, question, doc_context)
+def ask_llm_hf(question: str, history_blocks: str, doc_context: str = "", user_id: int = None) -> str:
+    msgs = make_chat_messages(history_blocks, question, doc_context, user_id)
     answer = _chat_once(msgs)
 
     if _is_incomplete(answer):
