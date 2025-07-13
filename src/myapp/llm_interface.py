@@ -3,7 +3,7 @@ from typing import List, Dict, Any
 from dotenv import load_dotenv
 from myapp.memory_store import Memory
 from myapp.database import SessionLocal
-from myapp.llm_core import _chat_stream
+from myapp.llm_core import _chat_stream, _chat_once
 
 
 load_dotenv()
@@ -141,18 +141,35 @@ def make_chat_messages(history_blocks: str, question: str, doc_context: str = ""
 
     return msgs[-30:]
 
-# ── Core wrappers ─────────────────────────────────────────────────────────────
+def truncate_messages(messages, max_tokens=3500):
+    """Truncate message list from the top to fit within token limits."""
+    total_tokens = 0
+    truncated = []
+
+    # Process messages in reverse (keep the latest ones)
+    for msg in reversed(messages):
+        # Rough token estimate: ~4 chars = 1 token
+        tokens = len(msg["content"]) // 4
+        if total_tokens + tokens <= max_tokens:
+            truncated.insert(0, msg)
+            total_tokens += tokens
+        else:
+            break
+
+    return truncated
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
 def ask_llm_hf(question: str, history_blocks: str, doc_context: str = "", user_id: int = None) -> str:
     msgs = make_chat_messages(history_blocks, question, doc_context, user_id)
+    msgs = truncate_messages(msgs)  # 👈 ADDED: to prevent context overflow
+
     answer = _chat_once(msgs)
 
     if _is_incomplete(answer):
         msgs.append({"role": "assistant", "content": answer})
         msgs.append({"role": "user", "content": "Continue:"})
-        answer += " " + _chat_once(msgs, max_tokens=120)
+        answer += " " + _chat_once(truncate_messages(msgs), max_tokens=120)  # 👈 truncate again just in case
 
     if should_reject_answer(answer, doc_context):
         logging.warning(f"🤖 Filtered hallucinated answer: {answer}")
@@ -160,14 +177,16 @@ def ask_llm_hf(question: str, history_blocks: str, doc_context: str = "", user_i
 
     return answer.strip()
 
+
 def ask_llm_hf_stream(
-    question: str, history_blocks: str, doc_context: str = ""
+    question: str, history_blocks: str, doc_context: str = "", user_id: int = None
 ):
     if not doc_context.strip() and not history_blocks.strip():
         yield "I don't know."
         return
 
-    msgs = make_chat_messages(history_blocks, question, doc_context)
+    msgs = make_chat_messages(history_blocks, question, doc_context, user_id)
+    msgs = truncate_messages(msgs)  # 👈 ADDED
 
     for attempt in range(3):
         try:
