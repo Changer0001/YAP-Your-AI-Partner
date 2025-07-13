@@ -6,6 +6,8 @@ import pytesseract
 import fitz
 from pdf2image import convert_from_path
 from myapp.embed import embedding_model, chunk_text
+import uuid
+import hashlib
 
 # ✅ Logging setup
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
@@ -14,7 +16,9 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 # ✅ Setup Chroma client
-client = chromadb.PersistentClient(path="./chroma_db")
+CHROMA_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
+client = chromadb.PersistentClient(path=CHROMA_PATH)
+
 collection = client.get_or_create_collection(name="example_business_docs")
 
 # ✅ Load .txt documents from the folder
@@ -53,19 +57,36 @@ def load_pdf_text(path):
 # ✅ Ingest documents by chunking and embedding
 def ingest_and_store(docs):
     idx = 0
+    seen_hashes = set()
     for filename, text in docs:
-        chunks = chunk_text(text)
-        for chunk in chunks:
+        chunks = chunk_text(text, filename=filename) 
+        for i, chunk in enumerate(chunks):
             try:
-                if not chunk.strip():
+                content = chunk["content"]
+                metadata = chunk["metadata"]
+        
+                if not isinstance(content, str) or not content.strip():
                     continue
-                embedding = embedding_model.encode(chunk).tolist()
-                chunk_id = f"{filename}_{idx}"
-                collection.add(documents=[chunk], embeddings=[embedding], ids=[chunk_id])
-                logging.info(f"✅ Ingested: {chunk_id} | {chunk[:60]}...")
+
+                chunk_hash = hashlib.md5(content.encode()).hexdigest()
+                if chunk_hash in seen_hashes:
+                    logging.info(f"⏩ Skipped duplicate chunk in {filename}_{i}")
+                    continue
+                seen_hashes.add(chunk_hash)
+
+                chunk_id = f"{filename}_{i}_{uuid.uuid4().hex[:8]}"
+                embedding = embedding_model.encode(content).tolist()
+                
+                collection.add(
+                    documents=[content],
+                    embeddings=[embedding],
+                    metadatas=[metadata],
+                    ids=[chunk_id]
+                )
+                logging.info(f"✅ Ingested: {chunk_id} | {content[:60]}...")
                 idx += 1
             except Exception as e:
-                logging.warning(f"⚠️ Failed to ingest chunk {chunk_id}: {e}")
+                logging.warning(f"⚠️ Failed to ingest chunk {filename}_{i}: {e}")
     logging.info(f"📦 Total chunks added: {idx}")
 
 # ✅ Main entry
