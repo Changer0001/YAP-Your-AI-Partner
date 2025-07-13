@@ -143,3 +143,67 @@ The context does not specifically mention logging in using colleague credentials
 4. Select the ""Colleague Comp"" radio button and click ""CHECK AVAILABILITY.""
 5. Choose the desired room type from the available options.
 6. Enter all required information to complete the booking.",2025-07-02T07:17:16.226140
+6,refund policy,"
+[ERROR] 400 Client Error: Bad Request for url: https://3cb306229584.ngrok-free.app/v1/chat/completions",2025-07-11T06:22:35.336789
+6,refund policy,"
+[ERROR] 400 Client Error: Bad Request for url: https://3cb306229584.ngrok-free.app/v1/chat/completions",2025-07-11T06:28:31.599483
+6,refund policy,"
+[ERROR] 400 Client Error: Bad Request for url: https://3cb306229584.ngrok-free.app/v1/chat/completions",2025-07-11T06:29:15.835812
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T06:32:34.114769
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T06:43:41.421377
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T06:45:23.469561
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T06:46:45.024400
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T06:50:07.714592
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T06:53:58.276708
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T06:57:35.938273
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T06:59:20.462734
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-11T07:06:28.076226
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-13T01:36:02.623083
+6,our refund policy," Refund Policy:
+
+* To qualify for a refund, the items must be unused, in original packaging.
+* Proof of purchase is required.
+* The return should be initiated by emailing support@trendify.com with the order number.
+* Shipping costs are non-refundable.
+* If the product is defective or damaged, the company will cover the return shipping.
+* The refund window is 14 days from the date of delivery.
+* For privacy-related concerns, contact privacy@trendify.com.",2025-07-13T01:40:51.066720
+6,how to login to hyatt connect," To login to Hyatt Connect:
+
+1. Go to the Hyatt Connect website by opening a web browser and typing the URL: https://hyattconnect.com/
+
+2. Click the ""Sign in"" button located at the top right corner of the webpage.
+
+3. Enter your Hyatt email or Global ID in the ""Email"" field.
+
+4. Enter your password in the ""Password"" field.
+
+5. Click the ""Sign in"" button to access your Hyatt Connect account.
+
+If you cannot access your account, you can try the following options:
+- Use GID @login.hyatt if you do not have a Hyatt email address.
+- Contact your IT Manager for assistance.
+- Call the Global Hyatt Service Desk at: 1-844-473-8324 (North America) or +1-312-690-6888 (Global).",2025-07-13T01:41:09.984881
+6,What is the weather today ?," 1. Visit the Hyatt Connect website by opening a web browser and typing the URL: https://hyattconnect.com/
+2. Click the ""Sign in"" button located at the top right corner of the webpage.
+3. Enter your Hyatt email or Global ID in the ""Email"" field.
+4. Enter your password in the ""Password"" field.
+5. Click the ""Sign in"" button to access your Hyatt Connect account.
+6. Click the Colleague Discount Room Availability link in the “my apps” section on the hyattconnect homepage.
+7. Type the DESTINATION.
+8. Type the ARRIVAL DATE and STAY LENGTH.
+9. Select the Colleague Comp radio button.
+10. Click CHECK AVAILABILITY.
+
+This process will allow you to check the availability of Hyatt colleague complimentary rooms for the desired destination and dates. If you encounter any issues, consider referring to the provided helpful assistant responses or contact your IT Manager for assistance.",2025-07-13T01:41:32.590598
+6,what is the best sandwich in the world ?, I don't know. The conversation history and provided context do not discuss the best sandwich in the world.,2025-07-13T01:41:59.197979

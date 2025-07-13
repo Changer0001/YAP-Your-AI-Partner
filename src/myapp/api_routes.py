@@ -1,46 +1,22 @@
-import logging
-from typing import List, Optional, Union
-
+from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from starlette.responses import StreamingResponse
+import logging
+from sqlalchemy.orm import Session
+import json
 
-from myapp.auth        import verify_token, register_user, authenticate_user
-from myapp.utils       import get_user_id
-from myapp.chat_store  import save_chat_history, get_user_history, get_recent_history
-from myapp.retriever   import retrieve
-from myapp.llm_interface import (
-    ask_llm_hf,
-    ask_llm_hf_stream,
-    format_history_blocks,   # converts list[dict] → “🧑 Q / 🤖 A” blocks
-)
+from .database import get_db
+from myapp.auth import verify_token, register_user, authenticate_user
+from myapp.utils import get_user_id
+from myapp.chat_store import save_chat_history, get_user_history, get_recent_history
+from myapp.retriever import retrieve
+from myapp.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
 
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
 
-# ── Helper ────────────────────────────────────────────────────────────────────
-def parse_history(raw_history: Union[List[str], List[dict]]) -> List[dict]:
-    """
-    Accepts either:
-      • legacy list[str]  like "🧑 Q: …", "🤖 A: …"
-      • new   list[dict]  like {"role": "user", "content": …}
-    Returns list[dict] in the new format.
-    """
-    if not raw_history:
-        return []
-
-    if isinstance(raw_history[0], str):            # legacy blocks
-        parsed: List[dict] = []
-        for entry in raw_history:
-            if entry.startswith("🧑 Q:"):
-                parsed.append({"role": "user", "content": entry.replace("🧑 Q:", "").strip()})
-            elif entry.startswith("🤖 A:"):
-                parsed.append({"role": "assistant", "content": entry.replace("🤖 A:", "").strip()})
-        return parsed
-    return raw_history                              # already structured
-
-
-# ── Request / response models ─────────────────────────────────────────────────
+# ── Models ─────────────────────────────────────────────────────────────
 class RegisterRequest(BaseModel):
     username: str
     password: str
@@ -49,39 +25,39 @@ class LoginRequest(BaseModel):
     username: str
     password: str
 
-class Message(BaseModel):
+class HistoryEntry(BaseModel):
     role: str
     content: str
-    timestamp: Optional[str] = None
 
 class AskRequest(BaseModel):
     question: str
-    history: Optional[List[Message] | List[str]] = None
+    history: List[HistoryEntry] = []  # ✅ Proper model type here
 
 
-# ── Auth endpoints ────────────────────────────────────────────────────────────
+# ── Auth ─────────────────────────────────────────────────────────────
 @router.post("/register")
-def register(req: RegisterRequest):
-    if not register_user(req.username, req.password):
+def register(req: RegisterRequest, db: Session = Depends(get_db)):
+    if not register_user(req.username, req.password, db):
         raise HTTPException(status_code=400, detail="Username already exists")
     return {"message": "User registered successfully"}
 
 @router.post("/login")
-def login(req: LoginRequest):
-    token = authenticate_user(req.username, req.password)
+def login(req: LoginRequest, db: Session = Depends(get_db)):
+    token = authenticate_user(req.username, req.password, db)
     if not token:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"access_token": token}
 
 
-# ── /ask (blocking) ───────────────────────────────────────────────────────────
+
+# ── /ask (Blocking) ────────────────────────────────────────────────────
 @router.post("/ask")
 def ask(req: AskRequest, username=Depends(verify_token)):
     try:
-        user_id  = get_user_id(username)
-        history  = parse_history(req.history or get_recent_history(user_id))
-        context  = format_history_blocks(history)
-        doc_ctx  = retrieve(req.question)
+        user_id = get_user_id(username)
+        history = req.history or get_recent_history(user_id)
+        context = format_history_blocks([h.dict() for h in history])
+        doc_ctx = retrieve(req.question)
 
         if not doc_ctx.strip() and not context.strip():
             answer = "I don't know."
@@ -90,20 +66,21 @@ def ask(req: AskRequest, username=Depends(verify_token)):
 
         save_chat_history(user_id, req.question, answer)
         return {"question": req.question, "answer": answer}
-
     except Exception as e:
         logging.exception("❌ /ask failed:")
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# ── /ask/stream (streaming) ──────────────────────────────────────────────────
+# ── /ask/stream ───────────────────────────────────────────────────────
 @router.post("/ask/stream")
 async def stream(req: AskRequest, username=Depends(verify_token)):
+    logging.info("📩 Received payload: %s", req.dict())
+    logging.info("🧪 Received AskRequest payload: %s", req.dict())
+
     try:
-        user_id  = get_user_id(username)
-        history  = parse_history(req.history or get_recent_history(user_id))
-        context  = format_history_blocks(history)
-        doc_ctx  = retrieve(req.question)
+        user_id = get_user_id(username)
+        history = req.history or get_recent_history(user_id)
+        context = format_history_blocks(history)
+        doc_ctx = retrieve(req.question)
 
         logging.info("🔍 Streaming context snippet: %s", doc_ctx[:120])
 
@@ -125,8 +102,7 @@ async def stream(req: AskRequest, username=Depends(verify_token)):
         logging.exception("❌ /ask/stream failed:")
         return StreamingResponse(iter([f"[ERROR] {e}"]), media_type="text/plain")
 
-
-# ── /history ─────────────────────────────────────────────────────────────────
+# ── /history ──────────────────────────────────────────────────────────
 @router.get("/history")
 def history(username=Depends(verify_token)):
     user_id = get_user_id(username)

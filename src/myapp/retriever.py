@@ -3,12 +3,22 @@ import logging
 import chromadb
 from myapp.embed import embedding_model
 
+
+
+
+
 # ✅ Setup ChromaDB persistent client
 client = chromadb.PersistentClient(path="./chroma_db")
 collection = client.get_or_create_collection(name="example_business_docs")
 
 all_docs = collection.get(include=["documents"])
 print(f"📦 Total docs in ChromaDB: {len(all_docs['documents'])}")
+
+
+if len(all_docs['documents']) > 0:
+    print("🟢 ChromaDB contains data ✅")
+else:
+    print("🔴 ChromaDB is EMPTY ❌")
 
 logging.basicConfig(level=logging.DEBUG)  # Ensure debug logs show
 
