@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 
 from myapp.api_routes import router
 from myapp.database import init_db
-
+print("🚀 FastAPI app loaded!")
 api = FastAPI()
 
 # Include API routes
