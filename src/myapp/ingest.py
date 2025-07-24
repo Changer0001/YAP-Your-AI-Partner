@@ -44,7 +44,7 @@ def load_documents(folder_path):
 
 def load_pdf_text(path):
     try:
-        images = convert_from_path(path)
+        images = convert_from_path(path, first_page=1, last_page=5)  # limit for safety
         text = ""
         for i, image in enumerate(images):
             ocr_result = pytesseract.image_to_string(image)
@@ -60,6 +60,7 @@ def ingest_and_store(docs):
     seen_hashes = set()
     for filename, text in docs:
         chunks = chunk_text(text, filename=filename) 
+        logging.info(f"✂️ {filename} → {len(chunks)} chunks")
         for i, chunk in enumerate(chunks):
             try:
                 content = chunk["content"]
