@@ -5,6 +5,7 @@ from starlette.responses import StreamingResponse
 import logging
 from sqlalchemy.orm import Session
 import json
+from myapp.chroma_config import client
 
 from .database import get_db
 from myapp.auth import verify_token, register_user, authenticate_user

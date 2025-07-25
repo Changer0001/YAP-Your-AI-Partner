@@ -1,27 +1,20 @@
+# myapp/ingest.py
+
 import os
 import sys
 import logging
 import chromadb
 import pytesseract
-import fitz
-from pdf2image import convert_from_path
-from myapp.embed import embedding_model, chunk_text
 import uuid
 import hashlib
+from pdf2image import convert_from_path
+from myapp.embed import embedding_model, chunk_text
+from myapp.chroma_config import client
 
-# ✅ Logging setup
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
-
-# ✅ Ensure we can import from parent dir
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-
-# ✅ Setup Chroma client
-CHROMA_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
-client = chromadb.PersistentClient(path=CHROMA_PATH)
 
 collection = client.get_or_create_collection(name="example_business_docs")
 
-# ✅ Load .txt documents from the folder
 def load_documents(folder_path):
     docs = []
     for filename in os.listdir(folder_path):
@@ -34,39 +27,37 @@ def load_documents(folder_path):
                 logging.info(f"🔍 Found PDF: {filename}")
                 content = load_pdf_text(full_path)
             else:
-                continue  # Skip non-txt and non-pdf files
-            if content:            
-                        docs.append((filename, content))
-                        logging.info(f"📄 Loaded: {filename}")
+                continue
+            if content:
+                docs.append((filename, content))
+                logging.info(f"📄 Loaded: {filename}")
         except Exception as e:
-                logging.warning(f"⚠️ Failed to read {filename}: {e}")
+            logging.warning(f"⚠️ Failed to read {filename}: {e}")
     return docs
 
 def load_pdf_text(path):
     try:
-        images = convert_from_path(path, first_page=1, last_page=5)  # limit for safety
+        images = convert_from_path(path, first_page=1, last_page=5)
         text = ""
-        for i, image in enumerate(images):
-            ocr_result = pytesseract.image_to_string(image)
-            text += ocr_result + "\n"
+        for image in images:
+            text += pytesseract.image_to_string(image) + "\n"
         return text.strip()
     except Exception as e:
         logging.error(f"❌ OCR failed on {path}: {e}")
         return ""
-    
-# ✅ Ingest documents by chunking and embedding
+
 def ingest_and_store(docs):
     idx = 0
     seen_hashes = set()
     for filename, text in docs:
-        chunks = chunk_text(text, filename=filename) 
+        chunks = chunk_text(text, filename=filename)
         logging.info(f"✂️ {filename} → {len(chunks)} chunks")
         for i, chunk in enumerate(chunks):
             try:
                 content = chunk["content"]
                 metadata = chunk["metadata"]
-        
-                if not isinstance(content, str) or not content.strip():
+
+                if not content.strip():
                     continue
 
                 chunk_hash = hashlib.md5(content.encode()).hexdigest()
@@ -77,7 +68,7 @@ def ingest_and_store(docs):
 
                 chunk_id = f"{filename}_{i}_{uuid.uuid4().hex[:8]}"
                 embedding = embedding_model.encode(content).tolist()
-                
+
                 collection.add(
                     documents=[content],
                     embeddings=[embedding],
@@ -89,10 +80,10 @@ def ingest_and_store(docs):
             except Exception as e:
                 logging.warning(f"⚠️ Failed to ingest chunk {filename}_{i}: {e}")
     logging.info(f"📦 Total chunks added: {idx}")
+    logging.info(f"📚 Collection count after ingest: {collection.count()}")
 
-# ✅ Main entry
 if __name__ == "__main__":
-    folder_path = "../data/example_business_docs" 
+    folder_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "example_business_docs"))
     if not os.path.exists(folder_path):
         logging.error(f"❌ Folder not found: {folder_path}")
         sys.exit(1)
@@ -102,4 +93,3 @@ if __name__ == "__main__":
         logging.warning("⚠️ No documents loaded.")
     else:
         ingest_and_store(docs)
-

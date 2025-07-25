@@ -2,10 +2,10 @@ import time
 import os
 import logging
 import chromadb
+from myapp.chroma_config import client
 from myapp.embed import embedding_model
 
 CHROMA_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
-client = chromadb.PersistentClient(path=CHROMA_PATH)
 
 # ✅ Setup ChromaDB persistent client
 collection = client.get_or_create_collection(name="example_business_docs")
@@ -21,10 +21,7 @@ try:
     raw_docs = all_docs.get("documents", [])
     print("🧪 raw_docs structure:", type(raw_docs), "len =", len(raw_docs))
 
-    if raw_docs and isinstance(raw_docs[0], list):
-        docs = raw_docs[0]
-    else:
-        docs = []
+    docs = raw_docs  # ← FIX: just use it directly
 
     t1 = time.time()
     print(f"📦 Total docs in ChromaDB: {len(docs)} (loaded in {t1 - t0:.2f}s)")
@@ -33,6 +30,7 @@ try:
         print("🟢 ChromaDB contains data ✅")
     else:
         print("🔴 ChromaDB is EMPTY ❌")
+
 
 except Exception as e:
     print("❌ Failed to load documents from ChromaDB:", e)
