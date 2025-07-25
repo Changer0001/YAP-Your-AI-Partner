@@ -501,3 +501,30 @@ If the user asks for more information, such as shipping costs, delivery times, o
 If the user asks for more information, such as how long it takes to receive a refund or what the policy covers, I would need to search for that information in the context or chat history to provide an accurate answer. If that information is not provided, I will respond with: ""I don't know.""
 
 Regarding the company's shipping policy, I am unable to find any information in the given context or chat history. To find the shipping policy, I would recommend visiting the Sertifi website and navigating to the ""Support"" section to search for the Shipping Policy option. If the user asks for more information, such as shipping costs, delivery times, or shipping methods, I would need to search for that information in the context or chat history to provide an accurate answer. If that information is not provided, I will respond with: ""I don't know.""",2025-07-24T04:29:56.857241
+6,our refund policy," To find the refund policy for Sertifi:
+
+1. Visit the Sertifi website: <https://www.sertifi.com/>
+2. Navigate to the 'Support' section, which is usually located at the bottom of the page.
+3. Click on the 'FAQs' link under the 'Support' section.
+4. In the FAQs, look for the question related to refunds.
+5. Follow the provided instructions to understand the refund policy.",2025-07-25T17:45:24.566125
+6,our refund policy," To find the refund policy for Sertifi:
+
+1. Visit the Sertifi website: <https://www.sertifi.com/>
+2. Navigate to the 'Support' section, usually located at the bottom of the page.
+3. Click on the 'FAQs' link under the 'Support' section.
+4. Look for the question related to refunds in the FAQs.
+5. Follow the provided instructions to understand the refund policy.
+
+If you cannot find the refund policy using these steps, the information may not be available or easily accessible on the Sertifi website. In that case, I don't know the refund policy for Sertifi.",2025-07-25T17:45:41.900398
+6,our refund policy," To find the refund policy for Sertifi:
+
+1. Visit the Sertifi website: <https://www.sertifi.com/>
+2. Navigate to the 'Support' section, usually located at the bottom of the page.
+3. Click on the 'FAQs' link under the 'Support' section.
+4. Look for the question related to refunds in the FAQs.
+5. Follow the provided instructions to understand the refund policy.
+
+If you cannot find the refund policy using these steps, the information may not be available or easily accessible on the Sertifi website. In that case, I don't know the refund policy for Sertifi.",2025-07-25T17:58:13.147730
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4304 tokens (4004 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T18:15:36.496457
