@@ -13,6 +13,7 @@ from myapp.utils import get_user_id
 from myapp.chat_store import save_chat_history, get_user_history, get_recent_history
 from myapp.retriever import retrieve
 from myapp.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
+from myapp.llm_core import _chat_once, _chat_stream, enforce_alternating_roles
 
 
 router = APIRouter()
@@ -58,51 +59,72 @@ def ask(req: AskRequest, username=Depends(verify_token)):
     try:
         user_id = get_user_id(username)
         history = req.history or get_recent_history(user_id)
-        context = format_history_blocks([h.dict() for h in history])
-        doc_ctx = retrieve(req.question)
+        history_blocks = format_history_blocks(history)
 
-        if not doc_ctx.strip() and not context.strip():
-            answer = "I don't know."
-        else:
-            answer = ask_llm_hf(req.question, context, doc_ctx)
+        doc_ctx = retrieve(req.question)
+        answer = ask_llm_hf(req.question, history_blocks, doc_ctx, user_id)
 
         save_chat_history(user_id, req.question, answer)
         return {"question": req.question, "answer": answer}
+
     except Exception as e:
         logging.exception("❌ /ask failed:")
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+
+
+
 
 # ── /ask/stream ───────────────────────────────────────────────────────
 @router.post("/ask/stream")
 async def stream(req: AskRequest, username=Depends(verify_token)):
-    logging.info("📩 Received payload: %s", req.dict())
-    logging.info("🧪 Received AskRequest payload: %s", req.dict())
-
     try:
         user_id = get_user_id(username)
         history = req.history or get_recent_history(user_id)
-        context = format_history_blocks(history)
+        history_blocks = format_history_blocks(history)
+
         doc_ctx = retrieve(req.question)
 
-        logging.info("🔍 Streaming context snippet: %s", doc_ctx[:120])
+        print("🧪 Calling ask_llm_hf_stream() with question:", req.question)
+        print("🧪 doc_ctx length:", sum(len(chunk) for chunk in doc_ctx))
 
-        def generator():
+        if isinstance(history_blocks, list) and all(isinstance(h, dict) and 'content' in h for h in history_blocks):
+            print("🧪 history_blocks length:", sum(len(h['content']) for h in history_blocks))
+        else:
+            print("⚠️ Unexpected history_blocks structure:", history_blocks)
+
+
+        def generator():    
+            print("🧪 Entered generator()")
             full_answer = ""
             try:
-                for token in ask_llm_hf_stream(req.question, context, doc_ctx):
+                print("🧪 Entered generator()")  # NEW
+                stream = ask_llm_hf_stream(req.question, history_blocks, doc_ctx, user_id)
+                print("🧪 Got stream from ask_llm_hf_stream()")  # NEW
+
+                for token in stream:
+                    print("🔹 Streaming token:", token)
                     full_answer += token
-                    yield token
+                    yield f"data: {json.dumps({'choices': [{'delta': {'content': token}}]})}\n\n"
+                print("✅ Streaming finished.")  # NEW
+
             except Exception as e:
-                logging.exception("❌ Stream error:")
-                yield f"\n[ERROR] {e}"
+                print("❌ Stream error:", e)
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
             finally:
                 save_chat_history(user_id, req.question, full_answer)
 
-        return StreamingResponse(generator(), media_type="text/plain")
+
+        return StreamingResponse(generator(), media_type="text/event-stream")
 
     except Exception as e:
-        logging.exception("❌ /ask/stream failed:")
-        return StreamingResponse(iter([f"[ERROR] {e}"]), media_type="text/plain")
+        print("❌ /ask/stream failed:", e)
+        return StreamingResponse(iter([f"data: {json.dumps({'error': str(e)})}\n\n"]), media_type="text/event-stream")
+
+
+
+
 
 # ── /history ──────────────────────────────────────────────────────────
 @router.get("/history")

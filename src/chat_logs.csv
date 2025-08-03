@@ -528,3 +528,107 @@ If you cannot find the refund policy using these steps, the information may not 
 If you cannot find the refund policy using these steps, the information may not be available or easily accessible on the Sertifi website. In that case, I don't know the refund policy for Sertifi.",2025-07-25T17:58:13.147730
 6,our refund policy,"
 [ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4304 tokens (4004 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T18:15:36.496457
+6,our refund policy,I don't know.,2025-07-25T21:23:43.389146
+6,what is our refund policy,I don't know.,2025-07-25T21:24:11.956465
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:31:06.579359
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:35:17.209249
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:40:55.097332
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:46:09.747070
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:48:02.272635
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:49:53.581885
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:50:18.416118
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:50:38.215386
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:51:57.871636
+6,our refund policy,I don't know.,2025-07-25T21:56:30.243583
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:57:22.083304
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T21:59:51.363379
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""After the optional system message, conversation roles must alternate user/assistant/user/assistant/... After the optional system message, conversation roles must alternate user/assistant/user/assistant/..."",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:02:42.031459
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4390 tokens (4090 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:06:56.327714
+6,our refund policy,,2025-07-25T22:10:08.433293
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4390 tokens (4090 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:12:53.710005
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4390 tokens (4090 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:14:45.703628
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:19:15.038277
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:29:43.637236
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:32:43.315796
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:37:09.114762
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4390 tokens (4090 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:40:39.811420
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4390 tokens (4090 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:42:54.208173
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4390 tokens (4090 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:44:41.978401
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4390 tokens (4090 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T22:50:00.851844
+6,refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4234 tokens (3934 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T23:19:51.998431
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T23:21:42.124009
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T23:24:46.389495
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T23:24:50.946179
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T23:27:43.801877
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T23:28:50.569903
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T23:30:57.163373
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-25T23:32:24.175919
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-29T06:14:13.186049
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-29T06:29:38.385818
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-29T06:34:02.618803
+6,our refund policy,"
+[ERROR] {""object"":""error"",""message"":""This model's maximum context length is 4096 tokens. However, you requested 4331 tokens (4031 in the messages, 300 in the completion). Please reduce the length of the messages or completion. None"",""type"":""BadRequestError"",""param"":null,""code"":400}",2025-07-29T06:42:34.649572
+6,our refund policy,"
+[ERROR] System prompt + query exceeds token limit.",2025-08-03T07:10:43.267149
+6,our refund policy,✅ Hello from stream! (before calling _chat_stream)Here is a fake response.,2025-08-03T08:19:28.237407
+6,What services does YAP offer?,"1. To book a Colleague Complimentary Rate, follow these steps:
+   - Log in to hyattconnect using your Hyatt email or Global ID and Password.
+   - Click the Colleague Discount Room Availability link in the “my apps” section on the hyattconnect homepage.
+   - Type the DESTINATION, ARRIVAL DATE, and STAY LENGTH.
+   - Select the Colleague Comp radio button.
+   - Click CHECK AVAILABILITY.
+
+2. The Refund Policy for Trendify Store is as follows:
+   - Items must be unused, in original packaging.
+   - Proof of purchase is required.
+   - Shipping costs are non-refundable.
+   - To start a return or refund, email support@trendify.com with your order number.
+   - If the product is defective or damaged, Trendify will cover the return shipping.
+
+3. The selected hotel and dates will pass directly to Hyatt.com.
+
+4. After checking availability, select the desired Room Type from the available options on Hyatt.com.
+
+5. Enter all required information to complete the booking on Hyatt.com.
+
+6. Terms & Conditions for the Colleague Complimentary Rate include:
+   - A valid credit card is required to guarantee To make a reservation for a colleague complimentary room, follow these steps:
+
+1. Login to hyattconnect using your Hyatt email or Global ID and Password. If you don't have a Hyatt email address, use GID @login.hyatt.
+2. Click the Colleague Discount Room Availability link in the “my apps” section on the hyattconnect homepage.
+3. Type the DESTINATION, ARRIVAL DATE, and STAY LENGTH.
+4. Select the Colleague Comp",2025-08-03T09:48:40.314976
