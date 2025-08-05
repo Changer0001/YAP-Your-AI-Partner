@@ -35,36 +35,52 @@ def build_safe_messages(system_prompt, chat_history, doc_chunks, user_query):
     assert isinstance(user_query, str)
     assert isinstance(doc_chunks, list)
 
-    # Inject context into system prompt (✅ FIX)
+    # Calculate base system tokens before adding context
+    base_tokens = count_tokens(system_prompt)
+    buffer = 100 + len(chat_history) * 4
+
+    # Figure out total tokens we can afford for docs
+    total_budget = MAX_TOKENS - RESERVED_COMPLETION - base_tokens - count_tokens(user_query) - buffer
+    doc_budget = max(int(total_budget * 0.4), 0)  # you can tune this ratio
+
+    # Trim doc chunks to fit in doc_budget
+    doc_text = ""
     if doc_chunks:
-        doc_text = "\n---\n".join(doc_chunks)
+        combined = []
+        for chunk in doc_chunks:
+            combined.append(chunk)
+            current_text = "\n---\n".join(combined)
+            if count_tokens(current_text) > doc_budget:
+                combined.pop()  # remove last that overflowed
+                break
+        doc_text = "\n---\n".join(combined)
+
+    # Append context safely
+    if doc_text:
         system_prompt += "\n\nContext:\n" + doc_text
 
-    # Trim system prompt
-    system_max = MAX_TOKENS - RESERVED_COMPLETION - 300
-    while count_tokens(system_prompt) > system_max:
-        system_prompt = system_prompt[:-100]
-
+    # Check system + query tokens again
     system_tokens = count_tokens(system_prompt)
     query_tokens = count_tokens(user_query)
-    buffer = 100 + len(chat_history) * 4
-    available_tokens = MAX_TOKENS - RESERVED_COMPLETION - system_tokens - query_tokens - buffer
+    remaining = MAX_TOKENS - RESERVED_COMPLETION - system_tokens - query_tokens - buffer
 
-    # Adjust query if needed
-    if available_tokens < 0:
+    # Trim query if needed
+    if remaining < 0:
         max_query_tokens = MAX_TOKENS - RESERVED_COMPLETION - system_tokens - buffer
-        while count_tokens(user_query) > max_query_tokens:
+        while count_tokens(user_query) > max_query_tokens and len(user_query) > 10:
             user_query = user_query[:-50]
 
-    # Token budget
-    chat_budget = max(int(available_tokens * 0.6), 0)
-    doc_budget = max(available_tokens - chat_budget, 0)
-
+    # Allocate remaining tokens
+    chat_budget = max(MAX_TOKENS - RESERVED_COMPLETION - system_tokens - count_tokens(user_query), 0)
     trimmed_chat = trim_messages_by_tokens(chat_history, chat_budget)
+
+    # Build final message sequence
     messages = [{"role": "system", "content": system_prompt}]
     messages.extend(trimmed_chat)
     messages.append({"role": "user", "content": user_query})
+
     return enforce_alternating_roles(messages)
+
 
 
 def _chat_once(chat_history, doc_chunks, user_query, system_prompt, max_tokens=300, temperature=0.7):

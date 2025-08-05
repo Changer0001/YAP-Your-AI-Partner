@@ -939,3 +939,31 @@ This information does not provide a specific delivery time for other regions bey
 7. Enter all required information to complete the booking.
 8. Please note that the Colleague Complimentary Rate requires a valid credit card to guarantee the reservation and may require payment of local taxes or fees incurred.
 9. For more information, review the Colleague Complimentary Rooms Policy.",2025-08-05T22:09:57.403367
+6,how to add new user on emc,[ERROR] System message alone exceeds token limit.,2025-08-05T22:10:23.049244
+6,how to add new user on sertifi,[ERROR] System message alone exceeds token limit.,2025-08-05T22:10:32.823643
+6,how to add a new user in EMC," To add a new user in EMC (Simphony), follow these steps:
+
+1. Launch the EMC (Simphony) application on your desktop.
+2. Enter your credentials (Server, User Name, Company, and Password).
+3. Click ""OK"".
+4. Click on the ""Configuration"" tab.
+5. Under the ""Personnel"" section, click on ""Employee Maintenance"".
+6. Click on ""Search"".
+7. Choose an existing name with the same Class level.
+8. Click on the existing user with the same class.
+9. Click on the GREEN ""+"" at the top of the screen.
+10. Enter appropriate credentials and click ""OK"".
+11. Select the ""Add Employee Record with Template"" option.
+12. Choose the employee to copy and the property name.
+13. Fill in the necessary information and click ""OK"".",2025-08-05T22:25:28.425291
+6,how to add a new user in sertifi," To add a new user in Sertifi, follow these steps:
+
+1. Open a web browser and go to: https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1
+2. Click on ""log in with enterprise id""
+3. Click on ""Administration"" > ""Create Admins""
+4. Enter the credentials, then click ""Create Admin""
+   - Email: Enter the email address of the admin you wish to add
+   - Role: Power Admin
+   - Enterprise ID: Global ID
+5. Type in the email address of the admin you wish to add below and click Search to try to find them in the system
+6. If the user is not found, enter the Global ID and click ""Create Admin""",2025-08-05T22:25:50.107141
