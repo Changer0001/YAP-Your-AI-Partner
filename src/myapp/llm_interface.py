@@ -154,13 +154,12 @@ def ask_llm_hf(
 
     logging.info(f"🧠 DOC CONTEXT PREVIEW:\n{doc_context[:500]}")
 
+    # Create messages and trim if necessary
     msgs = make_chat_messages(history_blocks, question, doc_context, user_id)
     msgs = truncate_messages(msgs, max_tokens=4096, reserved_completion=300)
-
-    # ✅ Enforce correct user/assistant alternation (required by vLLM chat template)
     msgs = enforce_alternating_roles(msgs)
 
-    # Debug: ensure alternation is valid
+    # Check correct role alternation
     expected_role = "user"
     for i, msg in enumerate(msgs[1:], start=1):  # skip system
         if msg["role"] != expected_role:
@@ -172,18 +171,19 @@ def ask_llm_hf(
 
     system_prompt = msgs[0]["content"]
     doc_chunks = doc_context.split("\n---\n") if doc_context else []
-    chat_history = msgs[1:]  # All trimmed messages except system
+    chat_history = msgs[1:]  # all trimmed messages except system
     chat_history = enforce_alternating_roles(chat_history)
-
 
     logging.info(f"📄 Document Chunks Preview:\n{doc_chunks[0][:500] if doc_chunks else 'None'}")
 
+    # Send request to LLM
     try:
         answer = _chat_once(chat_history, doc_chunks, question, system_prompt)
     except Exception as e:
         logging.exception("❌ LLM call failed")
         return f"Error: {e}"
 
+    # Handle incomplete answers
     if _is_incomplete(answer):
         logging.info("🔁 Detected incomplete answer. Sending 'Continue:'")
         chat_history.append({"role": "assistant", "content": answer})
@@ -196,20 +196,46 @@ def ask_llm_hf(
 
     logging.info(f"🤖 Final LLM Answer:\n{answer}")
 
-    # Optional: filter math garbage
+    # Filter unrelated math fragments
     if "let l =" in answer.lower() or "which is the" in answer.lower():
         logging.warning("🧹 Cleaning unrelated math/question garbage.")
         answer = answer.split("Answer:")[-1].strip()
 
-    # Optional: hallucination rejection (disable during debug)
+    # Hallucination filtering
     try:
         if should_reject_answer(answer, doc_context):
-            logging.warning(f"❌ Rejected answer due to low match.")
+            logging.warning("❌ Rejected answer due to low content match.")
             return "I don't know."
     except Exception as e:
         logging.error(f"⚠️ Hallucination check crashed: {e}")
 
     return answer.strip()
+
+def should_reject_answer(answer: str, doc_context: str) -> bool:
+    if not answer.strip():
+        return True
+
+    context_words = set(doc_context.lower().split())
+    answer_words = set(answer.lower().split())
+
+    overlap = len(context_words & answer_words)
+    total = max(len(answer_words), 1)
+
+    match_ratio = overlap / total
+
+    # Stricter rejection: must match at least 3% of answer words
+    if match_ratio < 0.03:
+        logging.warning(f"🚫 Rejected answer due to low overlap: {match_ratio:.2%}")
+        return True
+
+    # Special case: look for numeric mismatch in days
+    if "day" in answer.lower() and "14" not in answer and "14" in doc_context:
+        logging.warning("🚫 Rejected answer due to mismatch in refund days.")
+        return True
+
+    return False
+
+
 
 
 def ask_llm_hf_stream(

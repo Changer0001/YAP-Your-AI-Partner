@@ -1,3 +1,4 @@
+# myapp/api_routes.py
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
@@ -60,8 +61,10 @@ def ask(req: AskRequest, username=Depends(verify_token)):
         history = req.history or get_recent_history(user_id)
         history_blocks = format_history_blocks(history)
 
-        doc_ctx = retrieve(req.question)
-        answer = ask_llm_hf(req.question, history_blocks, doc_ctx, user_id)
+        doc_chunks = retrieve(req.question)
+        for i, chunk in enumerate(doc_chunks):
+            logging.debug(f"📄 Final Chunk {i+1}: {chunk[:120]}...")
+        answer = ask_llm_hf(req.question, history_blocks, doc_chunks, user_id)
 
         save_chat_history(user_id, req.question, answer)
         return {"question": req.question, "answer": answer}
@@ -74,20 +77,16 @@ def ask(req: AskRequest, username=Depends(verify_token)):
 
 
 
-
 # ── /ask/stream ───────────────────────────────────────────────────────
 @router.post("/ask/stream")
 async def stream(req: AskRequest, username=Depends(verify_token)):
     try:
         user_id = get_user_id(username)
 
-        # Use request history if present, or fallback to recent history
-        if req.history:
-            # These will be Pydantic models → safe to use model_dump
-            history_blocks = [h.model_dump() for h in req.history]
-        else:
-            # These are already dicts
-            history_blocks = get_recent_history(user_id)
+        history_blocks = (
+            [h.model_dump() for h in req.history]
+            if req.history else get_recent_history(user_id)
+        )
 
         doc_chunks = retrieve(req.question)
 
@@ -100,6 +99,14 @@ async def stream(req: AskRequest, username=Depends(verify_token)):
             verbose=True
         )
 
+        if not trimmed_docs:  # ✅ Correct way to check if the list is empty
+            return StreamingResponse(
+            iter([f"data: {json.dumps({'error': 'No relevant document context found.'})}\n\n"]),
+            media_type="text/event-stream"
+        )
+
+
+        # 🔁 Define normal (sync) generator — this is valid for StreamingResponse
         def generator():
             print("🧪 Entered generator()")
             full_answer = ""
@@ -119,13 +126,18 @@ async def stream(req: AskRequest, username=Depends(verify_token)):
                 yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
             finally:
+                print("💾 Saving history...")
                 save_chat_history(user_id, req.question, full_answer)
 
+        # ✅ Proper usage with StreamingResponse
         return StreamingResponse(generator(), media_type="text/event-stream")
 
     except Exception as e:
         print("❌ /ask/stream failed:", e)
-        return StreamingResponse(iter([f"data: {json.dumps({'error': str(e)})}\n\n"]), media_type="text/event-stream")
+        return StreamingResponse(
+            iter([f"data: {json.dumps({'error': str(e)})}\n\n"]),
+            media_type="text/event-stream"
+        )
 
 
 

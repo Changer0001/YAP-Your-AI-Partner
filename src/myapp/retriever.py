@@ -5,98 +5,105 @@ import logging
 import chromadb
 from myapp.chroma_config import client
 from myapp.embed import embedding_model
+from myapp.smart_threshold import get_dynamic_threshold
 
 CHROMA_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
-
-# ✅ Setup ChromaDB persistent client
 collection = client.get_or_create_collection(name="example_business_docs")
 
-# Load documents once at import
+# Setup logging
+logging.basicConfig(level=logging.DEBUG)
+
+# 🔍 Initial ChromaDB Check
 try:
     print("🔄 Starting ChromaDB doc fetch...")
     t0 = time.time()
     all_docs = collection.get(include=["documents"])
     raw_docs = all_docs.get("documents", [])
-    print("✅ Raw ChromaDB fetch complete")
-
-    print("🧪 raw_docs structure:", type(raw_docs), "len =", len(raw_docs))
     print(f"📦 Total docs in ChromaDB: {len(raw_docs)} (loaded in {time.time() - t0:.2f}s)")
-
-    if raw_docs:
-        print("🟢 ChromaDB contains data ✅")
-    else:
+    if not raw_docs:
         print("🔴 ChromaDB is EMPTY ❌")
-
 except Exception as e:
     print("❌ Failed to load documents from ChromaDB:", e)
     raw_docs = []
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
-
-# Score booster (position-based and heading-based)
+# 📈 Optional score booster
 def boost_retrieval_results(results):
     for i, metadata in enumerate(results["metadatas"][0]):
         score = results["distances"][0][i]
-
         if not isinstance(metadata, dict):
-            logging.warning(f"⚠️ Missing metadata for doc {i}, skipping boost.")
             continue
-
         position = metadata.get("position", 100)
         heading = metadata.get("heading", "").lower()
-
         if position == 0:
             score -= 0.15
         if "introduction" in heading:
             score -= 0.1
-
         results["distances"][0][i] = score
     return results
 
-# Main function
+# 🧠 Query boosting
+def boost_query(query: str) -> str:
+    if "refund" in query.lower():
+        return query + " return cancel cancellation money-back"
+    return query
+
+# 🔍 Main retriever function
+from myapp.smart_threshold import get_dynamic_threshold
+
+# 🔍 Main retriever function
 def retrieve(query, top_k=10):
     try:
-        logging.info(f"🔍 Querying for: {query}")
-        query_embedding = embedding_model.encode(query).tolist()
+        boosted_query = boost_query(query)
+        logging.info(f"🔍 Querying for: {boosted_query}")
 
+        query_embedding = embedding_model.encode(boosted_query).tolist()
         results = collection.query(
             query_embeddings=[query_embedding],
             n_results=top_k,
             include=["documents", "metadatas", "distances"]
         )
 
-        logging.debug(f"🔍 Raw Chroma results: {results}")
-
         if not results.get("documents") or not results["documents"][0]:
             logging.warning("⚠️ No documents retrieved from ChromaDB.")
             return ""
 
-        # Apply custom boosting
+        # Boost and sort
         results = boost_retrieval_results(results)
-
-        # Sort results after boosting
         sorted_docs = sorted(
             zip(results["documents"][0], results["distances"][0]),
             key=lambda x: x[1]
         )
 
-        # ✅ Filter out too-short or broken chunks
-        docs = [doc.strip() for doc, _ in sorted_docs if doc and len(doc.strip()) > 50]
+        # 🔁 Use dynamic threshold
+        threshold = get_dynamic_threshold(query)
+        logging.info(f"📊 Using dynamic threshold: {threshold:.2f}")
+
+        # Filter low-quality results
+        docs = []
+        for i, (doc, dist) in enumerate(sorted_docs):
+            doc = doc.strip()
+            if not doc or len(doc) < 50:
+                continue
+            if dist > threshold:
+                logging.warning(f"🚫 Skipping doc {i+1} due to high distance: {dist:.2f}")
+                continue
+            if any(k in doc.lower() for k in ["refund", "return", "cancellation", "money-back"]):
+                logging.info(f"✅ Chunk {i+1} contains refund-related terms:\n{doc[:120]}...")
+            else:
+                logging.info(f"ℹ️ Chunk {i+1} is general:\n{doc[:120]}...")
+            docs.append(doc)
 
         if not docs:
-            logging.warning("⚠️ Retrieved docs were empty or too short.")
+            logging.warning("⚠️ No relevant documents after filtering.")
             return ""
 
-        logging.info(f"✅ Final cleaned documents count: {len(docs)}")
-        for i, doc in enumerate(docs):
-            logging.info(f"📄 Clean Doc {i+1}: {doc[:80]}...")
+        return docs  # ✅ List of clean paragraph strings
 
-        return "\n---\n".join(docs)
 
     except Exception as e:
         logging.error(f"❌ Retrieval failed: {e}")
         return ""
+
 
 
 # Test run

@@ -4,9 +4,9 @@ import time
 import re
 import json
 
-API_URL = "http://localhost:8000"  # 🌐 Update this if deployed
+API_URL = "http://localhost:8000"
 
-# ── Global Styles ────────────────────────────────────────────────
+# ── Styles ───────────────────────────────────────────────────────
 def inject_styles():
     st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@600&display=swap" rel="stylesheet">
@@ -16,9 +16,7 @@ def inject_styles():
             background-color: #0f172a;
             color: #e2e8f0;
         }
-        .stApp {
-            padding: 2rem;
-        }
+        .stApp { padding: 2rem; }
         h1 {
             font-family: 'Orbitron', sans-serif;
             color: #38bdf8;
@@ -45,7 +43,7 @@ def inject_styles():
     </style>
     """, unsafe_allow_html=True)
 
-# ── Format Answer ───────────────────────────────────────────────
+# ── Answer Formatter ─────────────────────────────────────────────
 def format_answer(answer: str) -> str:
     answer = answer.strip()
     answer = re.sub(r"(?<!\n)(\d+\.)", r"\n\1", answer)
@@ -60,13 +58,13 @@ def format_answer(answer: str) -> str:
     </div>
     """
 
-# ── Session State Init ─────────────────────────────────────────
+# ── State Setup ──────────────────────────────────────────────────
 st.session_state.setdefault("token", None)
 st.session_state.setdefault("mode", "login")
 st.session_state.setdefault("history", [])
-st.session_state.setdefault("last_answer", None)
+st.session_state.setdefault("last_qa", None)
 
-# ── Authentication ─────────────────────────────────────────────
+# ── Auth Logic ───────────────────────────────────────────────────
 def login(username, password):
     try:
         res = requests.post(f"{API_URL}/login", json={"username": username, "password": password})
@@ -93,7 +91,7 @@ def register(username, password):
     except Exception as e:
         st.error(f"❌ {e}")
 
-# ── Streaming Logic ─────────────────────────────────────────────
+# ── Streaming ────────────────────────────────────────────────────
 def stream_answer(prompt, history):
     payload = {"question": prompt, "history": history}
     headers = {"Authorization": f"Bearer {st.session_state.token}"}
@@ -108,7 +106,6 @@ def stream_answer(prompt, history):
                     continue
 
                 try:
-                    # Clean "data: ..." prefix and parse
                     clean = line.decode("utf-8").removeprefix("data: ")
                     payload = json.loads(clean)
                     content_piece = payload.get("choices", [{}])[0].get("delta", {}).get("content", "")
@@ -116,15 +113,16 @@ def stream_answer(prompt, history):
                         answer += content_piece
                         placeholder.markdown(format_answer(answer), unsafe_allow_html=True)
                 except Exception as e:
-                    print(f"⚠️ Failed to parse stream: {e}")
+                    print(f"⚠️ Stream parse error: {e}")
                     continue
 
     except Exception as e:
         st.error(f"❌ Stream error: {e}")
         return "[ERROR]"
+
     return answer.strip()
 
-# ── Pages ──────────────────────────────────────────────────────
+# ── Pages ────────────────────────────────────────────────────────
 def login_page():
     inject_styles()
     st.title("🔐 Login to YAP")
@@ -154,42 +152,55 @@ def ask_page():
     st.title("🤖 YAP: Your AI Partner")
     st.caption("Smarter conversations for your business")
 
-    # ── Right-Aligned Input Box with Enter Submit ─────────────
+    # ── Input Box ─────────────────────────────────────────────
     with st.form("ask_form", clear_on_submit=True):
-        cols = st.columns([0.1, 0.1, 0.8])  # adjust spacing if needed
-        with cols[2]:  # far right column
-            user_input = st.text_input(
-                " ", 
-                placeholder="Ask your question...",
-                label_visibility="collapsed"
-            )
+        cols = st.columns([0.1, 0.1, 0.8])
+        with cols[2]:
+            user_input = st.text_input(" ", placeholder="Ask your question...", label_visibility="collapsed")
         submitted = st.form_submit_button("Send")
 
     if submitted and user_input.strip():
         question = user_input.strip()
+
+        # Stream and collect answer
         answer = stream_answer(question, st.session_state.history)
         if answer and not answer.startswith("[ERROR]"):
+            st.session_state.last_qa = {"question": question, "answer": answer}
             st.session_state.history.extend([
                 {"role": "user", "content": question},
                 {"role": "assistant", "content": answer}
             ])
-            st.session_state.last_answer = answer
             st.rerun()
 
-    # ── Show Last Answer ──────────────────────────────────────
-    if st.session_state.get("last_answer"):
-        st.markdown(format_answer(st.session_state.last_answer), unsafe_allow_html=True)
-        st.session_state.last_answer = None
+    # ── Show Last QA After Rerun ──────────────────────────────
+    qa = st.session_state.pop("last_qa", None)
+    if isinstance(qa, dict) and "question" in qa and "answer" in qa:
+        st.markdown(f"""
+            <div style='margin-bottom: 1rem; padding: 1rem; border-left: 4px solid #38bdf8;
+                        background-color: #1e293b; border-radius: 8px;'>
+                <strong style='color:#38bdf8;'>You asked:</strong><br>{qa['question']}
+            </div>
+        """, unsafe_allow_html=True)
+        st.markdown("### 🤖 Answer:")
+        st.markdown(format_answer(qa['answer']), unsafe_allow_html=True)
+    elif qa is not None:
+        st.warning("⚠️ Unexpected data format in last_qa.")
+        print("🛠️ last_qa content:", qa)
 
     # ── Chat History ──────────────────────────────────────────
     with st.expander("📜 Chat History"):
         if not st.session_state.history:
             st.info("No conversation yet.")
-        for m in reversed(st.session_state.history):
-            who = "🧑" if m["role"] == "user" else "🤖"
-            st.markdown(f"<div class='chat-bubble'><strong>{who}:</strong> {m['content']}</div>", unsafe_allow_html=True)
+        else:
+            for i in range(0, len(st.session_state.history), 2):
+                user_msg = st.session_state.history[i]
+                ai_msg = st.session_state.history[i + 1] if i + 1 < len(st.session_state.history) else None
+                if user_msg:
+                    st.markdown(f"<div class='chat-bubble'><strong>🧑:</strong> {user_msg['content']}</div>", unsafe_allow_html=True)
+                if ai_msg:
+                    st.markdown(f"<div class='chat-bubble'><strong>🤖:</strong> {format_answer(ai_msg['content'])}</div>", unsafe_allow_html=True)
 
-    # ── Footer Buttons ────────────────────────────────────────
+    # ── Footer ───────────────────────────────────────────────
     cols = st.columns(3)
     if cols[0].button("🗑 Clear"):
         st.session_state.history = []
@@ -200,7 +211,7 @@ def ask_page():
         st.rerun()
 
 
-# ── App Router ─────────────────────────────────────────────────
+# ── Main ────────────────────────────────────────────────────────
 def main():
     if st.session_state.token:
         ask_page()
