@@ -104,13 +104,23 @@ def stream_answer(prompt, history):
         with requests.post(f"{API_URL}/ask/stream", json=payload, headers=headers, stream=True) as resp:
             resp.raise_for_status()
             for line in resp.iter_lines():
-                if line:
-                    token = line.decode("utf-8")
-                    answer += token
-                    placeholder.markdown(format_answer(answer), unsafe_allow_html=True)
-                    time.sleep(0.01)
+                if not line or line == b"data: [DONE]":
+                    continue
+
+                try:
+                    # Clean "data: ..." prefix and parse
+                    clean = line.decode("utf-8").removeprefix("data: ")
+                    payload = json.loads(clean)
+                    content_piece = payload.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                    if content_piece:
+                        answer += content_piece
+                        placeholder.markdown(format_answer(answer), unsafe_allow_html=True)
+                except Exception as e:
+                    print(f"⚠️ Failed to parse stream: {e}")
+                    continue
+
     except Exception as e:
-        st.error(f"Stream error: {e}")
+        st.error(f"❌ Stream error: {e}")
         return "[ERROR]"
     return answer.strip()
 

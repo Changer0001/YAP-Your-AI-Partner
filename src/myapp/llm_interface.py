@@ -1,11 +1,11 @@
+#llm_interface.py
 import os, re, time, json, logging
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 from dotenv import load_dotenv
 from myapp.memory_store import Memory
 from myapp.database import SessionLocal
 from myapp.llm_core import _chat_once, _chat_stream, enforce_alternating_roles
 from myapp.token_utils import count_tokens
-
 
 load_dotenv()
 
@@ -18,13 +18,11 @@ MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"
 logging.basicConfig(filename="app.log", filemode="a", level=logging.DEBUG)
 
 SYSTEM_INSTRUCTION = (
-    "You are a helpful assistant. Use the ENTIRE conversation history plus any "
-    "provided document context. Only answer if you can find the answer in the history or documents. "
-    "When the user says things like 'refer to previous' or 'how long does it take,' infer missing details "
-    "from earlier turns. "
-    "**If the answer is not explicitly found in the context or history, respond only with: 'I don't know.'** "
-    "DO NOT make up or guess information under any circumstances."
+    "You are a helpful assistant. Use the conversation history and document context to answer questions as accurately as possible. "
+    "If the answer is not clearly available in the history or documents, it's okay to say 'I don't know' or clarify that the information is missing. "
+    "Avoid making up facts or hallucinating."
 )
+
 
 _INCOMPLETE_RE = re.compile(r"\b(and|but|or|so|because)$", re.IGNORECASE)
 
@@ -42,24 +40,19 @@ def fetch_user_memory(user_id: int, limit: int = 3) -> str:
 
 def _is_incomplete(text: str) -> bool:
     text = text.strip()
-    return (
-        not text or text[-1] not in ".!?" or text.endswith("...") or _INCOMPLETE_RE.search(text)
-    )
+    return not text or text[-1] not in ".!?" or text.endswith("...") or _INCOMPLETE_RE.search(text)
 
 def should_reject_answer(answer: str, doc_context: str) -> bool:
     if not answer.strip():
         return True
-
     hallucinated_patterns = [
         "please contact", "you can estimate", "depends on", "we recommend",
         "as a general guide", "standard shipping", "you may", "your cart", "our team",
         "visit our website", "during checkout", "language model", "I'm here to help"
     ]
-
     context_keywords = set(doc_context.lower().split())
     answer_words = set(answer.lower().split())
     match_ratio = len(context_keywords & answer_words) / max(len(context_keywords), 1)
-
     return match_ratio < 0.05 or any(p in answer.lower() for p in hallucinated_patterns)
 
 def format_history_blocks(history: List[Any]) -> str:
@@ -88,13 +81,10 @@ def blocks_to_messages(blocks: str) -> List[Dict[str, str]]:
                 continue
         else:
             continue
-
         if role == last_role:
             continue
-
         msgs.append({"role": role, "content": content})
         last_role = role
-
     return msgs
 
 def make_chat_messages(history_blocks: str, question: str, doc_context: str = "", user_id: int = None) -> List[Dict[str, str]]:
@@ -102,16 +92,14 @@ def make_chat_messages(history_blocks: str, question: str, doc_context: str = ""
 
     if doc_context.strip():
         system_content += (
-            "\n\nUse ONLY the context below to answer. If the answer is not clearly found in this context, say: 'I don't know.'\n\n"
+            "\n\nUse ONLY the context below to answer. If the answer is not clearly and directly found in the context below, say: 'I don't know.' Do NOT guess or speculate.\n\n"
             "Context:\n" + doc_context.strip()
         )
 
     if user_id:
         memory_context = fetch_user_memory(user_id)
         if memory_context:
-            system_content += (
-                "\n\nAdditional memory from previous sessions:\n" + memory_context
-            )
+            system_content += "\n\nAdditional memory from previous sessions:\n" + memory_context
 
     msgs: List[Dict[str, str]] = [{"role": "system", "content": system_content}]
     history_msgs = blocks_to_messages(history_blocks)
@@ -132,53 +120,110 @@ def make_chat_messages(history_blocks: str, question: str, doc_context: str = ""
     return msgs[-30:]
 
 def truncate_messages(messages, max_tokens=4096, reserved_completion=300):
-    if not messages:
-        return []
+    if not messages or len(messages) < 2:
+        return messages
 
-    total_tokens = count_tokens(messages[0]["content"])  # system message
-    truncated = [messages[0]]  # keep system message
+    system_msg = messages[0]
+    rest = messages[1:]
+    total_tokens = count_tokens(system_msg["content"])
+    truncated = []
 
-    for msg in reversed(messages[1:]):  # skip system in loop
-        tokens = count_tokens(msg["content"])
-        if total_tokens + tokens + reserved_completion <= max_tokens:
-            truncated.insert(1, msg)  # insert after system
-            total_tokens += tokens
+    # Reverse through messages, skipping system
+    for msg in reversed(rest):
+        msg_tokens = count_tokens(msg["content"])
+        if total_tokens + msg_tokens <= (max_tokens - reserved_completion):
+            truncated.insert(0, msg)
+            total_tokens += msg_tokens
         else:
             break
 
-    return truncated
+    return [system_msg] + truncated
 
 
 
-def ask_llm_hf(question: str, history_blocks: str, doc_context: str = "", user_id: int = None) -> str:
+def ask_llm_hf(
+    question: str,
+    history_blocks: Union[str, List[Any]],
+    doc_context: Union[str, List[str]] = "",
+    user_id: int = None
+) -> str:
+    if isinstance(doc_context, list):
+        doc_context = "\n---\n".join(doc_context)
+    if isinstance(history_blocks, list):
+        history_blocks = format_history_blocks(history_blocks)
+
+    logging.info(f"🧠 DOC CONTEXT PREVIEW:\n{doc_context[:500]}")
+
     msgs = make_chat_messages(history_blocks, question, doc_context, user_id)
     msgs = truncate_messages(msgs, max_tokens=4096, reserved_completion=300)
-    chat_history = [msg for msg in msgs if msg["role"] in ("user", "assistant")]
+
+    # ✅ Enforce correct user/assistant alternation (required by vLLM chat template)
+    msgs = enforce_alternating_roles(msgs)
+
+    # Debug: ensure alternation is valid
+    expected_role = "user"
+    for i, msg in enumerate(msgs[1:], start=1):  # skip system
+        if msg["role"] != expected_role:
+            logging.error(f"❌ Message {i} role invalid: expected {expected_role}, got {msg['role']}")
+            return "Error: Invalid role sequence sent to LLM (must alternate user/assistant)"
+        expected_role = "assistant" if expected_role == "user" else "user"
+
+    logging.info(f"🧾 Final LLM Messages:\n{json.dumps(msgs, indent=2)}")
+
     system_prompt = msgs[0]["content"]
     doc_chunks = doc_context.split("\n---\n") if doc_context else []
+    chat_history = msgs[1:]  # All trimmed messages except system
+    chat_history = enforce_alternating_roles(chat_history)
 
-    answer = _chat_once(chat_history, doc_chunks, question, system_prompt)
+
+    logging.info(f"📄 Document Chunks Preview:\n{doc_chunks[0][:500] if doc_chunks else 'None'}")
+
+    try:
+        answer = _chat_once(chat_history, doc_chunks, question, system_prompt)
+    except Exception as e:
+        logging.exception("❌ LLM call failed")
+        return f"Error: {e}"
 
     if _is_incomplete(answer):
+        logging.info("🔁 Detected incomplete answer. Sending 'Continue:'")
         chat_history.append({"role": "assistant", "content": answer})
         chat_history.append({"role": "user", "content": "Continue:"})
-        answer += " " + _chat_once(chat_history, doc_chunks, "Continue:", system_prompt, max_tokens=120)
+        try:
+            continuation = _chat_once(chat_history, doc_chunks, "Continue:", system_prompt, max_tokens=120)
+            answer += " " + continuation
+        except Exception as e:
+            logging.warning(f"⚠️ Continuation failed: {e}")
 
-    if should_reject_answer(answer, doc_context):
-        logging.warning(f"🤖 Filtered hallucinated answer: {answer}")
-        return "I don't know."
+    logging.info(f"🤖 Final LLM Answer:\n{answer}")
+
+    # Optional: filter math garbage
+    if "let l =" in answer.lower() or "which is the" in answer.lower():
+        logging.warning("🧹 Cleaning unrelated math/question garbage.")
+        answer = answer.split("Answer:")[-1].strip()
+
+    # Optional: hallucination rejection (disable during debug)
+    try:
+        if should_reject_answer(answer, doc_context):
+            logging.warning(f"❌ Rejected answer due to low match.")
+            return "I don't know."
+    except Exception as e:
+        logging.error(f"⚠️ Hallucination check crashed: {e}")
 
     return answer.strip()
 
-def ask_llm_hf_stream(question: str, history_blocks: str, doc_context: str = "", user_id: int = None):
-    print("🧪 Entered ask_llm_hf_stream()")
-    print("🧪 type(history_blocks):", type(history_blocks))
-    print("🧪 doc_context length:", len(doc_context))
-    print("🧪 history_blocks repr:", repr(history_blocks)[:200])
-    print("🧪 question:", question)
+
+def ask_llm_hf_stream(
+    question: str,
+    history_blocks: Union[str, List[Any]],
+    doc_context: Union[str, List[str]] = "",
+    user_id: int = None
+):
+    if isinstance(doc_context, list):
+        doc_context = "\n---\n".join(doc_context)
+    if isinstance(history_blocks, list):
+        history_blocks = format_history_blocks(history_blocks)
 
     if not doc_context.strip() and not history_blocks:
-        print("⚠️ No doc_context or history_blocks. Yielding 'I don't know.'")
         yield "I don't know."
         return
 
@@ -190,11 +235,7 @@ def ask_llm_hf_stream(question: str, history_blocks: str, doc_context: str = "",
         doc_chunks = doc_context.split("\n---\n") if doc_context else []
         chat_history = [msg for msg in messages if msg["role"] in ("user", "assistant")]
 
-        # ✅ Confirm stream is working
-        yield "✅ Hello from stream! (before calling _chat_stream)"
-
         for attempt in range(3):
-            print(f"🌀 Attempt {attempt + 1} to stream from _chat_stream")
             try:
                 for token in _chat_stream(
                     chat_history=chat_history,
@@ -202,19 +243,14 @@ def ask_llm_hf_stream(question: str, history_blocks: str, doc_context: str = "",
                     user_query=question,
                     system_prompt=system_prompt
                 ):
-                    print("🔹 Yielding token:", token)
                     yield token
-                return  # exit after successful stream
+                return  # ✅ Success
             except Exception as e:
-                print(f"⚠️ Stream attempt {attempt + 1} failed: {e}")
                 logging.warning(f"⚠️ Stream attempt {attempt + 1} failed: {e}")
-                time.sleep(2 * (attempt + 1))  # exponential backoff
+                time.sleep(2 * (attempt + 1))  # Exponential backoff
+
     except Exception as e:
-        print("❌ Fatal error in ask_llm_hf_stream:", e)
         logging.error(f"❌ ask_llm_hf_stream failed: {e}")
 
     yield "I don't know."
-
-
-
 

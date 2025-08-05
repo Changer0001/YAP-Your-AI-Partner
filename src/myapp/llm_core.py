@@ -1,5 +1,5 @@
+# llm_core.py
 import os
-import time
 import json
 import logging
 import requests
@@ -10,9 +10,7 @@ from myapp.token_utils import (
     count_tokens
 )
 
-# ── Config ─────────────────────────────────────────────────────
 load_dotenv()
-
 VLLM_API_URL = os.getenv("VLLM_API_URL")
 if not VLLM_API_URL:
     raise RuntimeError("VLLM_API_URL environment variable is missing!")
@@ -20,8 +18,8 @@ if not VLLM_API_URL:
 MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"
 MAX_TOKENS = 4096
 RESERVED_COMPLETION = 300
+RESERVED_HEADROOM = 300
 
-# ── Utils ──────────────────────────────────────────────────────
 def enforce_alternating_roles(messages: list) -> list:
     result = []
     last_role = None
@@ -33,58 +31,50 @@ def enforce_alternating_roles(messages: list) -> list:
     return result
 
 def build_safe_messages(system_prompt, chat_history, doc_chunks, user_query):
+    assert isinstance(system_prompt, str)
+    assert isinstance(user_query, str)
+    assert isinstance(doc_chunks, list)
+
+    # Inject context into system prompt (✅ FIX)
+    if doc_chunks:
+        doc_text = "\n---\n".join(doc_chunks)
+        system_prompt += "\n\nContext:\n" + doc_text
+
+    # Trim system prompt
+    system_max = MAX_TOKENS - RESERVED_COMPLETION - 300
+    while count_tokens(system_prompt) > system_max:
+        system_prompt = system_prompt[:-100]
+
     system_tokens = count_tokens(system_prompt)
-    user_query_tokens = count_tokens(user_query)
-    template_buffer = len(chat_history) * 4 + 100
+    query_tokens = count_tokens(user_query)
+    buffer = 100 + len(chat_history) * 4
+    available_tokens = MAX_TOKENS - RESERVED_COMPLETION - system_tokens - query_tokens - buffer
 
-    available_tokens = MAX_TOKENS - RESERVED_COMPLETION - system_tokens - user_query_tokens - template_buffer
-
+    # Adjust query if needed
     if available_tokens < 0:
-        max_query_tokens = MAX_TOKENS - RESERVED_COMPLETION - system_tokens - template_buffer
-        trimmed_query = user_query
-        while count_tokens(trimmed_query) > max_query_tokens:
-            trimmed_query = trimmed_query[:-50]  # Trim 50 chars at a time
-        user_query = trimmed_query
-        user_query_tokens = count_tokens(user_query)
-        available_tokens = MAX_TOKENS - RESERVED_COMPLETION - system_tokens - user_query_tokens - template_buffer
+        max_query_tokens = MAX_TOKENS - RESERVED_COMPLETION - system_tokens - buffer
+        while count_tokens(user_query) > max_query_tokens:
+            user_query = user_query[:-50]
 
-    chat_budget = int(available_tokens * 0.6)
-    doc_budget = available_tokens - chat_budget
+    # Token budget
+    chat_budget = max(int(available_tokens * 0.6), 0)
+    doc_budget = max(available_tokens - chat_budget, 0)
 
-    trimmed_chat = trim_messages_by_tokens(chat_history, chat_budget, reserved_completion=0)
-    trimmed_docs = trim_chunks_by_tokens(doc_chunks, doc_budget)
-
-    doc_context = "\n\n".join(trimmed_docs)
-    full_system_prompt = system_prompt
-    if doc_context:
-        full_system_prompt += "\n\nContext:\n" + doc_context
-
-    messages = [
-        {"role": "system", "content": full_system_prompt},
-        *trimmed_chat,
-        {"role": "user", "content": user_query}
-    ]
+    trimmed_chat = trim_messages_by_tokens(chat_history, chat_budget)
+    messages = [{"role": "system", "content": system_prompt}]
+    messages.extend(trimmed_chat)
+    messages.append({"role": "user", "content": user_query})
     return enforce_alternating_roles(messages)
 
 
-# ── Inference (non-streaming) ─────────────────────────────────
 def _chat_once(chat_history, doc_chunks, user_query, system_prompt, max_tokens=300, temperature=0.7):
     try:
         messages = build_safe_messages(system_prompt, chat_history, doc_chunks, user_query)
-
         allowed_tokens = MAX_TOKENS - max_tokens
-        trimmed_messages = trim_messages_by_tokens(messages, allowed_tokens, reserved_completion=0)
-
-        final_total = sum(count_tokens(m["content"]) for m in trimmed_messages)
-        if final_total + max_tokens > MAX_TOKENS:
-            logging.warning("⚠️ Final token count too high. Hard trimming applied.")
-            trimmed_messages = trim_messages_by_tokens(trimmed_messages, MAX_TOKENS - max_tokens, reserved_completion=0)
-
-        total = sum(count_tokens(m["content"]) for m in trimmed_messages)
-        logging.debug(f"🔢 Final token count (actual sent): messages={total}, completion={max_tokens}, total={total + max_tokens}")
+        trimmed_messages = trim_messages_by_tokens(messages, allowed_tokens)
 
         response = requests.post(
-            f"{VLLM_API_URL}/v1/chat/completions",
+            f"{VLLM_API_URL}/v1/chat/completions",  # ✅ FIXED PATH
             headers={"Content-Type": "application/json"},
             json={
                 "model": MODEL_NAME,
@@ -98,27 +88,17 @@ def _chat_once(chat_history, doc_chunks, user_query, system_prompt, max_tokens=3
         return response.json()["choices"][0]["message"]["content"].strip()
 
     except Exception as e:
-        logging.exception("❌ chat_completion failed:")
+        logging.exception("❌ chat_once failed:")
         return f"Error: {e}"
 
-# ── Inference (streaming) ─────────────────────────────────────
 def _chat_stream(chat_history, doc_chunks, user_query, system_prompt, max_tokens=300, temperature=0.7):
     try:
         messages = build_safe_messages(system_prompt, chat_history, doc_chunks, user_query)
-
         allowed_tokens = MAX_TOKENS - max_tokens
-        trimmed_messages = trim_messages_by_tokens(messages, allowed_tokens, reserved_completion=0)
-
-        final_total = sum(count_tokens(m["content"]) for m in trimmed_messages)
-        if final_total + max_tokens > MAX_TOKENS:
-            logging.warning("⚠️ Final token count too high. Hard trimming applied.")
-            trimmed_messages = trim_messages_by_tokens(trimmed_messages, MAX_TOKENS - max_tokens, reserved_completion=0)
-
-        total = sum(count_tokens(m["content"]) for m in trimmed_messages)
-        logging.debug(f"🔢 Final token count (actual sent - stream): messages={total}, completion={max_tokens}, total={total + max_tokens}")
+        trimmed_messages = trim_messages_by_tokens(messages, allowed_tokens)
 
         response = requests.post(
-            f"{VLLM_API_URL}/v1/chat/completions",
+            f"{VLLM_API_URL}/v1/chat/completions",  # ✅ FIXED PATH
             headers={"Content-Type": "application/json"},
             json={
                 "model": MODEL_NAME,
@@ -134,35 +114,14 @@ def _chat_stream(chat_history, doc_chunks, user_query, system_prompt, max_tokens
         for line in response.iter_lines():
             if not line or line == b"data: [DONE]":
                 continue
-
-            delta = line.decode("utf-8").removeprefix("data: ")
-            print(f"🧪 Raw stream delta:\n{delta}")
-
             try:
-                data = json.loads(delta)
-
-                # Handle OpenAI-style response
-                if isinstance(data, dict) and "choices" in data:
-                    content_piece = data["choices"][0].get("delta", {}).get("content", "")
-                # Handle raw string wrapped in list or as string (not JSON-structured)
-                elif isinstance(data, list) and isinstance(data[0], str):
-                    content_piece = data[0]
-                elif isinstance(data, str):
-                    content_piece = data
-                else:
-                    content_piece = ""
+                payload = json.loads(line.decode("utf-8").removeprefix("data: "))
+                yield payload["choices"][0]["delta"].get("content", "")
             except Exception as e:
-                logging.warning(f"⚠️ Failed to parse stream chunk: {e} | Raw: {delta}")
-                continue
-
-            if content_piece:
-                print(f"🔹 Stream Content Piece: {content_piece}")
-                yield content_piece
-
-
+                logging.warning(f"⚠️ Failed to parse stream: {e}")
     except requests.exceptions.HTTPError:
         logging.error("❌ HTTPError: %s", response.text)
-        yield f"\n[ERROR] {response.text}"
+        yield f"[ERROR] {response.text}"
     except Exception as e:
-        logging.exception("❌ chat stream failed:")
-        yield f"\n[ERROR] {e}"
+        logging.exception("❌ chat_stream failed:")
+        yield f"[ERROR] {e}"

@@ -13,7 +13,6 @@ from myapp.utils import get_user_id
 from myapp.chat_store import save_chat_history, get_user_history, get_recent_history
 from myapp.retriever import retrieve
 from myapp.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
-from myapp.llm_core import _chat_once, _chat_stream, enforce_alternating_roles
 
 
 router = APIRouter()
@@ -81,40 +80,46 @@ def ask(req: AskRequest, username=Depends(verify_token)):
 async def stream(req: AskRequest, username=Depends(verify_token)):
     try:
         user_id = get_user_id(username)
-        history = req.history or get_recent_history(user_id)
-        history_blocks = format_history_blocks(history)
 
-        doc_ctx = retrieve(req.question)
-
-        print("🧪 Calling ask_llm_hf_stream() with question:", req.question)
-        print("🧪 doc_ctx length:", sum(len(chunk) for chunk in doc_ctx))
-
-        if isinstance(history_blocks, list) and all(isinstance(h, dict) and 'content' in h for h in history_blocks):
-            print("🧪 history_blocks length:", sum(len(h['content']) for h in history_blocks))
+        # Use request history if present, or fallback to recent history
+        if req.history:
+            # These will be Pydantic models → safe to use model_dump
+            history_blocks = [h.model_dump() for h in req.history]
         else:
-            print("⚠️ Unexpected history_blocks structure:", history_blocks)
+            # These are already dicts
+            history_blocks = get_recent_history(user_id)
 
+        doc_chunks = retrieve(req.question)
 
-        def generator():    
+        from myapp.token_utils import allocate_token_budget
+        trimmed_messages, trimmed_docs = allocate_token_budget(
+            messages=history_blocks,
+            doc_chunks=doc_chunks,
+            max_total_tokens=4096,
+            reserved_completion=300,
+            verbose=True
+        )
+
+        def generator():
             print("🧪 Entered generator()")
             full_answer = ""
             try:
-                print("🧪 Entered generator()")  # NEW
-                stream = ask_llm_hf_stream(req.question, history_blocks, doc_ctx, user_id)
-                print("🧪 Got stream from ask_llm_hf_stream()")  # NEW
+                stream = ask_llm_hf_stream(req.question, trimmed_messages, trimmed_docs, user_id)
+                print("🧪 Got stream from ask_llm_hf_stream()")
 
                 for token in stream:
                     print("🔹 Streaming token:", token)
                     full_answer += token
                     yield f"data: {json.dumps({'choices': [{'delta': {'content': token}}]})}\n\n"
-                print("✅ Streaming finished.")  # NEW
+
+                print("✅ Streaming finished.")
 
             except Exception as e:
                 print("❌ Stream error:", e)
                 yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
             finally:
                 save_chat_history(user_id, req.question, full_answer)
-
 
         return StreamingResponse(generator(), media_type="text/event-stream")
 

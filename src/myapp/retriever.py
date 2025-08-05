@@ -1,5 +1,6 @@
-import time
+# retriever.py
 import os
+import time
 import logging
 import chromadb
 from myapp.chroma_config import client
@@ -10,41 +11,36 @@ CHROMA_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chr
 # ✅ Setup ChromaDB persistent client
 collection = client.get_or_create_collection(name="example_business_docs")
 
+# Load documents once at import
 try:
-    import time
     print("🔄 Starting ChromaDB doc fetch...")
     t0 = time.time()
-
     all_docs = collection.get(include=["documents"])
+    raw_docs = all_docs.get("documents", [])
     print("✅ Raw ChromaDB fetch complete")
 
-    raw_docs = all_docs.get("documents", [])
     print("🧪 raw_docs structure:", type(raw_docs), "len =", len(raw_docs))
+    print(f"📦 Total docs in ChromaDB: {len(raw_docs)} (loaded in {time.time() - t0:.2f}s)")
 
-    docs = raw_docs  # ← FIX: just use it directly
-
-    t1 = time.time()
-    print(f"📦 Total docs in ChromaDB: {len(docs)} (loaded in {t1 - t0:.2f}s)")
-
-    if docs:
+    if raw_docs:
         print("🟢 ChromaDB contains data ✅")
     else:
         print("🔴 ChromaDB is EMPTY ❌")
 
-
 except Exception as e:
     print("❌ Failed to load documents from ChromaDB:", e)
-    docs = []
+    raw_docs = []
 
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
 
-logging.basicConfig(level=logging.DEBUG)  # Ensure debug logs show
-
+# Score booster (position-based and heading-based)
 def boost_retrieval_results(results):
     for i, metadata in enumerate(results["metadatas"][0]):
         score = results["distances"][0][i]
 
         if not isinstance(metadata, dict):
-            logging.warning(f"⚠️ Missing metadata for document {i}, skipping boost.")
+            logging.warning(f"⚠️ Missing metadata for doc {i}, skipping boost.")
             continue
 
         position = metadata.get("position", 100)
@@ -56,10 +52,9 @@ def boost_retrieval_results(results):
             score -= 0.1
 
         results["distances"][0][i] = score
-
     return results
 
-
+# Main function
 def retrieve(query, top_k=10):
     try:
         logging.info(f"🔍 Querying for: {query}")
@@ -68,7 +63,7 @@ def retrieve(query, top_k=10):
         results = collection.query(
             query_embeddings=[query_embedding],
             n_results=top_k,
-            include=["documents", "metadatas","distances"] 
+            include=["documents", "metadatas", "distances"]
         )
 
         logging.debug(f"🔍 Raw Chroma results: {results}")
@@ -76,8 +71,8 @@ def retrieve(query, top_k=10):
         if not results.get("documents") or not results["documents"][0]:
             logging.warning("⚠️ No documents retrieved from ChromaDB.")
             return ""
-        
-         # Apply custom boosting
+
+        # Apply custom boosting
         results = boost_retrieval_results(results)
 
         # Sort results after boosting
@@ -86,13 +81,27 @@ def retrieve(query, top_k=10):
             key=lambda x: x[1]
         )
 
-        docs = [doc for doc, _ in sorted_docs]
-        logging.info(f"✅ Retrieved {len(docs)} documents:")
+        # ✅ Filter out too-short or broken chunks
+        docs = [doc.strip() for doc, _ in sorted_docs if doc and len(doc.strip()) > 50]
+
+        if not docs:
+            logging.warning("⚠️ Retrieved docs were empty or too short.")
+            return ""
+
+        logging.info(f"✅ Final cleaned documents count: {len(docs)}")
         for i, doc in enumerate(docs):
-            logging.info(f"📄 Doc {i+1}: {doc[:80]}...")  # Only show preview
+            logging.info(f"📄 Clean Doc {i+1}: {doc[:80]}...")
 
         return "\n---\n".join(docs)
 
     except Exception as e:
         logging.error(f"❌ Retrieval failed: {e}")
         return ""
+
+
+# Test run
+if __name__ == "__main__":
+    query = "What is our refund policy?"
+    retrieved = retrieve(query)
+    print("🔍 Retrieved document chunks:")
+    print(retrieved if retrieved else "❌ No relevant documents retrieved.")
