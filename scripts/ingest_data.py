@@ -2,7 +2,7 @@
 import os
 import argparse
 import logging
-from myapp.ingest import load_documents, ingest_and_store
+from app.ingest.ingest import load_documents, ingest_and_store
 folder_path = "./data/example_business_docs"
 
 documents = load_documents(folder_path)

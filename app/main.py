@@ -3,21 +3,26 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from myapp.api_routes import router
-from myapp.database import init_db
+from app.api.api_routes import router         # ✅ updated import path
+from app.db.database import init_db           # ✅ updated import path
+
 print("🚀 FastAPI app loaded!")
-api = FastAPI()
+
+app = FastAPI(
+    title="YAP - Your AI Partner",
+    version="1.0.0"
+)
 
 # Include API routes
-api.include_router(router)
+app.include_router(router)
 
 # Initialize DB at startup
-@api.on_event("startup")
+@app.on_event("startup")
 def on_startup():
     init_db()
 
 # Global 422 Validation Error Handler
-@api.exception_handler(RequestValidationError)
+@app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(
         status_code=422,

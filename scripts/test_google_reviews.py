@@ -1,4 +1,4 @@
-from myapp.get_google_reviews import get_google_reviews
+from app.ingest.get_google_reviews import get_google_reviews
 
 result = get_google_reviews("Sinbad Mediterranean Grill San Diego")
 

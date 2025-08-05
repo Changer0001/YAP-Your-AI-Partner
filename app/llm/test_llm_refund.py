@@ -1,5 +1,5 @@
-from myapp.llm_interface import ask_llm_hf
-from myapp.retriever import retrieve
+from llm.llm_interface import ask_llm_hf
+from retriever.retriever import retrieve
 
 # Define query
 query = "What is our refund policy?"

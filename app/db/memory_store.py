@@ -1,8 +1,8 @@
 # memory_store.py
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from datetime import datetime
-from myapp.database import Base
-from myapp.llm_core import _chat_once
+from db.database import Base
+from llm.llm_core import _chat_once
 
   # or your existing declarative_base()
 
@@ -31,7 +31,7 @@ def summarize_conversation(history_blocks: str) -> str:
 
     return _chat_once(messages, max_tokens=200)
 
-from myapp.database import SessionLocal
+from db.database import SessionLocal
 
 def save_user_memory(user_id: int, topic: str, history_blocks: str):
     summary = summarize_conversation(history_blocks)

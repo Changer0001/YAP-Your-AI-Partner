@@ -1,6 +1,6 @@
 # myapp/chat_store.py
 
-from myapp.database import SessionLocal, ChatHistory, User
+from db.database import SessionLocal, ChatHistory, User
 import csv
 from datetime import datetime
 

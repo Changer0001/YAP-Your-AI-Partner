@@ -8,8 +8,8 @@ import pytesseract
 import uuid
 import hashlib
 from pdf2image import convert_from_path
-from myapp.embed import embedding_model, chunk_text
-from myapp.chroma_config import client
+from retriever.embed import embedding_model, chunk_text
+from core.chroma_config import client
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(message)s")
 

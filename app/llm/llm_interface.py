@@ -2,10 +2,10 @@
 import os, re, time, json, logging
 from typing import List, Dict, Any, Union
 from dotenv import load_dotenv
-from myapp.memory_store import Memory
-from myapp.database import SessionLocal
-from myapp.llm_core import _chat_once, _chat_stream, enforce_alternating_roles
-from myapp.token_utils import count_tokens
+from db.memory_store import Memory
+from db.database import SessionLocal
+from llm.llm_core import _chat_once, _chat_stream, enforce_alternating_roles
+from core.token_utils import count_tokens
 
 load_dotenv()
 

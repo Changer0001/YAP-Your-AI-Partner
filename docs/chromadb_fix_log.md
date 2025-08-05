@@ -93,7 +93,7 @@ Files updated:
 Confirmed `CHROMA_PATH` printed the same value from both ingestion and FastAPI:
 
 ```
-🗂 CHROMA DB PATH: C:\Users\Burak\Documents\GitHub\LLM_Assistance\src\myapp\chroma_db
+🗂 CHROMA DB PATH: C:\Users\Burak\Documents\GitHub\LLM_Assistance\app\chroma_db
 ```
 
 ---

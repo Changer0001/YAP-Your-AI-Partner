@@ -6,15 +6,15 @@ from starlette.responses import StreamingResponse
 import logging
 from sqlalchemy.orm import Session
 import json
-from myapp.chroma_config import client
+from core.chroma_config import client
 
-from .database import get_db
-from myapp.auth import verify_token, register_user, authenticate_user
-from myapp.utils import get_user_id
-from myapp.chat_store import save_chat_history, get_user_history, get_recent_history
-from myapp.retriever import retrieve
-from myapp.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
-
+from db.database import get_db
+from api.auth import verify_token, register_user, authenticate_user
+from core.utils import get_user_id
+from db.chat_store import save_chat_history, get_user_history, get_recent_history
+from retriever.retriever import retrieve
+from llm.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
+from core.token_utils import allocate_token_budget
 
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
@@ -90,7 +90,7 @@ async def stream(req: AskRequest, username=Depends(verify_token)):
 
         doc_chunks = retrieve(req.question)
 
-        from myapp.token_utils import allocate_token_budget
+        
         trimmed_messages, trimmed_docs = allocate_token_budget(
             messages=history_blocks,
             doc_chunks=doc_chunks,

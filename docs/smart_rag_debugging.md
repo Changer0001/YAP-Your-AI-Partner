@@ -126,10 +126,10 @@ File
 
 Description
 
-src/ingest.py
+app/ingest/ingest.py
 
 Updated with deduplication logic, corrected ChromaDB path, metadata injection
 
-src/test_retriever.py
+app/retrieve/test_retriever.py
 
 Confirmed retrieval from ChromaDB, now prints top-k documents with trace

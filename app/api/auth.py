@@ -3,11 +3,11 @@
 from jose import JWTError, jwt
 from fastapi import HTTPException, Header, Depends
 from sqlalchemy.orm import Session
-from .database import SessionLocal, User
+from db.database import SessionLocal, User
 import hashlib
 import os
 from datetime import datetime, timedelta
-from .database import get_db
+from db.database import get_db
 
 
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")

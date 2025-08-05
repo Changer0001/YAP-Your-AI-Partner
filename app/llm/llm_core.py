@@ -4,7 +4,7 @@ import json
 import logging
 import requests
 from dotenv import load_dotenv
-from myapp.token_utils import (
+from core.token_utils import (
     trim_messages_by_tokens,
     trim_chunks_by_tokens,
     count_tokens

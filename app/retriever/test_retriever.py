@@ -1,9 +1,9 @@
-from myapp.retriever import retrieve
+from retriever.retriever import retrieve
 import chromadb
 import os
-from myapp.llm_interface import ask_llm_hf
+from llm.llm_interface import ask_llm_hf
 
-CHROMA_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "src", "chroma_db"))
+CHROMA_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "app", "chroma_db"))
 client = chromadb.PersistentClient(path=CHROMA_PATH)
 
 if __name__ == "__main__":
