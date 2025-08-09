@@ -1,4 +1,4 @@
-from db.database import SessionLocal, User
+from app.db.database import SessionLocal, User
 import logging
 
 def get_user_id(username: str) -> int:

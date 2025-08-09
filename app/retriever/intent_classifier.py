@@ -1,5 +1,5 @@
 # myapp/intent_classifier.py
-from retriever.embed import embedding_model
+from app.retriever.embed import embedding_model
 import numpy as np
 
 INTENT_EXAMPLES = {

@@ -3,9 +3,9 @@ import os
 import time
 import logging
 import chromadb
-from core.chroma_config import client
-from retriever.embed import embedding_model
-from core.smart_threshold import get_dynamic_threshold
+from app.core.chroma_config import client
+from app.retriever.embed import embedding_model
+from app.core.smart_threshold import get_dynamic_threshold
 
 CHROMA_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "chroma_db"))
 collection = client.get_or_create_collection(name="example_business_docs")
@@ -48,7 +48,7 @@ def boost_query(query: str) -> str:
     return query
 
 # 🔍 Main retriever function
-from core.smart_threshold import get_dynamic_threshold
+
 
 # 🔍 Main retriever function
 def retrieve(query, top_k=10):

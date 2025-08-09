@@ -2,19 +2,19 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-from starlette.responses import StreamingResponse
+from fastapi.responses import StreamingResponse
 import logging
 from sqlalchemy.orm import Session
 import json
-from core.chroma_config import client
+from app.core.chroma_config import client
 
-from db.database import get_db
-from api.auth import verify_token, register_user, authenticate_user
-from core.utils import get_user_id
-from db.chat_store import save_chat_history, get_user_history, get_recent_history
-from retriever.retriever import retrieve
-from llm.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
-from core.token_utils import allocate_token_budget
+from app.db.database import get_db
+from app.api.auth import verify_token, register_user, authenticate_user
+from app.core.utils import get_user_id
+from app.db.chat_store import save_chat_history, get_user_history, get_recent_history
+from app.retriever.retriever import retrieve
+from app.llm.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
+from app.core.token_utils import allocate_token_budget
 
 router = APIRouter()
 logging.basicConfig(level=logging.INFO)
