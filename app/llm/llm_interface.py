@@ -1,13 +1,19 @@
-#llm_interface.py
+# app/llm/llm_interface.py
 import os, re, time, json, logging
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Union, Generator, Optional
 from dotenv import load_dotenv
+
+load_dotenv(override=True)  # ensure .env overrides any existing env
+
 from app.db.memory_store import Memory
 from app.db.database import SessionLocal
 from app.llm.llm_core import _chat_once, _chat_stream, enforce_alternating_roles
 from app.core.token_utils import count_tokens
+from app.retriever.intent_classifier import classify_intent
 
-load_dotenv()
+# ---- env + constants ---------------------------------------------------------
+MAX_CONTEXT_TOKENS = int(os.getenv("MAX_TOKENS", "32768"))
+RESERVED_COMPLETION = int(os.getenv("RESERVED_COMPLETION", "1536"))
 
 VLLM_API_URL = os.getenv("VLLM_API_URL")
 if not VLLM_API_URL:
@@ -18,13 +24,41 @@ MODEL_NAME = os.getenv("VLLM_MODEL", "Qwen/Qwen2.5-14B-Instruct")
 logging.basicConfig(filename="app.log", filemode="a", level=logging.DEBUG)
 
 SYSTEM_INSTRUCTION = (
-    "You are a helpful assistant. Use the conversation history and document context to answer questions as accurately as possible. "
-    "If the answer is not clearly available in the history or documents, it's okay to say 'I don't know' or clarify that the information is missing. "
-    "Avoid making up facts or hallucinating."
+    "You are a helpful assistant.\n"
+    "- If the user is greeting / small talk, respond naturally and briefly.\n"
+    "- For business/policy questions, use ONLY the provided context. "
+    "If the answer is not clearly in the context, say: 'I don't know.' Do NOT guess.\n"
+    "- Prefer concise bullet lists when applicable."
 )
 
-
+_SMALLTALK = {"greeting", "goodbye", "thank_you"}
+_NAME_RE = re.compile(r"\b(?:i am|i'm|this is|it is)\s+([A-Za-z][\w'-]+)\b", re.I)
 _INCOMPLETE_RE = re.compile(r"\b(and|but|or|so|because)$", re.IGNORECASE)
+
+_GREETING_RX = re.compile(r"\b(hi|hey|hello|good (morning|afternoon|evening))\b", re.I)
+_THANKS_RX   = re.compile(r"\b(thanks|thank you|appreciate(d)?|much appreciated)\b", re.I)
+_GOODBYE_RX  = re.compile(r"\b(bye|good night|see you|take care)\b", re.I)
+
+def _is_smalltalk_text(text: str) -> bool:
+    t = (text or "").strip()
+    return bool(_GREETING_RX.search(t) or _THANKS_RX.search(t) or _GOODBYE_RX.search(t))
+
+# ---- helpers -----------------------------------------------------------------
+def _extract_name(text: str) -> Optional[str]:
+    m = _NAME_RE.search(text or "")
+    return m.group(1) if m else None
+
+def _save_memory(user_id: Optional[int], topic: str, summary: str) -> None:
+    if not user_id:
+        return
+    db = SessionLocal()
+    try:
+        db.add(Memory(user_id=user_id, topic=topic, summary=summary))
+        db.commit()
+    except Exception:
+        db.rollback()
+    finally:
+        db.close()
 
 def fetch_user_memory(user_id: int, limit: int = 3) -> str:
     db = SessionLocal()
@@ -42,18 +76,41 @@ def _is_incomplete(text: str) -> bool:
     text = text.strip()
     return not text or text[-1] not in ".!?" or text.endswith("...") or _INCOMPLETE_RE.search(text)
 
-def should_reject_answer(answer: str, doc_context: str) -> bool:
+def should_reject_answer(answer: str, doc_context: str, intent: Optional[str] = None) -> bool:
+    """Reject answers that don't match context when we *expect* grounding."""
     if not answer.strip():
         return True
+    if intent in _SMALLTALK:
+        return False
+    if not doc_context.strip():
+        return False
+
+    # overlap check
+    context_words = set(doc_context.lower().split())
+    answer_words = set(answer.lower().split())
+    overlap = len(context_words & answer_words)
+    total = max(len(answer_words), 1)
+    match_ratio = overlap / total
+
+    if match_ratio < 0.03:
+        logging.warning(f"🚫 Rejected answer due to low overlap: {match_ratio:.2%}")
+        return True
+
+    # example special-case guard (keep if your docs mention 14-day refunds)
+    if "day" in answer.lower() and "14" not in answer and "14" in doc_context:
+        logging.warning("🚫 Rejected answer due to mismatch in refund days.")
+        return True
+
+    # soft hallucination phrases (optional)
     hallucinated_patterns = [
         "please contact", "you can estimate", "depends on", "we recommend",
         "as a general guide", "standard shipping", "you may", "your cart", "our team",
-        "visit our website", "during checkout", "language model", "I'm here to help"
+        "visit our website", "during checkout", "language model", "i'm here to help"
     ]
-    context_keywords = set(doc_context.lower().split())
-    answer_words = set(answer.lower().split())
-    match_ratio = len(context_keywords & answer_words) / max(len(context_keywords), 1)
-    return match_ratio < 0.05 or any(p in answer.lower() for p in hallucinated_patterns)
+    if any(p in answer.lower() for p in hallucinated_patterns):
+        return True
+
+    return False
 
 def format_history_blocks(history: List[Any]) -> str:
     lines: List[str] = []
@@ -72,11 +129,9 @@ def blocks_to_messages(blocks: str) -> List[Dict[str, str]]:
         if not line:
             continue
         if line.startswith("🧑 Q:"):
-            role = "user"
-            content = line[5:].strip()
+            role = "user"; content = line[5:].strip()
         elif line.startswith("🤖 A:"):
-            role = "assistant"
-            content = line[5:].strip()
+            role = "assistant"; content = line[5:].strip()
             if content.startswith("[ERROR]"):
                 continue
         else:
@@ -87,13 +142,14 @@ def blocks_to_messages(blocks: str) -> List[Dict[str, str]]:
         last_role = role
     return msgs
 
-def make_chat_messages(history_blocks: str, question: str, doc_context: str = "", user_id: int = None) -> List[Dict[str, str]]:
+def make_chat_messages(history_blocks: str, question: str, doc_context: str = "", user_id: Optional[int] = None) -> List[Dict[str, str]]:
+    intent = classify_intent(question)
     system_content = SYSTEM_INSTRUCTION
 
-    if doc_context.strip():
+    if doc_context.strip() and intent not in _SMALLTALK:
         system_content += (
-            "\n\nUse ONLY the context below to answer. If the answer is not clearly and directly found in the context below, say: 'I don't know.' Do NOT guess or speculate.\n\n"
-            "Context:\n" + doc_context.strip()
+            "\n\nUse ONLY the context below to answer. If the answer is not clearly and directly found, "
+            "say: 'I don't know.' Do NOT guess.\n\nContext:\n" + doc_context.strip()
         )
 
     if user_id:
@@ -119,14 +175,14 @@ def make_chat_messages(history_blocks: str, question: str, doc_context: str = ""
     logging.debug("📦 Final messages to LLM:\n%s", json.dumps(msgs, indent=2))
     return msgs[-30:]
 
-def truncate_messages(messages, max_tokens=4096, reserved_completion=300):
+def truncate_messages(messages, max_tokens=MAX_CONTEXT_TOKENS, reserved_completion=RESERVED_COMPLETION):
     if not messages or len(messages) < 2:
         return messages
 
     system_msg = messages[0]
     rest = messages[1:]
     total_tokens = count_tokens(system_msg["content"])
-    truncated = []
+    truncated: List[Dict[str, str]] = []
 
     # Reverse through messages, skipping system
     for msg in reversed(rest):
@@ -139,24 +195,46 @@ def truncate_messages(messages, max_tokens=4096, reserved_completion=300):
 
     return [system_msg] + truncated
 
-
-
+# ---- main entry points -------------------------------------------------------
 def ask_llm_hf(
     question: str,
     history_blocks: Union[str, List[Any]],
     doc_context: Union[str, List[str]] = "",
-    user_id: int = None
+    user_id: Optional[int] = None
 ) -> str:
+    """Non-streaming: must return a plain string."""
     if isinstance(doc_context, list):
         doc_context = "\n---\n".join(doc_context)
     if isinstance(history_blocks, list):
         history_blocks = format_history_blocks(history_blocks)
 
+    # Lexical small-talk fast path (no docs required)
+    if _is_smalltalk_text(question) and not (doc_context and doc_context.strip()):
+        name = _extract_name(question) or _extract_name(history_blocks if isinstance(history_blocks, str) else "")
+        if user_id and name:
+            _save_memory(user_id, "user_name", f"User introduced as {name}")
+        logging.info("🟢 Small-talk fast path (sync) triggered.")
+        return (f"Hi {name} 👋 How can I help you today?"
+                if name else "Hi there 👋 How can I help you today?")
+
+    intent = classify_intent(question)
+
+    # Small talk path (no docs needed)
+    if intent in _SMALLTALK and not doc_context.strip():
+        name = _extract_name(question) or _extract_name(history_blocks if isinstance(history_blocks, str) else "")
+        if name:
+            _save_memory(user_id, "user_name", f"User introduced as {name}")
+        return f"Hi {name} 👋 How can I help you today?" if name else "Hi there 👋 How can I help you today?"
+
+    # Business question but NO context available
+    if intent not in _SMALLTALK and not doc_context.strip():
+        return "I don’t have that information yet. Which policy or document should I check?"
+
     logging.info(f"🧠 DOC CONTEXT PREVIEW:\n{doc_context[:500]}")
 
     # Create messages and trim if necessary
     msgs = make_chat_messages(history_blocks, question, doc_context, user_id)
-    msgs = truncate_messages(msgs, max_tokens=4096, reserved_completion=300)
+    msgs = truncate_messages(msgs)
     msgs = enforce_alternating_roles(msgs)
 
     # Check correct role alternation
@@ -196,14 +274,9 @@ def ask_llm_hf(
 
     logging.info(f"🤖 Final LLM Answer:\n{answer}")
 
-    # Filter unrelated math fragments
-    if "let l =" in answer.lower() or "which is the" in answer.lower():
-        logging.warning("🧹 Cleaning unrelated math/question garbage.")
-        answer = answer.split("Answer:")[-1].strip()
-
-    # Hallucination filtering
+    # Hallucination filtering (only when grounding applies)
     try:
-        if should_reject_answer(answer, doc_context):
+        if should_reject_answer(answer, doc_context, intent):
             logging.warning("❌ Rejected answer due to low content match.")
             return "I don't know."
     except Exception as e:
@@ -211,51 +284,46 @@ def ask_llm_hf(
 
     return answer.strip()
 
-def should_reject_answer(answer: str, doc_context: str) -> bool:
-    if not answer.strip():
-        return True
-
-    context_words = set(doc_context.lower().split())
-    answer_words = set(answer.lower().split())
-
-    overlap = len(context_words & answer_words)
-    total = max(len(answer_words), 1)
-
-    match_ratio = overlap / total
-
-    # Stricter rejection: must match at least 3% of answer words
-    if match_ratio < 0.03:
-        logging.warning(f"🚫 Rejected answer due to low overlap: {match_ratio:.2%}")
-        return True
-
-    # Special case: look for numeric mismatch in days
-    if "day" in answer.lower() and "14" not in answer and "14" in doc_context:
-        logging.warning("🚫 Rejected answer due to mismatch in refund days.")
-        return True
-
-    return False
-
-
-
-
 def ask_llm_hf_stream(
     question: str,
     history_blocks: Union[str, List[Any]],
     doc_context: Union[str, List[str]] = "",
-    user_id: int = None
-):
+    user_id: Optional[int] = None
+) -> Generator[str, None, None]:
+    """Streaming: must yield strings (tokens/chunks) and not return a plain string."""
     if isinstance(doc_context, list):
         doc_context = "\n---\n".join(doc_context)
     if isinstance(history_blocks, list):
         history_blocks = format_history_blocks(history_blocks)
 
-    if not doc_context.strip() and not history_blocks:
-        yield "I don't know."
+    # Lexical small-talk fast path (stream)
+    if _is_smalltalk_text(question) and not (doc_context and doc_context.strip()):
+        name = _extract_name(question) or _extract_name(history_blocks if isinstance(history_blocks, str) else "")
+        if user_id and name:
+            _save_memory(user_id, "user_name", f"User introduced as {name}")
+        logging.info("🟢 Small-talk fast path (stream) triggered.")
+        yield (f"Hi {name} 👋 How can I help you today?"
+               if name else "Hi there 👋 How can I help you today?")
+        return
+
+    intent = classify_intent(question)
+
+    # Small talk path (stream)
+    if intent in _SMALLTALK and not doc_context.strip():
+        name = _extract_name(question) or _extract_name(history_blocks if isinstance(history_blocks, str) else "")
+        if name:
+            _save_memory(user_id, "user_name", f"User introduced as {name}")
+        yield (f"Hi {name} 👋 How can I help you today?" if name else "Hi there 👋 How can I help you today?")
+        return
+
+    # Business question but NO context
+    if intent not in _SMALLTALK and not doc_context.strip():
+        yield "I don’t have that information yet. Which policy or document should I check?"
         return
 
     try:
         messages = make_chat_messages(history_blocks, question, doc_context, user_id)
-        messages = truncate_messages(messages, max_tokens=4096, reserved_completion=300)
+        messages = truncate_messages(messages)
 
         system_prompt = messages[0]["content"]
         doc_chunks = doc_context.split("\n---\n") if doc_context else []
@@ -279,4 +347,3 @@ def ask_llm_hf_stream(
         logging.error(f"❌ ask_llm_hf_stream failed: {e}")
 
     yield "I don't know."
-

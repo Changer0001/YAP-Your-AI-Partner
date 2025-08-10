@@ -99,11 +99,6 @@ async def stream(req: AskRequest, username=Depends(verify_token)):
             verbose=True
         )
 
-        if not trimmed_docs:  # ✅ Correct way to check if the list is empty
-            return StreamingResponse(
-            iter([f"data: {json.dumps({'error': 'No relevant document context found.'})}\n\n"]),
-            media_type="text/event-stream"
-        )
 
 
         # 🔁 Define normal (sync) generator — this is valid for StreamingResponse

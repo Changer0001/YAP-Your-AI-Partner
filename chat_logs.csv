@@ -94,3 +94,52 @@ If you encounter any issues during the process, I recommend reaching out to Sert
 - General delivery time to Canada (as part of international shipping): 10-15 business days.",2025-08-10T06:22:26.942168
 1,Do you know who I am,I don't know.,2025-08-10T06:22:40.757248
 1,so lets get back to the shipping,- Delivery time to Canada: 10-15 business days,2025-08-10T06:23:48.540694
+1,hello,Hi there 👋 How can I help you today?,2025-08-10T07:02:28.812425
+1,I want to know what is the refund policy,"- Refund window is 14 days from the date of delivery.
+- Items must be unused and in original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+- To start a return or refund, email support@trendify.com with your order number.
+- If the product is defective or damaged, return shipping is covered.",2025-08-10T07:02:45.231081
+1,This is Burak and want to send a product to france,"- Orders are processed within 2-3 business days.
+- Delivery to France (Europe) takes 7-10 business days.
+- Tracking numbers will be emailed once your order has been dispatched.",2025-08-10T07:03:20.105412
+1,I will send it from san diego what is the cost ?,I don't know.,2025-08-10T07:03:42.135720
+1,thank you,Hi Burak 👋 How can I help you today?,2025-08-10T07:03:55.512045
+1,I am saying thank you,Hi saying 👋 How can I help you today?,2025-08-10T07:04:08.176998
+1,thank you,Hi Burak 👋 How can I help you today?,2025-08-10T07:04:30.563238
+1,Do you know my name,"- Yes, your name is Burak.",2025-08-10T07:04:44.773190
+1,Would you remember it always?,I don’t have that information yet. Which policy or document should I check?,2025-08-10T07:05:00.390024
+1,Asking my name,I don’t have that information yet. Which policy or document should I check?,2025-08-10T07:05:11.831504
+1,How long would my shipping take,- Your shipping to France would take 7-10 business days.,2025-08-10T07:05:47.372668
+1,i tough it is 15 days,"- Your shipping to France would take 7-10 business days, not 15 days.",2025-08-10T07:05:56.907285
+1,why ? I thought international shippings usually takes 15 days?,"- France is considered part of Europe, not an international region outside Europe.
+- European shipments take 7-10 business days.
+- International shipments outside Europe take 10-15 business days.",2025-08-10T07:06:25.058890
+1,how to add user on sertifi,"- To add a user on Sertifi:
+  - Open a web browser and go to: https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1
+  - Click on ""log in with enterprise id""
+  - Click on ""Administration"" > ""Create Admins""
+  - Enter the following credentials:
+    - Email = email...
+    - Role = Power Admin
+    - Enterprise ID = Global ID
+  - Click ""Create Admin""",2025-08-10T07:06:46.327253
+1,how to add user on emc,"- To add a user on EMC (Simphony):
+  1. Launch the EMC (Simphony) application on your desktop.
+  2. Enter your credentials:
+     - Server: hyattpos.microsdc.com:443
+     - User Name: Global ID number
+     - Company: ""HHC""
+     - Password
+  3. Click ""OK"".
+  4. Click on the ""Configuration"" tab.
+  5. Under ""Personnel"" section, click on ""Employee Maintenance"".
+  6. Click on ""Search"".
+  7. Ensure the screen is on the ""Property Employee Records"".
+  8. Sort the list by ""Class"", then choose an existing name with the same Class level.
+  9. Click on the existing user with the same class, then click on the ""Employee Records"".
+  10. Click on the GREEN ""+"" at the top of the screen.
+  11. Enter appropriate credentials, then click ""OK"":
+      - Check Name: First name
+      - Record Number: Global ID",2025-08-10T07:07:08.054028
