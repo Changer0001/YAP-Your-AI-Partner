@@ -24,3 +24,73 @@
   </body>
 </html>
 ",2025-08-09T19:01:17.665111
+1,how to add a user on sertifi," To add a user on Sertifi, follow these steps:
+
+1. Open a web browser and go to: https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1
+2. Click on ""log in with enterprise id""
+3. Click on ""Administration"" > ""Create Admins""
+4. Type in the email address of the admin you wish to add below and click Search to try to find them in the system. If the user is not found, proceed to the next step.
+5. If the user is not found, enter the Enterprise ID (which is the Global ID) and click Create Admin.
+
+Please note that I don't have the specific details for your organization, such as the Global ID of the user you wish to add. You'll need to obtain that information from your IT department or the user themselves.
+
+If you encounter any issues during the process, I recommend reaching out to Sertifi's support for assistance.",2025-08-10T01:13:39.816594
+1,how to a user on emc," To add a user on Sertifi, follow these steps:
+
+1. Open a web browser and go to: https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1
+2. Click on ""Log in with enterprise ID""
+3. Click on ""Administration"" > ""Create Admins""
+4. Enter the credentials (Email, Role, Enterprise ID) and click ""Create Admin""",2025-08-10T01:15:29.656996
+1,I want to send my shiping to istanbul," To ship your order to Istanbul, follow these steps:
+
+1. Place your order on our website.
+2. Allow 2-3 business days for processing.
+3. Delivery times to Istanbul will be within 10-15 business days.
+4. Tracking numbers will be emailed once your order has been dispatched.
+5. If you need express shipping options, please contact us before placing your order.",2025-08-10T01:15:51.553686
+1,how much is it ?, I don't know. The cost of the Colleague Complimentary Rate is not provided in the context.,2025-08-10T01:16:08.972809
+1,I am sending it to you from san diego," Based on the provided context, to get the shipping cost to Istanbul, you would need to:
+
+1. Add the item(s) you want to purchase to your cart.
+2. Proceed to checkout and enter your shipping address in Istanbul, Turkey.
+3. The shipping cost will be automatically calculated and displayed during the checkout process.",2025-08-10T01:16:32.474209
+1,our refund policy,"[ERROR] <!DOCTYPE html>
+<html class=""h-full"" lang=""en-US"" dir=""ltr"">
+  <head>
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/euclid-square/EuclidSquare-Regular-WebS.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/euclid-square/EuclidSquare-RegularItalic-WebS.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/euclid-square/EuclidSquare-Medium-WebS.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/euclid-square/EuclidSquare-Semibold-WebS.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/euclid-square/EuclidSquare-MediumItalic-WebS.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/ibm-plex-mono/IBMPlexMono-Text.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/ibm-plex-mono/IBMPlexMono-TextItalic.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/ibm-plex-mono/IBMPlexMono-SemiBold.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <link rel=""preload"" href=""https://cdn.ngrok.com/static/fonts/ibm-plex-mono/IBMPlexMono-SemiBoldItalic.woff"" as=""font"" type=""font/woff"" crossorigin=""anonymous"" />
+    <meta charset=""utf-8"">
+    <meta name=""author"" content=""ngrok"">
+    <meta name=""description"" content=""ngrok is the fastest way to put anything on the internet with a single command."">
+    <meta name=""robots"" content=""noindex, nofollow"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+    <link id=""style"" rel=""stylesheet"" href=""https://cdn.ngrok.com/static/css/error.css"">
+    <noscript>The endpoint 05e1e94a2c7f.ngrok-free.app is offline. (ERR_NGROK_3200)</noscript>
+    <script id=""script"" src=""https://cdn.ngrok.com/static/js/error.js"" type=""text/javascript""></script>
+  </head>
+  <body class=""h-full"" id=""ngrok"">
+    <div id=""root"" data-payload=""eyJjZG5CYXNlIjoiaHR0cHM6Ly9jZG4ubmdyb2suY29tLyIsImNvZGUiOiIzMjAwIiwibWVzc2FnZSI6IlRoZSBlbmRwb2ludCAwNWUxZTk0YTJjN2Yubmdyb2stZnJlZS5hcHAgaXMgb2ZmbGluZS4iLCJ0aXRsZSI6Ik5vdCBGb3VuZCJ9""></div>
+  </body>
+</html>
+",2025-08-10T06:17:03.032002
+1,our refund policy,"According to our Refund Policy:
+
+- We offer a 14-day refund window from the date of delivery.
+- To qualify for a refund, items must be unused and in their original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+- To start a return or refund, email support@trendify.com with your order number.
+- If the product is defective or damaged, we will cover the return shipping.",2025-08-10T06:21:54.479890
+1,I want to send an item to Canada,"- Delivery time to Canada (considered as International shipping): 10-15 business days
+- Tracking numbers will be emailed once your order has been dispatched.",2025-08-10T06:22:10.828499
+1,what if i send it from san diego,"- The specific shipping time from San Diego to Canada is not provided in the given context.
+- General delivery time to Canada (as part of international shipping): 10-15 business days.",2025-08-10T06:22:26.942168
+1,Do you know who I am,I don't know.,2025-08-10T06:22:40.757248
+1,so lets get back to the shipping,- Delivery time to Canada: 10-15 business days,2025-08-10T06:23:48.540694

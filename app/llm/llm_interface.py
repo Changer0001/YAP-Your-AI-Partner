@@ -13,7 +13,7 @@ VLLM_API_URL = os.getenv("VLLM_API_URL")
 if not VLLM_API_URL:
     raise RuntimeError("VLLM_API_URL env var missing!")
 
-MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"
+MODEL_NAME = os.getenv("VLLM_MODEL", "Qwen/Qwen2.5-14B-Instruct")
 
 logging.basicConfig(filename="app.log", filemode="a", level=logging.DEBUG)
 

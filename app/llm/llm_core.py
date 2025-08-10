@@ -15,10 +15,11 @@ VLLM_API_URL = os.getenv("VLLM_API_URL")
 if not VLLM_API_URL:
     raise RuntimeError("VLLM_API_URL environment variable is missing!")
 
-MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"
-MAX_TOKENS = 4096
-RESERVED_COMPLETION = 300
-RESERVED_HEADROOM = 300
+MODEL_NAME = os.getenv("VLLM_MODEL", "Qwen/Qwen2.5-14B-Instruct")
+MAX_TOKENS = int(os.getenv("MAX_TOKENS", "32768"))
+RESERVED_COMPLETION = int(os.getenv("RESERVED_COMPLETION", "1536"))
+RESERVED_HEADROOM = int(os.getenv("RESERVED_HEADROOM", "300"))
+
 
 def enforce_alternating_roles(messages: list) -> list:
     result = []
