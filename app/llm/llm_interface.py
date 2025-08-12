@@ -35,13 +35,31 @@ _SMALLTALK = {"greeting", "goodbye", "thank_you"}
 _NAME_RE = re.compile(r"\b(?:i am|i'm|this is|it is)\s+([A-Za-z][\w'-]+)\b", re.I)
 _INCOMPLETE_RE = re.compile(r"\b(and|but|or|so|because)$", re.IGNORECASE)
 
-_GREETING_RX = re.compile(r"\b(hi|hey|hello|good (morning|afternoon|evening))\b", re.I)
-_THANKS_RX   = re.compile(r"\b(thanks|thank you|appreciate(d)?|much appreciated)\b", re.I)
-_GOODBYE_RX  = re.compile(r"\b(bye|good night|see you|take care)\b", re.I)
+_GREETING_RX  = re.compile(r"\b(hi|hey|hello|good (morning|afternoon|evening))\b", re.I)
+_THANKS_RX    = re.compile(r"\b(thanks|thank you|appreciate(d)?|much appreciated)\b", re.I)
+_GOODBYE_RX   = re.compile(r"\b(bye|good night|see you|take care)\b", re.I)
+_HOWAREYOU_RX = re.compile(r"\b(how (are|r) (you|u)|how’s it going|how are things)\b", re.I)
 
 def _is_smalltalk_text(text: str) -> bool:
     t = (text or "").strip()
-    return bool(_GREETING_RX.search(t) or _THANKS_RX.search(t) or _GOODBYE_RX.search(t))
+    return bool(
+        _GREETING_RX.search(t)
+        or _THANKS_RX.search(t)
+        or _GOODBYE_RX.search(t)
+        or _HOWAREYOU_RX.search(t)
+    )
+
+SMALLTALK_GREET  = "Hey{who}! How can I help today?"
+SMALLTALK_THANKS = "You’re welcome! Anything else I can do?"
+SMALLTALK_GOODBYE= "Take care! Ping me anytime."
+SMALLTALK_HRU    = "I’m doing well—thanks for asking{who}! How can I help?"
+
+def _smalltalk_reply(question: str, name: Optional[str]) -> str:
+    who = f", {name}" if name else ""
+    if _THANKS_RX.search(question):  return SMALLTALK_THANKS
+    if _GOODBYE_RX.search(question): return SMALLTALK_GOODBYE
+    if _HOWAREYOU_RX.search(question): return SMALLTALK_HRU.format(who=who)
+    return SMALLTALK_GREET.format(who=who)
 
 # ---- helpers -----------------------------------------------------------------
 def _extract_name(text: str) -> Optional[str]:
@@ -76,40 +94,31 @@ def _is_incomplete(text: str) -> bool:
     text = text.strip()
     return not text or text[-1] not in ".!?" or text.endswith("...") or _INCOMPLETE_RE.search(text)
 
+STOP = set("""
+a an the and or but if while to for of on in at from by with as into over under between
+this that those these is are was were be been being do does did so such it its we our you your they their
+i me my us them then than about above below again further once here there when where why how all any both each few more most
+other some own same can will just don don t shouldn should wouldn would couldn could haven have hasn has hadn had
+""".split())
+
+def _tokens(s: str) -> set:
+    return {w for w in re.findall(r"[a-z0-9']+", s.lower()) if w not in STOP and len(w) > 2}
+
 def should_reject_answer(answer: str, doc_context: str, intent: Optional[str] = None) -> bool:
-    """Reject answers that don't match context when we *expect* grounding."""
-    if not answer.strip():
+    """Reject ungrounded answers when grounding is expected."""
+    if not answer.strip(): return True
+    if intent in _SMALLTALK: return False
+    if not doc_context.strip(): return True  # no grounding -> reject
+
+    aw = _tokens(answer)
+    cw = _tokens(doc_context)
+    if not aw or not cw: return True
+    jacc = len(aw & cw) / max(len(aw | cw), 1)
+
+    # require meaningful overlap
+    if jacc < 0.08:
+        logging.warning(f"🚫 Rejected: low context overlap jacc={jacc:.3f}")
         return True
-    if intent in _SMALLTALK:
-        return False
-    if not doc_context.strip():
-        return False
-
-    # overlap check
-    context_words = set(doc_context.lower().split())
-    answer_words = set(answer.lower().split())
-    overlap = len(context_words & answer_words)
-    total = max(len(answer_words), 1)
-    match_ratio = overlap / total
-
-    if match_ratio < 0.03:
-        logging.warning(f"🚫 Rejected answer due to low overlap: {match_ratio:.2%}")
-        return True
-
-    # example special-case guard (keep if your docs mention 14-day refunds)
-    if "day" in answer.lower() and "14" not in answer and "14" in doc_context:
-        logging.warning("🚫 Rejected answer due to mismatch in refund days.")
-        return True
-
-    # soft hallucination phrases (optional)
-    hallucinated_patterns = [
-        "please contact", "you can estimate", "depends on", "we recommend",
-        "as a general guide", "standard shipping", "you may", "your cart", "our team",
-        "visit our website", "during checkout", "language model", "i'm here to help"
-    ]
-    if any(p in answer.lower() for p in hallucinated_patterns):
-        return True
-
     return False
 
 def format_history_blocks(history: List[Any]) -> str:
@@ -214,8 +223,8 @@ def ask_llm_hf(
         if user_id and name:
             _save_memory(user_id, "user_name", f"User introduced as {name}")
         logging.info("🟢 Small-talk fast path (sync) triggered.")
-        return (f"Hi {name} 👋 How can I help you today?"
-                if name else "Hi there 👋 How can I help you today?")
+        reply = _smalltalk_reply(question, name)
+        return reply
 
     intent = classify_intent(question)
 
@@ -224,7 +233,8 @@ def ask_llm_hf(
         name = _extract_name(question) or _extract_name(history_blocks if isinstance(history_blocks, str) else "")
         if name:
             _save_memory(user_id, "user_name", f"User introduced as {name}")
-        return f"Hi {name} 👋 How can I help you today?" if name else "Hi there 👋 How can I help you today?"
+        reply = _smalltalk_reply(question, name)
+        return reply
 
     # Business question but NO context available
     if intent not in _SMALLTALK and not doc_context.strip():
@@ -302,8 +312,8 @@ def ask_llm_hf_stream(
         if user_id and name:
             _save_memory(user_id, "user_name", f"User introduced as {name}")
         logging.info("🟢 Small-talk fast path (stream) triggered.")
-        yield (f"Hi {name} 👋 How can I help you today?"
-               if name else "Hi there 👋 How can I help you today?")
+        reply = _smalltalk_reply(question, name)
+        yield reply
         return
 
     intent = classify_intent(question)
@@ -313,7 +323,8 @@ def ask_llm_hf_stream(
         name = _extract_name(question) or _extract_name(history_blocks if isinstance(history_blocks, str) else "")
         if name:
             _save_memory(user_id, "user_name", f"User introduced as {name}")
-        yield (f"Hi {name} 👋 How can I help you today?" if name else "Hi there 👋 How can I help you today?")
+        reply = _smalltalk_reply(question, name)
+        yield reply
         return
 
     # Business question but NO context

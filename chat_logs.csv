@@ -427,3 +427,47 @@ Regarding returns, if you unpack the item, you may still be eligible for a retur
 - Shipping costs are non-refundable.
 
 If the product is defective or damaged, you should contact support@trendify.com to arrange a return.",2025-08-12T05:01:54.685564
+1,hello,Hello! How can I assist you today?,2025-08-12T05:24:18.015325
+1,do you know my name,"Based on the additional memory from previous sessions, your name is Burak.",2025-08-12T05:24:25.354605
+1,Do you know what I like to eat ?,I don't know.,2025-08-12T05:24:34.417446
+1,I like to eat baklava and do you know about baklava,"Yes, baklava is a rich, sweet dessert pastry known throughout the Middle East, Central Asia, and the Balkans. It's made of layers of phyllo dough filled with chopped nuts and sweetened with syrup or honey. Baklava is often associated with Turkish cuisine and is a popular dessert in many countries, including Turkey.",2025-08-12T05:24:48.144051
+1,Hello ,Hello! How can I assist you today?,2025-08-12T05:45:11.052959
+1,Do you know my name ?,"Based on the additional memory from previous sessions, your name is Burak.",2025-08-12T05:45:21.560202
+1,Which place is the best to go ?,I don’t know.,2025-08-12T05:45:38.653290
+1,how about my favorite place on earth ?,I don't have information on your favorite place on earth based on the provided context. Could you provide more details or specify the location?,2025-08-12T05:45:50.139148
+1,how about the food that I like ?,I don’t know.,2025-08-12T05:46:05.333551
+1,I really like taco,I don’t know.,2025-08-12T05:46:14.392037
+1,you can use this information later ,"Sure, I'll keep that information in mind for future interactions. Is there anything else you need help with now?",2025-08-12T05:46:28.317026
+1,Yes Can you tell me what food I like ?,"Based on the information you provided, you really like tacos.",2025-08-12T05:46:47.300550
+1,Do you know about tacos,"While I don't have specific details about your preferences regarding tacos, generally, tacos are a popular Mexican dish consisting of a small, flexible corn or wheat tortilla folded around a filling. Fillings can include various ingredients such as meat (beef, chicken, pork), fish, vegetables, and beans, often accompanied by salsa, cheese, and other condiments. Would you like more detailed information about tacos?",2025-08-12T05:47:04.146712
+1,how about baklava,I don’t know.,2025-08-12T05:47:15.685439
+1,but you know about tacos ?,I don’t know.,2025-08-12T05:47:27.535970
+1,you just explained it what tacos are,I don’t know.,2025-08-12T05:47:37.883772
+1,Do you know what i like,I don’t know.,2025-08-12T05:47:46.886251
+1,I love baklava,I don’t know.,2025-08-12T05:47:52.729560
+1,just keep in mind that I love to eat baklava,I don’t know.,2025-08-12T05:48:04.292183
+1,What food do I love the most,I don’t know.,2025-08-12T05:48:14.853958
+1,Okay remmeber I love baklava,I don’t know.,2025-08-12T05:48:27.357618
+1,Do you know the estimated delivery time to canada ?,The estimated delivery time to Canada is 10-15 business days.,2025-08-12T05:48:41.422855
+1,from san diego ?,I don’t know.,2025-08-12T05:48:47.998630
+1,you should know I am sending it from San diego,"The estimated delivery time to Canada from San Diego is still listed as 10-15 business days, since the specific origin city does not change the international delivery estimate provided.",2025-08-12T05:49:02.668562
+1,okay how about how to add user on emc,"To add a new user on EMC (Simphony), follow these steps:
+
+1. Launch the EMC (Simphony) application on your desktop.
+2. Enter your credentials:
+   - Server: hyattpos.microsdc.com:443
+   - User Name: Global ID number
+   - Company: ""HHC""
+   - Password: Enter password
+3. Click ""OK"".
+4. Click on the ""Configuration"" tab.
+5. Under the ""Personnel"" section, click on ""Employee Maintenance"".
+6. Click on ""Search"".
+7. Ensure the screen displays ""Property Employee Records"".
+8. Sort the list by ""Class"", then choose an existing name with the same Class level.
+9. Click on the existing user with the same class, then click on ""Employee Records"".
+10. Click on the GREEN ""+"" at the top of the screen.
+11. Enter appropriate credentials:
+    - Check Name: First name
+    - Record Number: Global ID
+12. Click ""OK"".",2025-08-12T05:49:27.353102
