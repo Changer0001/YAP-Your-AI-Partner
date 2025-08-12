@@ -369,3 +369,269 @@ DEBUG:chromadb.config:Starting component SqliteDB
 DEBUG:chromadb.config:Starting component LocalSegmentManager
 DEBUG:chromadb.config:Starting component SegmentAPI
 ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:chromadb.config:Starting component System
+DEBUG:chromadb.config:Starting component Posthog
+DEBUG:chromadb.config:Starting component OpenTelemetryClient
+DEBUG:chromadb.config:Starting component SimpleAssignmentPolicy
+DEBUG:chromadb.config:Starting component SqliteDB
+DEBUG:chromadb.config:Starting component LocalSegmentManager
+DEBUG:chromadb.config:Starting component SegmentAPI
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:root:\U0001f50d Found user ID 1 for username 'test1'
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:chromadb.config:Starting component PersistentLocalHnswSegment
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:root:[retrieval:/ask] ctx_chars=8869 rows=6 q='how to add user on emc'
+INFO:root:[retrieval:/ask] first_preview=7/13/25, 10:40 AM OneNote
+
+Add New User - EMC (Simphony)
+
+Thursday, October 20,2022 1:04 PM
+
+1.) On your desktop, launch
+INFO:root:\U0001f9e0 DOC CONTEXT PREVIEW:
+[SOURCE: source]
+7/13/25, 10:40 AM OneNote
+
+Add New User - EMC (Simphony)
+
+Thursday, October 20,2022 1:04 PM
+
+1.) On your desktop, launch EMC (Simphony) application. 2.) Enter your credentials, then take a coffee break:
+Server= hyattpos.microsdc.com:443
+User Name = Global ID number
+Company = "HHC"
+Enter password
+
+EMEC Signin x
+
+Oracle MICROS Simphony
+
+Enterprise Management Console
+
+EMC has been upeates to the latest version (19 3.4.0 5]. Login is requires
+
+Inyattpos microsde com443
+
+ORACLE
+
+3.) 
+DEBUG:root:\U0001f4e6 Final messages to LLM:
+[
+  {
+    "role": "system",
+    "content": "You are a helpful assistant.\n- If the user is greeting / small talk, respond naturally and briefly.\n- For business/policy questions, use ONLY the provided context. If the answer is not clearly in the context, say: 'I don't know.' Do NOT guess.\n- Prefer concise bullet lists when applicable.\n\nUse ONLY the context below to answer. If the answer is not clearly and directly found, say: 'I don't know.' Do NOT guess.\n\nContext:\n[SOURCE: source]\n7/13/25, 10:40 AM OneNote\n\nAdd New User - EMC (Simphony)\n\nThursday, October 20,2022 1:04 PM\n\n1.) On your desktop, launch EMC (Simphony) application. 2.) Enter your credentials, then take a coffee break:\nServer= hyattpos.microsdc.com:443\nUser Name = Global ID number\nCompany = \"HHC\"\nEnter password\n\nEMEC Signin x\n\nOracle MICROS Simphony\n\nEnterprise Management Console\n\nEMC has been upeates to the latest version (19 3.4.0 5]. Login is requires\n\nInyattpos microsde com443\n\nORACLE\n\n3.) Click \"OK\"\n\nEMC Database Credentials compliance is not met. Visit Properties module to check your compliance\n\nOK\n\n4.) Click on \"Configuration\" tab\n\n5.) Under \"Personnel\" section, click on \"Employee Maintenance\"\n\nBac\nfle Edt View Help\nome 24\n\n6.) Click on \"Search\" and get a coffee refill\n\ns a\ntle at) View Hep\nowe o0a 86\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/3\n\n7/13/25, 10:40 AM\n\nOneNote\n\n7.) Make sure the screen is on the \"Property Employee Records\"\n8.) Sort the list by \"Class\", then choose an existing name with same Class level. 9.) Click on the existing user with the same class, then click on the \"Employee Records\"\n\n10.) Click on the GREEN \"+\" at top of the screen\n\n11.) Enter appropriate credentials, then click \"OK\"\nCheck Name = First name\nRecord Number = Global ID\nAdd Employees\nSelect @ task to perform Add Enplyee Recor om Template y\n\u2018Add Employee With Template\nEmployee To Copy [1340855 Fren. Hamat] Select\nProperty Property Name RVC Name\n, a 10 Vega\n4 30 IRD\n[e} 32 Pocket\n4 46 Vege Bar\n(2) 50 Banquets\n[@] 60 Coffee Box\n\nClear All Check\n\n-\n\u201c| ene\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/3\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 3/3\n\n---\n\n[SOURCE: EMC Adding New User.pdf]\n7/13/25, 10:40 AM OneNote\n\nAdd New User - EMC (Simphony)\n\nThursday, October 20,2022 1:04 PM\n\n1.) On your desktop, launch EMC (Simphony) application. 2.) Enter your credentials, then take a coffee break:\nServer= hyattpos.microsdc.com:443\nUser Name = Global ID number\nCompany = \"HHC\"\nEnter password\n\nEMEC Signin x\n\nOracle MICROS Simphony\n\nEnterprise Management Console\n\nEMC has been upeates to the latest version (19 3.4.0 5]. Login is requires\n\nInyattpos microsde com443\n\nORACLE\n\n3.) Click \"OK\"\n\nEMC Database Credentials compliance is not met. Visit Properties module to check your compliance\n\nOK\n\n4.) Click on \"Configuration\" tab\n\n5.) Under \"Personnel\" section, click on \"Employee Maintenance\"\n\nBac\nfle Edt View Help\nome 24\n\n6.) Click on \"Search\" and get a coffee refill\n\ns a\ntle at) View Hep\nowe o0a 86\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/3\n\n7/13/25, 10:40 AM\n\nOneNote\n\n7.) Make sure the screen is on the \"Property Employee Records\"\n8.) Sort the list by \"Class\", then choose an existing name with same Class level. 9.) Click on the existing user with the same class, then click on the \"Employee Records\"\n\n10.) Click on the GREEN \"+\" at top of the screen\n\n11.) Enter appropriate credentials, then click \"OK\"\nCheck Name = First name\nRecord Number = Global ID\nAdd Employees\nSelect @ task to perform Add Enplyee Recor om Template y\n\u2018Add Employee With Template\nEmployee To Copy [1340855 Fren. Hamat] Select\nProperty Property Name RVC Name\n, a 10 Vega\n4 30 IRD\n[e} 32 Pocket\n4 46 Vege Bar\n(2) 50 Banquets\n[@] 60 Coffee Box\n\nClear All Check\n\n-\n\u201c| ene\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/3\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 3/3\n\n---\n\n[SOURCE: source]\n7/13/25, 10:40 AM OneNote\n\nNew User - Sertifi\n\nThursday, October 20, 2022 3:24 PM\n\n1.) Open a web browser and go to: https://www.sertifi,com/HYATT-SANEN/profile.aspx?edit=1\n\n2.) Click on \"log in with enterprise id\"\n\nLogin To Your Account\n\nUsername\n\n>\n:\n\nont have an account? son up now\n\n3.) Click on \"Administration\" > \"Create Admins\"\n\nHYATT\n\ntome | |g senorue | \u00a9) viewrites | [2 sin =\n\n3 Document Library\n\n&) My Profite\n\n[Eu] Address Book @, Search By File! a Account Settings\n\nManage Admins and Users\n\niew Admins View Users\nVi\n\nca ee AB Resend Activation Link\n\n4.) Enter the credentials, then click \"Create Admin\"\nEmail = email... Role = Power Admin\nEnterprise ID = Global ID\n\nHYATT\n\n{\u00ae Home se senorie |) viewrnes [2 sicn 6% apministraTion\n\nCreate Admin\n\nType in the email address ofthe admin you wish to add below and cick Search to try to find them in our system\n\nSearch\n\nrick nho@hyatt.com ves not found in our system,\n7 ate role, enter the enterprise 10, and then eck Create Admin,\n\nBE Power Acmin ~ (ice\n\nCreate Admin\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d8254170612f}&action=... 1/2\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: Sertifi Access.pdf]\n7/13/25, 10:40 AM OneNote\n\nNew User - Sertifi\n\nThursday, October 20, 2022 3:24 PM\n\n1.) Open a web browser and go to: https://www.sertifi,com/HYATT-SANEN/profile.aspx?edit=1\n\n2.) Click on \"log in with enterprise id\"\n\nLogin To Your Account\n\nUsername\n\n>\n:\n\nont have an account? son up now\n\n3.) Click on \"Administration\" > \"Create Admins\"\n\nHYATT\n\ntome | |g senorue | \u00a9) viewrites | [2 sin =\n\n3 Document Library\n\n&) My Profite\n\n[Eu] Address Book @, Search By File! a Account Settings\n\nManage Admins and Users\n\niew Admins View Users\nVi\n\nca ee AB Resend Activation Link\n\n4.) Enter the credentials, then click \"Create Admin\"\nEmail = email... Role = Power Admin\nEnterprise ID = Global ID\n\nHYATT\n\n{\u00ae Home se senorie |) viewrnes [2 sicn 6% apministraTion\n\nCreate Admin\n\nType in the email address ofthe admin you wish to add below and cick Search to try to find them in our system\n\nSearch\n\nrick nho@hyatt.com ves not found in our system,\n7 ate role, enter the enterprise 10, and then eck Create Admin,\n\nBE Power Acmin ~ (ice\n\nCreate Admin\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d8254170612f}&action=... 1/2\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: Citrix Access.pdf]\n7/13/25, 10:39 AM OneNote\n\nNew User - Citrix Access\n\nThursday, October 20, 2022 12:47 PM\n\n1.) Go to: https://hyatt.service-now.com/serviceportal\n\n2.) Type \"Citrix Access Request\" in search bar\n3.) Click on \"Citrix Access Request\"\n\n4.) Under \"Who is the user needing access?\", enter the user's Global ID\n\n5.) Once Global ID is entered, the other two boxes (\"Who is the user's manager?\" and \"What is the\nuser's location (SPIRIT Code)?\" ) should automatically populate\n\n6.) Select the appropriate application. If the desired application is not listed, then select \"Other\" and\n*If not, manually enter the information\n\n7.) Once completed, click on \"Submit\" blue-colored button, located top-right of the screen\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/2\n\n7/13/25, 10:39 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: source]\n7/13/25, 10:39 AM OneNote\n\nNew User - Citrix Access\n\nThursday, October 20, 2022 12:47 PM\n\n1.) Go to: https://hyatt.service-now.com/serviceportal\n\n2.) Type \"Citrix Access Request\" in search bar\n3.) Click on \"Citrix Access Request\"\n\n4.) Under \"Who is the user needing access?\", enter the user's Global ID\n\n5.) Once Global ID is entered, the other two boxes (\"Who is the user's manager?\" and \"What is the\nuser's location (SPIRIT Code)?\" ) should automatically populate\n\n6.) Select the appropriate application. If the desired application is not listed, then select \"Other\" and\n*If not, manually enter the information\n\n7.) Once completed, click on \"Submit\" blue-colored button, located top-right of the screen\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/2\n\n7/13/25, 10:39 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\nAdditional memory from previous sessions:\n- user_name: User introduced as Burak\n- user_name: User introduced as saying\n- user_name: User introduced as Burak"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "To add a new user on EMC (Simphony), follow these steps:"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc\n\nImportant:\n1\ufe0f\u20e3 Only answer if the info is in context or chat history; else say: I don't know.\n2\ufe0f\u20e3 Format the answer as a list if applicable."
+  }
+]
+INFO:root:\U0001f9fe Final LLM Messages:
+[
+  {
+    "role": "system",
+    "content": "You are a helpful assistant.\n- If the user is greeting / small talk, respond naturally and briefly.\n- For business/policy questions, use ONLY the provided context. If the answer is not clearly in the context, say: 'I don't know.' Do NOT guess.\n- Prefer concise bullet lists when applicable.\n\nUse ONLY the context below to answer. If the answer is not clearly and directly found, say: 'I don't know.' Do NOT guess.\n\nContext:\n[SOURCE: source]\n7/13/25, 10:40 AM OneNote\n\nAdd New User - EMC (Simphony)\n\nThursday, October 20,2022 1:04 PM\n\n1.) On your desktop, launch EMC (Simphony) application. 2.) Enter your credentials, then take a coffee break:\nServer= hyattpos.microsdc.com:443\nUser Name = Global ID number\nCompany = \"HHC\"\nEnter password\n\nEMEC Signin x\n\nOracle MICROS Simphony\n\nEnterprise Management Console\n\nEMC has been upeates to the latest version (19 3.4.0 5]. Login is requires\n\nInyattpos microsde com443\n\nORACLE\n\n3.) Click \"OK\"\n\nEMC Database Credentials compliance is not met. Visit Properties module to check your compliance\n\nOK\n\n4.) Click on \"Configuration\" tab\n\n5.) Under \"Personnel\" section, click on \"Employee Maintenance\"\n\nBac\nfle Edt View Help\nome 24\n\n6.) Click on \"Search\" and get a coffee refill\n\ns a\ntle at) View Hep\nowe o0a 86\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/3\n\n7/13/25, 10:40 AM\n\nOneNote\n\n7.) Make sure the screen is on the \"Property Employee Records\"\n8.) Sort the list by \"Class\", then choose an existing name with same Class level. 9.) Click on the existing user with the same class, then click on the \"Employee Records\"\n\n10.) Click on the GREEN \"+\" at top of the screen\n\n11.) Enter appropriate credentials, then click \"OK\"\nCheck Name = First name\nRecord Number = Global ID\nAdd Employees\nSelect @ task to perform Add Enplyee Recor om Template y\n\u2018Add Employee With Template\nEmployee To Copy [1340855 Fren. Hamat] Select\nProperty Property Name RVC Name\n, a 10 Vega\n4 30 IRD\n[e} 32 Pocket\n4 46 Vege Bar\n(2) 50 Banquets\n[@] 60 Coffee Box\n\nClear All Check\n\n-\n\u201c| ene\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/3\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 3/3\n\n---\n\n[SOURCE: EMC Adding New User.pdf]\n7/13/25, 10:40 AM OneNote\n\nAdd New User - EMC (Simphony)\n\nThursday, October 20,2022 1:04 PM\n\n1.) On your desktop, launch EMC (Simphony) application. 2.) Enter your credentials, then take a coffee break:\nServer= hyattpos.microsdc.com:443\nUser Name = Global ID number\nCompany = \"HHC\"\nEnter password\n\nEMEC Signin x\n\nOracle MICROS Simphony\n\nEnterprise Management Console\n\nEMC has been upeates to the latest version (19 3.4.0 5]. Login is requires\n\nInyattpos microsde com443\n\nORACLE\n\n3.) Click \"OK\"\n\nEMC Database Credentials compliance is not met. Visit Properties module to check your compliance\n\nOK\n\n4.) Click on \"Configuration\" tab\n\n5.) Under \"Personnel\" section, click on \"Employee Maintenance\"\n\nBac\nfle Edt View Help\nome 24\n\n6.) Click on \"Search\" and get a coffee refill\n\ns a\ntle at) View Hep\nowe o0a 86\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/3\n\n7/13/25, 10:40 AM\n\nOneNote\n\n7.) Make sure the screen is on the \"Property Employee Records\"\n8.) Sort the list by \"Class\", then choose an existing name with same Class level. 9.) Click on the existing user with the same class, then click on the \"Employee Records\"\n\n10.) Click on the GREEN \"+\" at top of the screen\n\n11.) Enter appropriate credentials, then click \"OK\"\nCheck Name = First name\nRecord Number = Global ID\nAdd Employees\nSelect @ task to perform Add Enplyee Recor om Template y\n\u2018Add Employee With Template\nEmployee To Copy [1340855 Fren. Hamat] Select\nProperty Property Name RVC Name\n, a 10 Vega\n4 30 IRD\n[e} 32 Pocket\n4 46 Vege Bar\n(2) 50 Banquets\n[@] 60 Coffee Box\n\nClear All Check\n\n-\n\u201c| ene\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/3\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 3/3\n\n---\n\n[SOURCE: source]\n7/13/25, 10:40 AM OneNote\n\nNew User - Sertifi\n\nThursday, October 20, 2022 3:24 PM\n\n1.) Open a web browser and go to: https://www.sertifi,com/HYATT-SANEN/profile.aspx?edit=1\n\n2.) Click on \"log in with enterprise id\"\n\nLogin To Your Account\n\nUsername\n\n>\n:\n\nont have an account? son up now\n\n3.) Click on \"Administration\" > \"Create Admins\"\n\nHYATT\n\ntome | |g senorue | \u00a9) viewrites | [2 sin =\n\n3 Document Library\n\n&) My Profite\n\n[Eu] Address Book @, Search By File! a Account Settings\n\nManage Admins and Users\n\niew Admins View Users\nVi\n\nca ee AB Resend Activation Link\n\n4.) Enter the credentials, then click \"Create Admin\"\nEmail = email... Role = Power Admin\nEnterprise ID = Global ID\n\nHYATT\n\n{\u00ae Home se senorie |) viewrnes [2 sicn 6% apministraTion\n\nCreate Admin\n\nType in the email address ofthe admin you wish to add below and cick Search to try to find them in our system\n\nSearch\n\nrick nho@hyatt.com ves not found in our system,\n7 ate role, enter the enterprise 10, and then eck Create Admin,\n\nBE Power Acmin ~ (ice\n\nCreate Admin\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d8254170612f}&action=... 1/2\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: Sertifi Access.pdf]\n7/13/25, 10:40 AM OneNote\n\nNew User - Sertifi\n\nThursday, October 20, 2022 3:24 PM\n\n1.) Open a web browser and go to: https://www.sertifi,com/HYATT-SANEN/profile.aspx?edit=1\n\n2.) Click on \"log in with enterprise id\"\n\nLogin To Your Account\n\nUsername\n\n>\n:\n\nont have an account? son up now\n\n3.) Click on \"Administration\" > \"Create Admins\"\n\nHYATT\n\ntome | |g senorue | \u00a9) viewrites | [2 sin =\n\n3 Document Library\n\n&) My Profite\n\n[Eu] Address Book @, Search By File! a Account Settings\n\nManage Admins and Users\n\niew Admins View Users\nVi\n\nca ee AB Resend Activation Link\n\n4.) Enter the credentials, then click \"Create Admin\"\nEmail = email... Role = Power Admin\nEnterprise ID = Global ID\n\nHYATT\n\n{\u00ae Home se senorie |) viewrnes [2 sicn 6% apministraTion\n\nCreate Admin\n\nType in the email address ofthe admin you wish to add below and cick Search to try to find them in our system\n\nSearch\n\nrick nho@hyatt.com ves not found in our system,\n7 ate role, enter the enterprise 10, and then eck Create Admin,\n\nBE Power Acmin ~ (ice\n\nCreate Admin\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d8254170612f}&action=... 1/2\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: Citrix Access.pdf]\n7/13/25, 10:39 AM OneNote\n\nNew User - Citrix Access\n\nThursday, October 20, 2022 12:47 PM\n\n1.) Go to: https://hyatt.service-now.com/serviceportal\n\n2.) Type \"Citrix Access Request\" in search bar\n3.) Click on \"Citrix Access Request\"\n\n4.) Under \"Who is the user needing access?\", enter the user's Global ID\n\n5.) Once Global ID is entered, the other two boxes (\"Who is the user's manager?\" and \"What is the\nuser's location (SPIRIT Code)?\" ) should automatically populate\n\n6.) Select the appropriate application. If the desired application is not listed, then select \"Other\" and\n*If not, manually enter the information\n\n7.) Once completed, click on \"Submit\" blue-colored button, located top-right of the screen\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/2\n\n7/13/25, 10:39 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: source]\n7/13/25, 10:39 AM OneNote\n\nNew User - Citrix Access\n\nThursday, October 20, 2022 12:47 PM\n\n1.) Go to: https://hyatt.service-now.com/serviceportal\n\n2.) Type \"Citrix Access Request\" in search bar\n3.) Click on \"Citrix Access Request\"\n\n4.) Under \"Who is the user needing access?\", enter the user's Global ID\n\n5.) Once Global ID is entered, the other two boxes (\"Who is the user's manager?\" and \"What is the\nuser's location (SPIRIT Code)?\" ) should automatically populate\n\n6.) Select the appropriate application. If the desired application is not listed, then select \"Other\" and\n*If not, manually enter the information\n\n7.) Once completed, click on \"Submit\" blue-colored button, located top-right of the screen\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/2\n\n7/13/25, 10:39 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\nAdditional memory from previous sessions:\n- user_name: User introduced as Burak\n- user_name: User introduced as saying\n- user_name: User introduced as Burak"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "To add a new user on EMC (Simphony), follow these steps:"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc\n\nImportant:\n1\ufe0f\u20e3 Only answer if the info is in context or chat history; else say: I don't know.\n2\ufe0f\u20e3 Format the answer as a list if applicable."
+  }
+]
+INFO:root:\U0001f4c4 Document Chunks Preview:
+[SOURCE: source]
+7/13/25, 10:40 AM OneNote
+
+Add New User - EMC (Simphony)
+
+Thursday, October 20,2022 1:04 PM
+
+1.) On your desktop, launch EMC (Simphony) application. 2.) Enter your credentials, then take a coffee break:
+Server= hyattpos.microsdc.com:443
+User Name = Global ID number
+Company = "HHC"
+Enter password
+
+EMEC Signin x
+
+Oracle MICROS Simphony
+
+Enterprise Management Console
+
+EMC has been upeates to the latest version (19 3.4.0 5]. Login is requires
+
+Inyattpos microsde com443
+
+ORACLE
+
+3.) 
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): e6e5546714ed.ngrok-free.app:443
+DEBUG:urllib3.connectionpool:https://e6e5546714ed.ngrok-free.app:443 "POST /v1/chat/completions HTTP/1.1" 200 1364
+INFO:root:\U0001f916 Final LLM Answer:
+To add a new user on EMC (Simphony):
+
+1. Launch EMC (Simphony) application on your desktop.
+2. Enter your credentials:
+   - Server: hyattpos.microsdc.com:443
+   - User Name: Global ID number
+   - Company: "HHC"
+   - Password
+3. Click "OK".
+4. Click on "Configuration" tab.
+5. Under "Personnel" section, click on "Employee Maintenance".
+6. Click on "Search".
+7. Ensure the screen is on the "Property Employee Records".
+8. Sort the list by "Class", then choose an existing name with the same Class level.
+9. Click on the existing user with the same class, then click on the "Employee Records".
+10. Click on the GREEN "+" at the top of the screen.
+11. Enter appropriate credentials:
+    - Check Name: First name
+    - Record Number: Global ID
+12. Click "OK".
+DEBUG:root:\U0001f50d Found user ID 1 for username 'test1'
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:root:[retrieval:/ask_stream] ctx_chars=8869 rows=6 q='how to add user on emc'
+INFO:root:[retrieval:/ask_stream] first_preview=7/13/25, 10:40 AM OneNote
+
+Add New User - EMC (Simphony)
+
+Thursday, October 20,2022 1:04 PM
+
+1.) On your desktop, launch
+DEBUG:root:\U0001f4e6 Final messages to LLM:
+[
+  {
+    "role": "system",
+    "content": "You are a helpful assistant.\n- If the user is greeting / small talk, respond naturally and briefly.\n- For business/policy questions, use ONLY the provided context. If the answer is not clearly in the context, say: 'I don't know.' Do NOT guess.\n- Prefer concise bullet lists when applicable.\n\nUse ONLY the context below to answer. If the answer is not clearly and directly found, say: 'I don't know.' Do NOT guess.\n\nContext:\n[SOURCE: source]\n7/13/25, 10:40 AM OneNote\n\nAdd New User - EMC (Simphony)\n\nThursday, October 20,2022 1:04 PM\n\n1.) On your desktop, launch EMC (Simphony) application. 2.) Enter your credentials, then take a coffee break:\nServer= hyattpos.microsdc.com:443\nUser Name = Global ID number\nCompany = \"HHC\"\nEnter password\n\nEMEC Signin x\n\nOracle MICROS Simphony\n\nEnterprise Management Console\n\nEMC has been upeates to the latest version (19 3.4.0 5]. Login is requires\n\nInyattpos microsde com443\n\nORACLE\n\n3.) Click \"OK\"\n\nEMC Database Credentials compliance is not met. Visit Properties module to check your compliance\n\nOK\n\n4.) Click on \"Configuration\" tab\n\n5.) Under \"Personnel\" section, click on \"Employee Maintenance\"\n\nBac\nfle Edt View Help\nome 24\n\n6.) Click on \"Search\" and get a coffee refill\n\ns a\ntle at) View Hep\nowe o0a 86\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/3\n\n7/13/25, 10:40 AM\n\nOneNote\n\n7.) Make sure the screen is on the \"Property Employee Records\"\n8.) Sort the list by \"Class\", then choose an existing name with same Class level. 9.) Click on the existing user with the same class, then click on the \"Employee Records\"\n\n10.) Click on the GREEN \"+\" at top of the screen\n\n11.) Enter appropriate credentials, then click \"OK\"\nCheck Name = First name\nRecord Number = Global ID\nAdd Employees\nSelect @ task to perform Add Enplyee Recor om Template y\n\u2018Add Employee With Template\nEmployee To Copy [1340855 Fren. Hamat] Select\nProperty Property Name RVC Name\n, a 10 Vega\n4 30 IRD\n[e} 32 Pocket\n4 46 Vege Bar\n(2) 50 Banquets\n[@] 60 Coffee Box\n\nClear All Check\n\n-\n\u201c| ene\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/3\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 3/3\n\n---\n\n[SOURCE: EMC Adding New User.pdf]\n7/13/25, 10:40 AM OneNote\n\nAdd New User - EMC (Simphony)\n\nThursday, October 20,2022 1:04 PM\n\n1.) On your desktop, launch EMC (Simphony) application. 2.) Enter your credentials, then take a coffee break:\nServer= hyattpos.microsdc.com:443\nUser Name = Global ID number\nCompany = \"HHC\"\nEnter password\n\nEMEC Signin x\n\nOracle MICROS Simphony\n\nEnterprise Management Console\n\nEMC has been upeates to the latest version (19 3.4.0 5]. Login is requires\n\nInyattpos microsde com443\n\nORACLE\n\n3.) Click \"OK\"\n\nEMC Database Credentials compliance is not met. Visit Properties module to check your compliance\n\nOK\n\n4.) Click on \"Configuration\" tab\n\n5.) Under \"Personnel\" section, click on \"Employee Maintenance\"\n\nBac\nfle Edt View Help\nome 24\n\n6.) Click on \"Search\" and get a coffee refill\n\ns a\ntle at) View Hep\nowe o0a 86\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/3\n\n7/13/25, 10:40 AM\n\nOneNote\n\n7.) Make sure the screen is on the \"Property Employee Records\"\n8.) Sort the list by \"Class\", then choose an existing name with same Class level. 9.) Click on the existing user with the same class, then click on the \"Employee Records\"\n\n10.) Click on the GREEN \"+\" at top of the screen\n\n11.) Enter appropriate credentials, then click \"OK\"\nCheck Name = First name\nRecord Number = Global ID\nAdd Employees\nSelect @ task to perform Add Enplyee Recor om Template y\n\u2018Add Employee With Template\nEmployee To Copy [1340855 Fren. Hamat] Select\nProperty Property Name RVC Name\n, a 10 Vega\n4 30 IRD\n[e} 32 Pocket\n4 46 Vege Bar\n(2) 50 Banquets\n[@] 60 Coffee Box\n\nClear All Check\n\n-\n\u201c| ene\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/3\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 3/3\n\n---\n\n[SOURCE: source]\n7/13/25, 10:40 AM OneNote\n\nNew User - Sertifi\n\nThursday, October 20, 2022 3:24 PM\n\n1.) Open a web browser and go to: https://www.sertifi,com/HYATT-SANEN/profile.aspx?edit=1\n\n2.) Click on \"log in with enterprise id\"\n\nLogin To Your Account\n\nUsername\n\n>\n:\n\nont have an account? son up now\n\n3.) Click on \"Administration\" > \"Create Admins\"\n\nHYATT\n\ntome | |g senorue | \u00a9) viewrites | [2 sin =\n\n3 Document Library\n\n&) My Profite\n\n[Eu] Address Book @, Search By File! a Account Settings\n\nManage Admins and Users\n\niew Admins View Users\nVi\n\nca ee AB Resend Activation Link\n\n4.) Enter the credentials, then click \"Create Admin\"\nEmail = email... Role = Power Admin\nEnterprise ID = Global ID\n\nHYATT\n\n{\u00ae Home se senorie |) viewrnes [2 sicn 6% apministraTion\n\nCreate Admin\n\nType in the email address ofthe admin you wish to add below and cick Search to try to find them in our system\n\nSearch\n\nrick nho@hyatt.com ves not found in our system,\n7 ate role, enter the enterprise 10, and then eck Create Admin,\n\nBE Power Acmin ~ (ice\n\nCreate Admin\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d8254170612f}&action=... 1/2\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: Sertifi Access.pdf]\n7/13/25, 10:40 AM OneNote\n\nNew User - Sertifi\n\nThursday, October 20, 2022 3:24 PM\n\n1.) Open a web browser and go to: https://www.sertifi,com/HYATT-SANEN/profile.aspx?edit=1\n\n2.) Click on \"log in with enterprise id\"\n\nLogin To Your Account\n\nUsername\n\n>\n:\n\nont have an account? son up now\n\n3.) Click on \"Administration\" > \"Create Admins\"\n\nHYATT\n\ntome | |g senorue | \u00a9) viewrites | [2 sin =\n\n3 Document Library\n\n&) My Profite\n\n[Eu] Address Book @, Search By File! a Account Settings\n\nManage Admins and Users\n\niew Admins View Users\nVi\n\nca ee AB Resend Activation Link\n\n4.) Enter the credentials, then click \"Create Admin\"\nEmail = email... Role = Power Admin\nEnterprise ID = Global ID\n\nHYATT\n\n{\u00ae Home se senorie |) viewrnes [2 sicn 6% apministraTion\n\nCreate Admin\n\nType in the email address ofthe admin you wish to add below and cick Search to try to find them in our system\n\nSearch\n\nrick nho@hyatt.com ves not found in our system,\n7 ate role, enter the enterprise 10, and then eck Create Admin,\n\nBE Power Acmin ~ (ice\n\nCreate Admin\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d8254170612f}&action=... 1/2\n\n7/13/25, 10:40 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: Citrix Access.pdf]\n7/13/25, 10:39 AM OneNote\n\nNew User - Citrix Access\n\nThursday, October 20, 2022 12:47 PM\n\n1.) Go to: https://hyatt.service-now.com/serviceportal\n\n2.) Type \"Citrix Access Request\" in search bar\n3.) Click on \"Citrix Access Request\"\n\n4.) Under \"Who is the user needing access?\", enter the user's Global ID\n\n5.) Once Global ID is entered, the other two boxes (\"Who is the user's manager?\" and \"What is the\nuser's location (SPIRIT Code)?\" ) should automatically populate\n\n6.) Select the appropriate application. If the desired application is not listed, then select \"Other\" and\n*If not, manually enter the information\n\n7.) Once completed, click on \"Submit\" blue-colored button, located top-right of the screen\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/2\n\n7/13/25, 10:39 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\n---\n\n[SOURCE: source]\n7/13/25, 10:39 AM OneNote\n\nNew User - Citrix Access\n\nThursday, October 20, 2022 12:47 PM\n\n1.) Go to: https://hyatt.service-now.com/serviceportal\n\n2.) Type \"Citrix Access Request\" in search bar\n3.) Click on \"Citrix Access Request\"\n\n4.) Under \"Who is the user needing access?\", enter the user's Global ID\n\n5.) Once Global ID is entered, the other two boxes (\"Who is the user's manager?\" and \"What is the\nuser's location (SPIRIT Code)?\" ) should automatically populate\n\n6.) Select the appropriate application. If the desired application is not listed, then select \"Other\" and\n*If not, manually enter the information\n\n7.) Once completed, click on \"Submit\" blue-colored button, located top-right of the screen\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b82347 8b-3e5e-4c04-a04b-d82541 7061 2f}&action=... 1/2\n\n7/13/25, 10:39 AM OneNote\n\nhttps://mysite.hyattoffice.com/personal/omer_khan_hyatt_com/_layouts/15/Doc.aspx?sourcedoc={b823478b-3e5e-4c04-a04b-d8254170612f}&action=... 2/2\n\nAdditional memory from previous sessions:\n- user_name: User introduced as Burak\n- user_name: User introduced as saying\n- user_name: User introduced as Burak"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "To add a new user on EMC (Simphony), follow these steps:"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "I don\u2019t have that information yet. Which policy or document should I check?"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc"
+  },
+  {
+    "role": "assistant",
+    "content": "To add a new user on EMC (Simphony):"
+  },
+  {
+    "role": "user",
+    "content": "how to add user on emc\n\nImportant:\n1\ufe0f\u20e3 Only answer if the info is in context or chat history; else say: I don't know.\n2\ufe0f\u20e3 Format the answer as a list if applicable."
+  }
+]
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): e6e5546714ed.ngrok-free.app:443
+DEBUG:urllib3.connectionpool:https://e6e5546714ed.ngrok-free.app:443 "POST /v1/chat/completions HTTP/1.1" 200 None
