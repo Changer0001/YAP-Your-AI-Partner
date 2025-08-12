@@ -348,3 +348,82 @@ Ensure that the email address of the admin you wish to add does not already exis
 - Shipping costs are non-refundable.
 - To start a return or refund, email support@trendify.com with your order number.
 - If the product is defective or damaged, we will cover the return shipping.",2025-08-12T04:27:12.311508
+1,how to add user on emc,"To add a new user on EMC (Simphony):
+
+1. Launch EMC (Simphony) application on your desktop.
+2. Enter your credentials:
+   - Server: hyattpos.microsdc.com:443
+   - User Name: Global ID number
+   - Company: ""HHC""
+   - Password: [your password]
+3. Click ""OK"".
+4. Click on ""Configuration"" tab.
+5. Under ""Personnel"" section, click on ""Employee Maintenance"".
+6. Click on ""Search"".
+7. Ensure the screen is on the ""Property Employee Records"".
+8. Sort the list by ""Class"", then choose an existing name with the same Class level.
+9. Click on the existing user with the same class, then click on the ""Employee Records"".
+10. Click on the GREEN ""+"" at the top of the screen.
+11. Enter appropriate credentials:
+    - Check Name: First name
+    - Record Number: Global ID
+12. Click ""OK"".",2025-08-12T04:31:47.189853
+1,how to add user on sertifi,"To add a user on Sertifi, follow these steps:
+
+1. Open a web browser and go to: https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1
+2. Click on ""log in with enterprise id"".
+3. Log in using your credentials.
+4. Click on ""Administration"" > ""Create Admins"".
+5. Enter the following credentials and click ""Create Admin"":
+   - Email = email...
+   - Role = Power Admin
+   - Enterprise ID = Global ID
+
+Note: If the user you're adding does not exist in the system, after entering the email address, click ""Search"". The system will indicate that the user is not found. Then, specify the role, enter the enterprise ID, and click ""Create Admin"".",2025-08-12T04:33:44.956127
+1,how to add user on emc,"To add a new user on EMC (Simphony):
+
+1. Launch the EMC (Simphony) application on your desktop.
+2. Enter your credentials:
+   - Server: hyattpos.microsdc.com:443
+   - User Name: Global ID number
+   - Company: ""HHC""
+   - Password: your password
+3. Click ""OK"".
+4. Click on the ""Configuration"" tab.
+5. Under the ""Personnel"" section, click on ""Employee Maintenance"".
+6. Click on ""Search"".
+7. Ensure the screen displays ""Property Employee Records"".
+8. Sort the list by ""Class"", then choose an existing name with the same Class level.
+9. Click on the existing user with the same class, then click on the ""Employee Records"".
+10. Click on the GREEN ""+"" at the top of the screen.
+11. Enter appropriate credentials, including:
+    - Check Name: First name
+    - Record Number: Global ID
+12. Click ""OK"".",2025-08-12T04:37:10.625626
+1,hello ,Hello! How can I assist you today?,2025-08-12T04:42:38.025590
+1,Do you know my name,"Based on the previous sessions, your name is Burak.",2025-08-12T04:42:48.962118
+1,how do you know my nam,The context provided includes information from previous sessions where you were introduced as Burak.,2025-08-12T04:44:43.686632
+1,what is the best sandiwch in the world,I don't know.,2025-08-12T04:44:59.815687
+1,are you taking this information from chat history,"Yes, I'm referencing the information provided in the context and previous sessions. Is there something specific you'd like to know or discuss?",2025-08-12T04:45:30.229871
+1,how to add user on sertifi,"To add a user on Sertifi, follow these steps:
+
+1. Open a web browser and go to: https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1
+2. Click on ""log in with enterprise id""
+3. Log into your account
+4. Click on ""Administration"" > ""Create Admins""
+5. Enter the following credentials:
+   - Email = email...
+   - Role = Power Admin
+   - Enterprise ID = Global ID
+6. Click ""Create Admin""",2025-08-12T04:58:06.175430
+1,Hello,Hello! How can I assist you today?,2025-08-12T04:58:25.709841
+1,Do you know my name ?,"Based on the previous context, your name is Burak. How can I assist you today, Burak?",2025-08-12T04:58:33.714885
+1,Do you know where LPL located ?,I don't know.,2025-08-12T04:59:40.088817
+1,what is the weather in San Diego now? And Do you know the estimated time to Canada ? and also if I unpacked the item can i still return it,"I don't have real-time data for the current weather in San Diego or the estimated time to Canada. For those details, please check a reliable weather website or use a travel/time calculator.
+
+Regarding returns, if you unpack the item, you may still be eligible for a return, but it depends on the specific policy. According to the refund policy provided:
+- Items must be unused and in original packaging to qualify for a refund.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+
+If the product is defective or damaged, you should contact support@trendify.com to arrange a return.",2025-08-12T05:01:54.685564
