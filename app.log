@@ -289,3 +289,83 @@ DEBUG:root:\U0001f4e6 Final messages to LLM (_chat_once):
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): d6634fd8af89.ngrok-free.app:443
 DEBUG:urllib3.connectionpool:https://d6634fd8af89.ngrok-free.app:443 "POST /v1/chat/completions HTTP/1.1" 200 805
 INFO:root:\u23f1\ufe0f chat time 1.25s
+DEBUG:chromadb.config:Starting component System
+DEBUG:chromadb.config:Starting component Posthog
+DEBUG:chromadb.config:Starting component OpenTelemetryClient
+DEBUG:chromadb.config:Starting component SimpleAssignmentPolicy
+DEBUG:chromadb.config:Starting component SqliteDB
+DEBUG:chromadb.config:Starting component LocalSegmentManager
+DEBUG:chromadb.config:Starting component SegmentAPI
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:chromadb.config:Starting component System
+DEBUG:chromadb.config:Starting component Posthog
+DEBUG:chromadb.config:Starting component OpenTelemetryClient
+DEBUG:chromadb.config:Starting component SimpleAssignmentPolicy
+DEBUG:chromadb.config:Starting component SqliteDB
+DEBUG:chromadb.config:Starting component LocalSegmentManager
+DEBUG:chromadb.config:Starting component SegmentAPI
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:root:\U0001f50d Found user ID 1 for username 'test1'
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:chromadb.config:Starting component PersistentLocalHnswSegment
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:root:[retrieval:/ask_stream] ctx_chars=8869 rows=6 q='how to add user on emc'
+INFO:root:[retrieval:/ask_stream] first_preview=7/13/25, 10:40 AM OneNote
+
+Add New User - EMC (Simphony)
+
+Thursday, October 20,2022 1:04 PM
+
+1.) On your desktop, launch
+DEBUG:chromadb.config:Starting component System
+DEBUG:chromadb.config:Starting component Posthog
+DEBUG:chromadb.config:Starting component OpenTelemetryClient
+DEBUG:chromadb.config:Starting component SimpleAssignmentPolicy
+DEBUG:chromadb.config:Starting component SqliteDB
+DEBUG:chromadb.config:Starting component LocalSegmentManager
+DEBUG:chromadb.config:Starting component SegmentAPI
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:root:\U0001f50d Found user ID 1 for username 'test1'
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:chromadb.config:Starting component PersistentLocalHnswSegment
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:root:[retrieval:/ask_stream] ctx_chars=8869 rows=6 q='how to add user on emc'
+INFO:root:[retrieval:/ask_stream] first_preview=7/13/25, 10:40 AM OneNote
+
+Add New User - EMC (Simphony)
+
+Thursday, October 20,2022 1:04 PM
+
+1.) On your desktop, launch
+DEBUG:root:\U0001f50d Found user ID 1 for username 'test1'
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientCreateCollectionEvent: capture() takes 1 positional argument but 3 were given
+INFO:root:[retrieval:/ask] ctx_chars=8869 rows=6 q='how to add user on emc'
+INFO:root:[retrieval:/ask] first_preview=7/13/25, 10:40 AM OneNote
+
+Add New User - EMC (Simphony)
+
+Thursday, October 20,2022 1:04 PM
+
+1.) On your desktop, launch
+DEBUG:chromadb.config:Starting component System
+DEBUG:chromadb.config:Starting component Posthog
+DEBUG:chromadb.config:Starting component OpenTelemetryClient
+DEBUG:chromadb.config:Starting component SimpleAssignmentPolicy
+DEBUG:chromadb.config:Starting component SqliteDB
+DEBUG:chromadb.config:Starting component LocalSegmentManager
+DEBUG:chromadb.config:Starting component SegmentAPI
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+DEBUG:chromadb.config:Starting component System
+DEBUG:chromadb.config:Starting component Posthog
+DEBUG:chromadb.config:Starting component OpenTelemetryClient
+DEBUG:chromadb.config:Starting component SimpleAssignmentPolicy
+DEBUG:chromadb.config:Starting component SqliteDB
+DEBUG:chromadb.config:Starting component LocalSegmentManager
+DEBUG:chromadb.config:Starting component SegmentAPI
+ERROR:chromadb.telemetry.product.posthog:Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given

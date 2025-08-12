@@ -143,3 +143,65 @@ If you encounter any issues during the process, I recommend reaching out to Sert
   11. Enter appropriate credentials, then click ""OK"":
       - Check Name: First name
       - Record Number: Global ID",2025-08-10T07:07:08.054028
+1,how to add user on emc,"To add a new user on EMC (Simphony), follow these steps:
+
+1. Launch EMC (Simphony) application on your desktop.
+2. Enter your credentials:
+   - Server: hyattpos.microsdc.com:443
+   - User Name: Global ID number
+   - Company: ""HHC""
+   - Password
+3. Click ""OK"".
+4. Click on ""Configuration"" tab.
+5. Under ""Personnel"" section, click on ""Employee Maintenance"".
+6. Click on ""Search"".
+7. Ensure the screen displays ""Property Employee Records"".
+8. Sort the list by ""Class"" and choose an existing name with the same Class level.
+9. Click on the existing user with the same class, then click on the ""Employee Records"".
+10. Click on the GREEN ""+"" at the top of the screen.
+11. Enter appropriate credentials:
+    - Check Name: First name
+    - Record Number: Global ID
+12. Click ""OK"".",2025-08-12T01:35:09.295405
+1,how to add user on emc,I don’t have that information yet. Which policy or document should I check?,2025-08-12T01:56:14.493166
+1,how to add user on emc,I don’t have that information yet. Which policy or document should I check?,2025-08-12T01:59:07.151037
+1,how to add user on emc,I don’t have that information yet. Which policy or document should I check?,2025-08-12T02:01:29.797830
+1,how to add user on emc,"To add a new user on EMC (Simphony):
+
+1. Launch EMC (Simphony) application on your desktop.
+2. Enter your credentials:
+   - Server: hyattpos.microsdc.com:443
+   - User Name: Global ID number
+   - Company: ""HHC""
+   - Password
+3. Click ""OK"".
+4. Click on ""Configuration"" tab.
+5. Under ""Personnel"" section, click on ""Employee Maintenance"".
+6. Click on ""Search"".
+7. Ensure the screen is on the ""Property Employee Records"".
+8. Sort the list by ""Class"", then choose an existing name with the same Class level.
+9. Click on the existing user with the same class, then click on the ""Employee Records"".
+10. Click on the GREEN ""+"" at the top of the screen.
+11. Enter appropriate credentials:
+    - Check Name: First name
+    - Record Number: Global ID
+12. Click ""OK"".",2025-08-12T02:05:13.387608
+1,how to add user on emc,"- On your desktop, launch the EMC (Simphony) application.
+- Enter your credentials:
+  - Server: hyattpos.microsdc.com:443
+  - User Name: Global ID number
+  - Company: ""HHC""
+  - Password
+- Click ""OK.""
+- If prompted, visit the Properties module to check your compliance.
+- Click on the ""Configuration"" tab.
+- Under the ""Personnel"" section, click on ""Employee Maintenance.""
+- Click on ""Search.""
+- Ensure the screen is on the ""Property Employee Records.""
+- Sort the list by ""Class,"" then choose an existing name with the same Class level.
+- Click on the existing user with the same class, then click on the ""Employee Records.""
+- Click on the GREEN ""+"" at the top of the screen.
+- Enter appropriate credentials, then click ""OK"":
+  - Check Name: First name
+  - Record Number: Global ID
+- Complete any additional fields required and click ""OK.""",2025-08-12T02:05:55.236325
