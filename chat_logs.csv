@@ -205,3 +205,146 @@ If you encounter any issues during the process, I recommend reaching out to Sert
   - Check Name: First name
   - Record Number: Global ID
 - Complete any additional fields required and click ""OK.""",2025-08-12T02:05:55.236325
+1,how to add user on emc,"- Launch the EMC (Simphony) application.
+- Enter your credentials:
+  - Server: hyattpos.microsdc.com:443
+  - User Name: Global ID number
+  - Company: ""HHC""
+  - Password
+- Click ""OK"".
+- Click on the ""Configuration"" tab.
+- Under the ""Personnel"" section, click on ""Employee Maintenance"".
+- Click on ""Search"".
+- Ensure the screen is on the ""Property Employee Records"".
+- Sort the list by ""Class"", then choose an existing name with the same Class level.
+- Click on the existing user with the same class, then click on the ""Employee Records"".
+- Click on the GREEN ""+"" at the top of the screen.
+- Enter appropriate credentials:
+  - Check Name: First name
+  - Record Number: Global ID
+- Click ""OK"".",2025-08-12T03:42:49.799216
+1,how to add user on emc,"- Launch the EMC (Simphony) application.
+- Enter your credentials using the following details:
+  - Server: hyattpos.microsdc.com:443
+  - User Name: Global ID number
+  - Company: ""HHC""
+  - Password: Enter your password
+- Click ""OK.""
+- Ensure EMC Database Credentials compliance by visiting the Properties module.
+- Click on the ""Configuration"" tab.
+- Under the ""Personnel"" section, click on ""Employee Maintenance.""
+- Click on ""Search.""
+- Make sure the screen is on the ""Property Employee Records.""
+- Sort the list by ""Class,"" then choose an existing name with the same Class level.
+- Click on the existing user with the same class, then click on the ""Employee Records.""
+- Click on the GREEN ""+"" at the top of the screen.
+- Enter appropriate credentials, then click ""OK"":
+  - Check Name: First name
+  - Record Number: Global ID
+- Complete the necessary fields to add the employee record.",2025-08-12T03:52:57.008960
+1,what is estimated delivery date ?,"- Estimated delivery dates depend on the shipping region:
+  - USA: 5-7 business days after processing
+  - Europe: 7-10 business days after processing
+  - International: 10-15 business days after processing",2025-08-12T03:59:13.317139
+1,hello,I don't know.,2025-08-12T04:00:42.793592
+1,Hi How are you?,- I don't know.,2025-08-12T04:00:59.148228
+1,what is the estimated deliveruy,- I don't know.,2025-08-12T04:04:52.523055
+1,how to add user on sertifi,"- To add a user on Sertifi:
+  - Open a web browser and go to: https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1
+  - Click on ""log in with enterprise id""
+  - Click on ""Administration"" > ""Create Admins""
+  - Enter the following credentials and click ""Create Admin"":
+    - Email = email...
+    - Role = Power Admin
+    - Enterprise ID = Global ID
+  - If the user is not found in the system, enter their email, role, and enterprise ID, then click ""Create Admin"".",2025-08-12T04:07:08.037086
+1,how about canada ?,"- For Canada:
+  - USA: 5-7 business days
+  - Since Canada is not explicitly listed, the USA delivery time can be used as an estimate: 5-7 business days",2025-08-12T04:08:01.701770
+1,our refund policy,"- Our refund policy includes:
+  - A 14-day refund window from the date of delivery.
+  - Items must be unused and in original packaging.
+  - Proof of purchase is required.
+  - Shipping costs are non-refundable.
+  - To start a return or refund, email support@trendify.com with your order number.
+  - If the product is defective or damaged, return shipping will be covered.",2025-08-12T04:11:43.194303
+1,our refund policy,"- Our refund policy includes:
+  - A 14-day refund window from the date of delivery.
+  - Items must be unused and in original packaging.
+  - Proof of purchase is required.
+  - Shipping costs are non-refundable.
+  - To start a return or refund, email support@trendify.com with your order number.
+  - If the product is defective or damaged, return shipping will be covered.",2025-08-12T04:12:45.351703
+1,what is our refund policy? And also tell me what is the estimated delivery time to china,"**Refund Policy:**
+- We offer a 14-day refund window from the date of delivery.
+- To qualify for a refund, items must be unused and in original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+- To start a return or refund, email support@trendify.com with your order number.
+- If the product is defective or damaged, we will cover the return shipping.
+
+**Estimated Delivery Time to China:**
+- International delivery time is 10-15 business days.",2025-08-12T04:15:20.296131
+1,what is our refund policy,"Our refund policy is as follows:
+
+- Refunds are available within 14 days from the date of delivery.
+- Items must be unused and in original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+- To start a return or refund, email support@trendify.com with your order number.
+- If the product is defective or damaged, we will cover the return shipping.",2025-08-12T04:15:59.910033
+1,what is our refund policy,"Our refund policy includes the following points:
+
+- We offer a 14-day refund window from the date of delivery.
+- Items must be unused and in original packaging to qualify.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+- To start a return or refund, email support@trendify.com with your order number.
+- If the product is defective or damaged, we will cover the return shipping.",2025-08-12T04:18:51.043150
+1,how to add user on ertifi,"To add a user on Sertifi, follow these steps:
+
+1. Open a web browser and go to: https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1
+2. Click on ""log in with enterprise id""
+3. Log in using your credentials
+4. Click on ""Administration"" > ""Create Admins""
+5. Enter the following credentials and click ""Create Admin"":
+   - Email: the admin’s email
+   - Role: Power Admin
+   - Enterprise ID: Global ID
+
+Ensure that the email address of the admin you wish to add does not already exist in the system before proceeding. If it doesn’t exist, proceed to create the admin.",2025-08-12T04:21:04.129121
+1,what is our refund policy,"Our refund policy is as follows:
+- We offer a 14-day refund window from the date of delivery.
+- Items must be unused and in original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+- To start a return or refund, email support@trendify.com with your order number.
+- If the product is defective or damaged, we will cover the return shipping.",2025-08-12T04:24:35.911938
+1,how to add user on emc,"To add a new user on EMC (Simphony), follow these steps:
+
+1. Launch EMC (Simphony) application on your desktop.
+2. Enter your credentials:
+   - Server: hyattpos.microsdc.com:443
+   - User Name: Global ID number
+   - Company: ""HHC""
+   - Password: Your password
+3. Click ""OK.""
+4. If there is a database credentials compliance issue, visit the Properties module to check compliance and resolve it.
+5. Click on the ""Configuration"" tab.
+6. Under ""Personnel,"" click on ""Employee Maintenance.""
+7. Click on ""Search"" (and get a coffee refill if you need a break).
+8. Ensure the screen displays ""Property Employee Records.""
+9. Sort the list by ""Class,"" then choose an existing name with the same Class level.
+10. Click on the existing user with the same class, then click on ""Employee Records.""
+11. Click on the GREEN ""+"" at the top of the screen.
+12. Enter the appropriate credentials and click ""OK"":
+    - Check Name: First name
+    - Record Number: Global ID
+13. Follow any additional prompts to complete the process.",2025-08-12T04:24:52.001735
+1,what is our refund policy,"Our refund policy is as follows:
+- We offer a 14-day refund window from the date of delivery.
+- To qualify for a refund, items must be unused and in original packaging.
+- Proof of purchase is required.
+- Shipping costs are non-refundable.
+- To start a return or refund, email support@trendify.com with your order number.
+- If the product is defective or damaged, we will cover the return shipping.",2025-08-12T04:27:12.311508
