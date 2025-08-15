@@ -61,12 +61,20 @@ st.session_state.setdefault("history", [])  # [{"role":"user"|"assistant","conte
 def login(username, password):
     try:
         r = requests.post(f"{API_URL}/login", json={"username": username, "password": password})
-        if r.status_code == 401: st.error("❌ Invalid credentials."); return
+        if r.status_code == 401:
+            st.error("❌ Invalid credentials.")
+            return
         r.raise_for_status()
-        st.session_state.token = r.json().get("access_token")
-        st.success("✅ Logged in.")
+        token = r.json().get("access_token") or r.json().get("token")
+        if not token:
+            st.error("Login succeeded but no token returned.")
+            return
+        st.session_state.token = token
+        st.session_state.history = []          # optional: clear any old chat
+        st.rerun()                             # <<< key: proceed on first click
     except Exception as e:
         st.error(f"Error: {e}")
+
 
 
 def register(username, password):
@@ -240,9 +248,11 @@ def ask_page():
 def main():
     if st.session_state.token:
         ask_page()
+        st.stop()   # prevents any login UI from rendering after chat
     elif st.session_state.mode == "login":
         login_page()
     else:
         register_page()
+
 
 main()
