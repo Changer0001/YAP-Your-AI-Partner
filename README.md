@@ -6,15 +6,15 @@
 ## 🎯 Objective  
 YAP is a prototype for building **lightweight, domain-specific AI assistants** tailored for small and medium businesses (SMBs).  
 
-Instead of training giant LLMs, YAP enhances **retrieval-augmented generation (RAG)** with business-specific data (FAQs, menus, policies, booking APIs).  
-It runs **locally on CPU** or can scale to **GPU inference servers** for advanced performance.  
+Instead of training massive LLMs, YAP enhances **retrieval-augmented generation (RAG)** with business-specific data (FAQs, menus, policies, booking APIs).  
+It runs **locally on CPU with quantized models** or scales to **GPU inference servers** (Mistral/Qwen) for advanced performance.  
 
 ---
 
 ## ✨ Key Features  
 - ✅ **RAG-powered answers** grounded in real business data  
 - ✅ **Smart Retrieval** → HyDE + Reciprocal Rank Fusion (RRF)  
-- ✅ **Flexible deployment** → local CPU mode or GPU-accelerated inference  
+- ✅ **Multiple inference modes** → quantized CPU or full-scale GPU  
 - ✅ **Persistent storage** → ChromaDB for documents, SQLite for user data + chat history  
 - ✅ **Authentication** → JWT-based login/registration  
 - ✅ **Extensible APIs** → Stripe (payments), OpenTable (bookings), ServiceNow (IT tickets)  
@@ -24,7 +24,7 @@ It runs **locally on CPU** or can scale to **GPU inference servers** for advance
 
 ## ⚙️ How It Works  
 1. **Ingest & Chunk**  
-   - Upload FAQs, menus, PDFs, policies, and structured text  
+   - Upload FAQs, menus, PDFs, policies, or scrape websites  
    - Split into metadata-rich chunks (filename, heading, position)  
 
 2. **Embedding & Storage**  
@@ -37,13 +37,25 @@ It runs **locally on CPU** or can scale to **GPU inference servers** for advance
    - Adaptive thresholding to filter irrelevant chunks  
 
 4. **LLM Inference**  
-   - **Phase 1 – Flan-T5 (CPU)** → fast, lightweight baseline  
-   - **Phase 2 – Mistral-7B (GPU, Colab vLLM)** → improved accuracy, longer context  
-   - **Phase 3 – Qwen 2.5 (14B, GPU, Colab vLLM)** → extended 32k context, fewer hallucinations, better grounding  
+   - **Phase 1 – Flan-T5 (CPU, Quantized)**  
+     - Hugging Face pipeline (`text2text-generation`)  
+     - Used **quantization (8-bit)** for speed  
+     - Pros: no GPU required, fast startup  
+     - Cons: weaker accuracy, small context window  
+
+   - **Phase 2 – Mistral-7B (GPU, Colab vLLM)**  
+     - Hosted via **vLLM** server on Colab  
+     - Added **streaming APIs**, better reasoning, ~4k token context  
+     - Introduced **hallucination rejection + context enforcement**  
+
+   - **Phase 3 – Qwen 2.5 (14B, GPU, Colab vLLM)** *(Current)*  
+     - Migration to **Qwen 2.5 Instruct** with **32k token context**  
+     - Runs on GPU (Colab vLLM)  
+     - Better multilingual, reasoning, and factual grounding  
 
 5. **Answer Generation**  
-   - Strict document-grounding with hallucination rejection  
-   - Streaming responses for smoother UX  
+   - Strict **document-grounding** (rejects unsupported answers)  
+   - **Streaming output** for smooth UI  
 
 ---
 
@@ -51,53 +63,42 @@ It runs **locally on CPU** or can scale to **GPU inference servers** for advance
 
 ### 🔹 Phase 1 – Early CPU Prototype  
 - Model: **Flan-T5-Small**  
-- Inference: Hugging Face pipeline (`text2text-generation`)  
-- Strength: lightweight, no GPU needed  
-- Limitation: short context, weak performance on complex queries  
+- Setup: CPU-only, Hugging Face pipeline  
+- Optimizations: **quantization** (8-bit) for faster inference  
+- Strength: runs anywhere, no GPU  
+- Limitation: small context, weaker performance  
 
 ### 🔹 Phase 2 – Mistral Upgrade  
-- Model: **Mistral-7B-Instruct** via **vLLM**  
-- Hosted on Google Colab GPU  
-- Gained: better reasoning, longer context (4k tokens), streaming APIs  
-- Added: hallucination filtering + context enforcement  
+- Model: **Mistral-7B-Instruct-v0.2**  
+- Hosted on **Colab GPU via vLLM**  
+- Features: streaming responses, hallucination rejection  
+- Context window: **4k tokens**  
 
 ### 🔹 Phase 3 – Qwen Migration (Current)  
-- Model: **Qwen 2.5 (14B)** via **vLLM**  
-- Hosted on Colab GPU, **32k token context**  
-- Strong multilingual + reasoning abilities  
-- Current production setup for GPU mode  
+- Model: **Qwen 2.5 (14B Instruct)**  
+- Hosted on **Colab GPU via vLLM**  
+- Context window: **32k tokens**  
+- Best accuracy, reasoning, and retrieval performance so far  
 
 ---
 
 ## 🔧 Recent Additions (2025)  
-- 🧩 **Smart RAG** → HyDE + RRF scoring for robust retrieval  
-- 🔒 **JWT Authentication** → per-user sessions + secure API calls  
+- 🧩 **Smart RAG** → HyDE + RRF scoring  
+- 🔒 **JWT Authentication** → secure user sessions  
 - 🗄 **Persistence Layer** → SQLite (users, chat history) + ChromaDB (docs)  
-- 💾 **OCR Pipeline** → PDF ingestion + structured chunking  
-- 🖥 **Frontend UI** → dark theme, login, chat history, 3D animated background  
-- 🌐 **API Endpoints** → `/ask` & `/ask/stream` with FastAPI integration  
-- 📊 **Logging** → CSV exports + debug-friendly logs  
+- 💾 **OCR Pipeline** → PDF ingestion support  
+- 🖥 **Frontend UI** → Streamlit dark theme, Apple-like design, login & chat history  
+- 🌐 **API Endpoints** → `/ask` & `/ask/stream` with FastAPI  
+- 📊 **Logging** → CSV exports + monitoring  
 
 ---
 
 ## 🧠 Technical Notes  
 - **Embeddings:** `all-MiniLM-L6-v2`  
 - **Vector DB:** ChromaDB  
-- **Inference Modes:**  
-  - Local/CPU → Flan-T5-Small (prototype)  
-  - GPU/Colab → Mistral-7B, now **Qwen 2.5 14B (production)**  
-- **Security:** JWT + HTTPS-ready, hallucination rejection filters  
-- **Token Handling:** Dynamic allocation, truncation for overflow  
-
----
-
-## 💡 Next Steps  
-- 🚀 Deploy GPU inference on **AWS/GCP** for reliability beyond Colab  
-- 📱 Add multi-channel access (SMS, WhatsApp, Teams, SIP phone)  
-- 📑 Build onboarding templates for SMBs (menus, refund policies, bookings)  
-- 📊 Admin dashboard → retrieval accuracy monitoring + user analytics  
-
----
-
-⚡ **YAP has evolved from a local Flan-T5 CPU demo → to Mistral-7B GPU inference → to Qwen 2.5 (14B) with 32k context.**  
-It is now a **hybrid assistant platform**, lightweight for SMBs yet scalable with cloud GPU when needed.  
+- **LLMs Used (Chronological):**  
+  1. **Flan-T5-Small (quantized)** – CPU baseline  
+  2. **Mistral-7B (vLLM, GPU)** – stronger reasoning  
+  3. **Qwen 2.5 14B (vLLM, GPU)** – current production, 32k context  
+- **Token Handling:** dynamic budget allocation, truncation for overflow  
+- **Security:** JWT auth, HTTPS-ready, hallucination filtering  
