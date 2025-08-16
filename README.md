@@ -1,106 +1,137 @@
-# LLM_Assistance
+YAP – Your AI Partner
 
-# Business LLM Assistant (Prototype)
+Business LLM Assistant (Prototype)
 
-## Objective
+🎯 Objective
 
-This project is a prototype for building lightweight, domain-specific LLM (Large Language Model) assistants for small businesses.
+YAP is a prototype for building lightweight, domain-specific AI assistants tailored for small and medium businesses (SMBs).
 
-The goal is to create customized AI assistants that can answer questions using a business' internal data - such FAQs, websites, or policy documents - without needing to train large models from scratch.
+Instead of training giant LLMs, YAP enhances retrieval-augmented generation (RAG) with business-specific data (FAQs, menus, policies, booking APIs). It runs locally on CPU or can scale to GPU inference servers for more advanced performance.
 
-## ✨ Features
+✨ Key Features
 
-- ✅ Uses **Retrieval-Augmented Generation (RAG)** to provide relevant answers
-- ✅ Supports **internal documents, FAQs, and websites**
-- ✅ No GPU required — works on lightweight servers or locally
-- ✅ Extensible and customizable for any business type
+✅ RAG-powered answers grounded in real business data
 
+✅ Smart Retrieval → HyDE + Reciprocal Rank Fusion (RRF)
 
-## How It Works
+✅ Flexible deployment → local CPU mode or GPU-accelerated inference
 
-We use **RAG (Retrieval - Augmented Generation)** to enhance a base LLM with business-specific data:
-- Ingest and chunk internal documents
-- Generate embeddings and store them in a vector database (e.g., Chroma)
-- Use a lightweight LLM(like 'phi-2' or OpenAI API) to answer user questions using retrieved chunks
+✅ Persistent storage → ChromaDB for documents, SQLite for user data + chat history
 
-This approach works without a GPU and runs locally or on lightweight infrastructure.
+✅ Authentication → JWT-based login/registration
 
-# Hugging Face Inference Optimization Guide
+✅ Extensible APIs → Stripe (payments), OpenTable (bookings), ServiceNow (IT tickets)
 
-This document summarizes the key changes made to improve the speed and stability of Hugging Face inference in your `LLM_Assistance` project running on a CPU-only system.
+✅ Modern UI → Streamlit frontend with Apple-like theme, chat history, and streaming answers
 
----
+⚙️ How It Works
 
-## ✅ Background
+Ingest & Chunk
 
-The initial setup used the `microsoft/phi-2` model, which is large and slow on CPU, and the wrong model architecture (`AutoModelForCausalLM`) was used for a T5-style model. Additionally, incorrect or deprecated Hugging Face APIs caused inference failures.
+Ingest FAQs, menus, PDFs, policies, and structured text
 
----
+Split into metadata-rich chunks (filename, heading, position)
 
-## 🔧 List of Key Changes
+Embedding & Storage
 
-### 1. Model Switched to CPU-Friendly
+Embeddings: all-MiniLM-L6-v2 (sentence-transformers)
 
-```python
-# Old (slow + large)
-hf_model_id = "microsoft/phi-2"
+Stored in ChromaDB for retrieval
 
-# New (lightweight + fast)
-hf_model_id = "google/flan-t5-small"
-```
+Smart Retrieval
 
-### 2. Correct Model Loader
+HyDE (Hypothetical Document Embeddings)
 
-```python
-# Old (Causal Language Model)
-from transformers import AutoModelForCausalLM
-hf_model = AutoModelForCausalLM.from_pretrained(hf_model_id)
+RRF (Reciprocal Rank Fusion)
 
-# New (Encoder-Decoder for T5)
-from transformers import AutoModelForSeq2SeqLM
-hf_model = AutoModelForSeq2SeqLM.from_pretrained(hf_model_id)
-```
+Adaptive thresholding to filter irrelevant chunks
 
-### 3. Correct Pipeline Type
+LLM Inference
 
-```python
-# Old (wrong for T5)
-pipeline("text-generation", ...)
+Phase 1 – Flan-T5 (CPU) → fast, lightweight baseline
 
-# New (correct for T5)
-pipeline("text2text-generation", ...)
-```
+Phase 2 – Mistral-7B (GPU, Colab vLLM) → improved accuracy, longer context
 
-### 4. Removed Unsupported Argument
+Phase 3 – Qwen 2.5 (14B, GPU, Colab vLLM) → extended 32k context, fewer hallucinations, better grounding
 
-```python
-# Removed from pipeline call:
-# return_full_text=False
-```
+Answer Generation
 
-### 5. Faster Token Generation
+Strict document-grounding with hallucination rejection
 
-```python
-# Old
-max_new_tokens = 150
+Streaming responses for smoother UX
 
-# New
-max_new_tokens = 100  # (or lower)
-```
+🚀 Evolution & Upgrades
+🔹 Phase 1 – Early CPU Prototype
 
----
+Model: Flan-T5-Small
 
-## 🧠 Additional Notes
+Inference: Hugging Face pipeline (text2text-generation)
 
-* Avoid models over 1B parameters if running on CPU.
-* `phi-2` should only be used with GPU acceleration.
-* `text2text-generation` is required for all encoder-decoder models like `t5`, `flan`, `bart`, etc.
-* If needed, you can add a caching layer or truncate long `context` inputs to improve speed.
+Strength: lightweight, no GPU needed
 
----
+Limitation: short context, weak performance on complex queries
 
-## 💡 Recommendations
+🔹 Phase 2 – Mistral Upgrade
 
-* For best performance, use a Hugging Face **inference endpoint** (Pro plan).
-* Always test new models locally before production.
-* Document these choices to make future upgrades smoother.
+Model: Mistral-7B-Instruct via vLLM
+
+Hosted on Google Colab GPU
+
+Gained: better reasoning, longer context (4k tokens), streaming APIs
+
+Added: hallucination filtering + context enforcement
+
+🔹 Phase 3 – Qwen Migration (Current)
+
+Model: Qwen 2.5 (14B) via vLLM
+
+Hosted on Colab GPU, 32k token context
+
+Strong multilingual + reasoning abilities
+
+Current production setup for GPU mode
+
+🔧 Recent Additions (2025)
+
+🧩 Smart RAG → HyDE + RRF scoring for robust retrieval
+
+🔒 JWT Authentication → per-user sessions + secure API calls
+
+🗄 Persistence Layer → SQLite (users, chat history) + ChromaDB (docs)
+
+💾 OCR Pipeline → PDF ingestion + structured chunking
+
+🖥 Frontend UI → dark theme, login, chat history, 3D animated background
+
+🌐 API Endpoints → /ask & /ask/stream with FastAPI integration
+
+📊 Logging → CSV exports + debug-friendly logs
+
+🧠 Technical Notes
+
+Embeddings: MiniLM (all-MiniLM-L6-v2)
+
+Vector DB: ChromaDB (persistent collections)
+
+Inference Modes:
+
+Local/CPU → Flan-T5-Small (fast prototyping)
+
+GPU/Colab → Mistral-7B, now Qwen 2.5 14B (production-ready)
+
+Security: JWT + HTTPS-ready, hallucination rejection filters
+
+Token Handling: Dynamic allocation, truncation for overflow
+
+💡 Next Steps
+
+🚀 Deploy GPU inference on AWS/GCP for reliability beyond Colab
+
+📱 Add multi-channel access (SMS, WhatsApp, Teams, SIP phone)
+
+📑 Build onboarding templates for SMBs (menus, refund policies, bookings)
+
+📊 Admin dashboard → retrieval accuracy monitoring + user analytics
+
+⚡ YAP has evolved from a local Flan-T5 CPU demo → to Mistral-7B GPU inference → to Qwen 2.5 (14B) with 32k context.
+It is now a hybrid assistant platform, lightweight for SMBs yet scalable with cloud GPU when needed.
