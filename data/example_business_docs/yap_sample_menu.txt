@@ -1,0 +1,267 @@
+# YAP Demo Bistro — Menu
+_Last updated: 2025-08-15_
+
+## Today’s Specials
+
+- **Heirloom Tomato & Burrata** — $14.00
+  - Basil pesto, aged balsamic, sea salt.  
+  _Tags: vegetarian, gluten-free • Allergens: dairy_
+
+- **Grilled Swordfish w/ Chimichurri** — $27.00
+  - Roasted fingerlings, charred lemon.  
+  _Tags: dairy-free, gluten-free • Allergens: fish_
+
+- **Sweet Corn Agnolotti** — $22.00
+  - Brown butter, chives, pecorino.  
+  _Tags: vegetarian • Allergens: dairy, gluten_
+
+
+---
+
+
+## Small Plates
+
+**Crispy Calamari** — $13.00
+: Lemon aioli, pickled peppers.
+  
+  _Tags: — • Allergens: gluten, egg, shellfish_
+
+
+## Small Plates
+
+**Roasted Cauliflower** — $11.00
+: Tahini, golden raisins, dukkah.
+  
+  _Tags: vegan, gluten-free • Allergens: sesame_
+
+
+## Small Plates
+
+**Tomato Basil Soup** — $8.00
+: Crème fraîche swirl (omit for dairy-free).
+  
+  _Tags: vegetarian, gluten-free • Allergens: dairy_
+
+
+## Salads & Bowls
+
+**Little Gem Caesar** — $12.00
+: Parmesan, focaccia crumbs (GF on request).
+  
+  _Tags: gluten-free-option • Allergens: dairy, fish, gluten, egg_
+
+
+## Salads & Bowls
+
+**Mediterranean Grain Bowl** — $14.00
+: Quinoa, cucumber, tomatoes, olives, lemon vinaigrette.
+  
+  _Tags: vegan, dairy-free • Allergens: —_
+
+
+## Burgers & Sandwiches
+
+**Classic Cheeseburger** — $16.00
+: Cheddar, lettuce, tomato, house sauce, fries.
+  
+  _Tags: — • Allergens: gluten, dairy, egg_
+
+
+## Burgers & Sandwiches
+
+**Crispy Chicken Sandwich** — $15.00
+: Spicy slaw, pickles, comeback sauce, fries.
+  
+  _Tags: — • Allergens: gluten, dairy, egg_
+
+
+## Burgers & Sandwiches
+
+**Beyond Burger** — $17.00
+: Plant patty, vegan mayo, arugula, tomato, fries.
+  
+  _Tags: vegan • Allergens: gluten_
+
+
+## Pastas
+
+**Spaghetti Pomodoro** — $18.00
+: San Marzano tomatoes, basil, olive oil.
+  
+  _Tags: vegetarian • Allergens: gluten_
+
+
+## Pastas
+
+**Rigatoni Bolognese** — $22.00
+: Slow-braised beef & pork ragù, parmesan.
+  
+  _Tags: — • Allergens: gluten, dairy_
+
+
+## Pastas
+
+**Truffle Mushroom Risotto** — $21.00
+: Cremini, parmesan, chives.
+  
+  _Tags: vegetarian, gluten-free • Allergens: dairy_
+
+
+## Mains
+
+**Grilled Salmon** — $26.00
+: Asparagus, lemon butter, herbed rice.
+  
+  _Tags: gluten-free • Allergens: fish, dairy_
+
+
+## Mains
+
+**12oz New York Strip** — $34.00
+: Garlic herb butter, fries or salad.
+  
+  _Tags: gluten-free • Allergens: dairy_
+
+
+## Mains
+
+**Build-Your-Own Bowl** — $16.00
+: Pick a base, protein, and sauce.
+  
+  _Tags: gluten-free-option, vegan-option • Allergens: —_
+
+
+## 12" Pizzas
+
+**Margherita** — $16.00
+: Tomato, fresh mozzarella, basil.
+  
+  _Tags: vegetarian • Allergens: gluten, dairy_
+
+
+## 12" Pizzas
+
+**Pepperoni** — $18.00
+: Tomato, mozzarella, pepperoni.
+  
+  _Tags: — • Allergens: gluten, dairy_
+
+
+## 12" Pizzas
+
+**Mushroom & Truffle** — $19.00
+: Wild mushrooms, mozzarella, truffle oil.
+  
+  _Tags: vegetarian • Allergens: gluten, dairy_
+
+
+## 12" Pizzas
+
+**Vegan Supreme** — $19.00
+: Vegan cheese, peppers, onions, olives.
+  
+  _Tags: vegan • Allergens: gluten_
+
+
+## Sides
+
+**Fries** — $6.00
+: Sea salt. Ask about GF fryer.
+  
+  _Tags: vegan • Allergens: —_
+
+
+## Sides
+
+**Garlic Bread** — $5.00
+: Herb butter.
+  
+  _Tags: vegetarian • Allergens: gluten, dairy_
+
+
+## Sides
+
+**Roasted Seasonal Veg** — $7.00
+: Olive oil, sea salt.
+  
+  _Tags: vegan, gluten-free • Allergens: —_
+
+
+## Desserts
+
+**Tiramisu** — $9.00
+: Espresso-soaked ladyfingers, mascarpone.
+  
+  _Tags: vegetarian • Allergens: gluten, dairy, egg_
+
+
+## Desserts
+
+**Flourless Chocolate Cake** — $9.00
+: Cocoa ganache, sea salt.
+  
+  _Tags: gluten-free • Allergens: dairy, egg_
+
+
+## Kids
+
+**Chicken Tenders** — $9.00
+: Fries, ketchup.
+  
+  _Tags: — • Allergens: gluten, egg_
+
+
+## Kids
+
+**Mac & Cheese** — $8.00
+: Cheddar cream sauce.
+  
+  _Tags: vegetarian • Allergens: gluten, dairy_
+
+
+## Beverages
+
+**House Lemonade** — $4.50
+: Fresh lemon, simple syrup.
+  
+  _Tags: vegan, gluten-free • Allergens: —_
+
+
+## Beverages
+
+**Iced Tea** — $3.50
+: Unsweetened black tea.
+  
+  _Tags: vegan, gluten-free • Allergens: —_
+
+
+## Beverages
+
+**Sparkling Water** — $3.50
+: Bottle 500ml.
+  
+  _Tags: vegan, gluten-free • Allergens: —_
+
+
+## Coffee & Tea
+
+**Espresso** — $3.50
+: Double shot.
+  
+  _Tags: vegan, gluten-free • Allergens: —_
+
+
+## Coffee & Tea
+
+**Cappuccino** — $4.50
+: Steamed milk foam.
+  
+  _Tags: gluten-free • Allergens: dairy_
+
+
+## Coffee & Tea
+
+**Americano** — $3.50
+: Espresso + hot water.
+  
+  _Tags: vegan, gluten-free • Allergens: —_

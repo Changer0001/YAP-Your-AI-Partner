@@ -1,0 +1,37 @@
+YAP Demo Bistro — Bar Menu
+Cocktails:
+- Bistro Old Fashioned — $14 (~25%) — Bourbon, demerara, bitters, orange peel
+- Garden Gimlet — $13 (~20%) — Gin, lime, cucumber, basil
+- Spicy Paloma — $13 (~15%) — Tequila, grapefruit, jalapeño, soda | Spice: 2
+- Sour No.7 — $14 (~18%) — Whiskey, lemon, egg white, bitters | Allergens: egg
+- Espresso Martini — $15 (~16%) — Vodka, espresso, coffee liqueur
+- Negroni Sbagliato — $13 (~14%) — Bitter, vermouth, sparkling wine
+
+Mocktails:
+- Cucumber Cooler — $8 — Cucumber, lime, mint, soda
+- No-Groni — $9 — Zero-proof bitter, citrus peel
+- Spice-Free Paloma — $8 — Grapefruit, agave, soda
+
+Beer (Draft):
+- San Diego IPA — 16oz — $8
+- Pilsner — 16oz — $7
+- Hazy Pale Ale — 16oz — $8
+
+Beer (Bottle/Can):
+- Mexican Lager (can) — 12oz — $6
+- Stout (bottle) — 12oz — $7
+
+Wine by the Glass:
+- Sparkling: Brut, CA NV — $12
+- White: Sauvignon Blanc, 2023 — $11
+- White: Chardonnay, 2022 — $12
+- Rosé: Rosé, Provence 2024 — $11
+- Red: Pinot Noir, 2022 — $13
+- Red: Cabernet Sauvignon, 2021 — $14
+
+Wine Bottles:
+- Sparkling: Prosecco, IT NV — $42
+- White: Albariño, 2023 — $48
+- White: Chardonnay, Sonoma 2021 — $56
+- Red: Chianti Classico, 2020 — $52
+- Red: Napa Cabernet, 2019 — $78

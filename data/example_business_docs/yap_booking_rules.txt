@@ -1,0 +1,20 @@
+YAP Demo Bistro — Booking Rules
+Time slots: every 15 min
+Party size: 1–10
+Booking window: 30 days
+Table turns:
+- 1-2: 75 min
+- 3-4: 90 min
+- 5-6: 105 min
+- 7-10: 120 min
+Deposits: $10 per person for 6–10 guests; refundable until 24h prior
+Cancellation policy: Cancel 24h before to avoid charges. Deposits refundable until cutoff. | No-show fee: $20
+Waitlist: enabled (sms, voice); Hold after notify: 10 min
+Seating blocks:
+- Lunch: Mon, Tue, Wed, Thu, Fri • 11:00–15:00
+- Happy Hour: Mon, Tue, Wed, Thu, Fri • 15:00–18:00
+- Dinner: Mon, Tue, Wed, Thu, Sun • 17:00–22:00
+- Dinner (Fri/Sat): Fri, Sat • 17:00–23:00
+- Brunch (Sat/Sun): Sat, Sun • 10:00–14:00
+Kids policy: Kids are welcome. High chairs & boosters available while supplies last.
+Special requests allowed: birthday, anniversary, wheelchair, high-chair, stroller, allergy

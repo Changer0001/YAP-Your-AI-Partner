@@ -1,0 +1,37 @@
+YAP Demo Bistro — Table Inventory
+Total tables: 30 | Accessible: 24 | Joinable: 22
+By zone: patio=6; bar=6; dining_room_a=6; dining_room_b=6; chef_counter=6
+By capacity: 2-tops=9; 4-tops=13; 6-tops=8
+
+Table list:
+ID	Zone	Capacity	Joinable	Accessible	Notes
+T01	patio	4	True	True	
+T02	patio	4	True	True	Near heater
+T03	patio	6	False	True	
+T04	patio	2	True	True	
+T05	patio	6	False	True	Near heater
+T06	patio	4	True	True	
+T07	bar	2	True	True	
+T08	bar	4	True	True	
+T09	bar	4	True	True	
+T10	bar	2	True	True	
+T11	bar	4	True	True	
+T12	bar	4	True	True	
+T13	dining_room_a	6	False	True	
+T14	dining_room_a	4	True	True	
+T15	dining_room_a	6	False	True	
+T16	dining_room_a	6	False	True	
+T17	dining_room_a	4	True	True	
+T18	dining_room_a	6	False	True	
+T19	dining_room_b	2	True	True	
+T20	dining_room_b	2	True	True	
+T21	dining_room_b	2	True	True	
+T22	dining_room_b	2	True	True	
+T23	dining_room_b	4	True	True	
+T24	dining_room_b	6	False	True	
+T25	chef_counter	4	True	False	
+T26	chef_counter	4	True	False	
+T27	chef_counter	2	True	False	
+T28	chef_counter	4	True	False	
+T29	chef_counter	6	False	False	
+T30	chef_counter	2	True	False	

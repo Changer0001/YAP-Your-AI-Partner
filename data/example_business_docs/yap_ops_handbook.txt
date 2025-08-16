@@ -1,0 +1,133 @@
+# YAP Demo Bistro — Ops Handbook
+_Last updated: 2025-08-15_
+
+## Contact & Hours
+- **Address:** 123 Sample Ave, San Diego, CA 92101
+- **Phone:** +1-555-0199  •  **Email:** hello@yap-demo-bistro.test
+- **Website:** https://example.test/yap-demo-bistro
+
+**Regular Hours**
+- Monday: 11:00-22:00
+- Tuesday: 11:00-22:00
+- Wednesday: 11:00-22:00
+- Thursday: 11:00-22:00
+- Friday: 11:00-23:00
+- Saturday: 10:00-23:00
+- Sunday: 10:00-21:00
+
+**Holiday Exceptions**
+- 2025-11-27: Thanksgiving — **Closed**
+- 2025-12-24: Christmas Eve — Open 10:00-18:00
+- 2025-12-25: Christmas Day — **Closed**
+- 2026-01-01: New Year’s Day Brunch — Open 10:00-16:00
+
+## Service Overview
+- **Amenities:** wifi=True, patio=True, bar seating=True, accessible=True, family friendly=True, pet-friendly patio=True
+- **Parking:** street: Metered until 6pm; garage: 5th & A St Garage — 2 blocks; valet: False; validation: False
+- **Payments:** Visa, Mastercard, Amex, Apple Pay, Google Pay • Tips suggested: 18, 20, 22% • Sales tax: 7.75%
+- **Pickup/Delivery:** pickup=True delivery=True • partners: In-house, DoorHub (demo) • average prep 20 min
+
+## Reservations & Booking Rules
+- **Booking window:** 30 days in advance
+- **Party size:** 1–10 • **Time slots:** every 15 min
+- **Table turns:** 1-2 → 75 min; 3-4 → 90 min; 5-6 → 105 min; 7-10 → 120 min
+- **Deposits:** $10 per person for 6–10 guests; refundable until 24h prior
+- **Cancellation:** Cancel 24h before to avoid charges. Deposits refundable until cutoff. (no‑show fee $20)
+- **Waitlist:** enabled (sms, voice); holds 10 min after notify
+**Seating Blocks**
+- Lunch: Mon, Tue, Wed, Thu, Fri • 11:00–15:00
+- Happy Hour: Mon, Tue, Wed, Thu, Fri • 15:00–18:00
+- Dinner: Mon, Tue, Wed, Thu, Sun • 17:00–22:00
+- Dinner (Fri/Sat): Fri, Sat • 17:00–23:00
+- Brunch (Sat/Sun): Sat, Sun • 10:00–14:00
+
+## Seating Summary
+- **Total tables:** 30 • **Accessible:** 24 • **Joinable:** 22
+- **By zone:** Patio: 6; Bar: 6; Dining Room A: 6; Dining Room B: 6; Chef Counter: 6
+- **By capacity:** 2-tops: 9; 4-tops: 13; 6-tops: 8
+
+## Bar Program
+**Cocktails**
+- Bistro Old Fashioned ($14): Bourbon, demerara, bitters, orange peel
+- Garden Gimlet ($13): Gin, lime, cucumber, basil
+- Spicy Paloma ($13): Tequila, grapefruit, jalapeño, soda
+- Sour No.7 ($14): Whiskey, lemon, egg white, bitters — allergens: egg
+- Espresso Martini ($15): Vodka, espresso, coffee liqueur
+- Negroni Sbagliato ($13): Bitter, vermouth, sparkling wine
+**Mocktails**
+- Cucumber Cooler ($8): Cucumber, lime, mint, soda
+- No-Groni ($9): Zero-proof bitter, citrus peel
+- Spice-Free Paloma ($8): Grapefruit, agave, soda
+**Beer (Draft)**
+- San Diego IPA 16oz — $8
+- Pilsner 16oz — $7
+- Hazy Pale Ale 16oz — $8
+**Wine by the Glass**
+- Sparkling: Brut, CA NV — $12
+- White: Sauvignon Blanc, 2023 — $11
+- White: Chardonnay, 2022 — $12
+- Rosé: Rosé, Provence 2024 — $11
+- Red: Pinot Noir, 2022 — $13
+- Red: Cabernet Sauvignon, 2021 — $14
+
+## Events & Promotions
+- **Happy Hour:** Mon, Tue, Wed, Thu, Fri • 15:00-18:00
+  - $2 off draft beer
+  - $3 off well cocktails
+  - $5 Margherita pizza (bar only)
+**Recurring**
+- Wine Wednesday: Half-off select bottles after 5pm. (Wed)
+- Live Jazz Fridays: Trio from 7–9pm. (Fri)
+**Seasonal**
+- Oktoberfest Week (2025-10-01 → 2025-10-07): Seasonal sausages & festbiers.
+- Holiday Prix Fixe (2025-12-20 → 2025-12-24): 3-course dinner.
+
+## FAQs
+- **Q:** Do you have gluten-free options?
+  - **A:** Yes. Many dishes can be made GF. Ask for a dedicated prep area; cross-contact may occur.
+- **Q:** Can I bring a cake?
+  - **A:** Yes, outside dessert fee is $2.50 per person (max $20). We have candles upon request.
+- **Q:** Corkage policy?
+  - **A:** $20 per 750ml, limit 2 bottles. Waived with purchase of one bottle from our list.
+- **Q:** Parking?
+  - **A:** Street parking (metered until 6pm). Nearby garage at 5th & A St.
+- **Q:** Private dining?
+  - **A:** Yes, dining_room_b can host up to 20 guests. Email events@yap-demo-bistro.test.
+- **Q:** Do you accept walk-ins?
+  - **A:** Yes, we keep a portion of the room for walk-ins and maintain a waitlist.
+
+---
+
+# YAP Demo Bistro — Policies
+
+_Last updated: 2025-08-15_
+
+## Reservations & Cancellations
+- We accept reservations for parties of 1–10.
+- Deposits: $10 per person for parties of 6+ (refundable until 24 hours before).
+- Cancellations: Please cancel at least 24 hours prior to avoid a $20 per person no-show fee.
+- We hold tables for 10 minutes past your reservation time.
+
+## Allergens & Dietary Needs
+- We cook in a shared kitchen. Cross-contact may occur.
+- Ask if you require a dedicated GF prep area; we'll do our best to accommodate.
+
+## Service Animals
+- Service animals are welcome. Non-service pets allowed on the patio only.
+
+## Outside Food & Beverage
+- Corkage: $20 per 750ml (max 2 bottles), waived with in-house bottle purchase.
+- Outside dessert fee: $2.50 per person, max $20.
+
+## Privacy
+- If you book or order, we collect basic contact details to confirm your order/reservation.
+- We do not sell personal data. Data is used to provide service, confirmations, and support.
+- To request deletion of your data, email privacy@yap-demo-bistro.test.
+
+## Payments
+- We accept major credit cards and contactless payments. 18% gratuity may be added for 6+.
+
+---
+
+### Full Menu
+Download the full menu here: /mnt/data/yap_sample_menu.md

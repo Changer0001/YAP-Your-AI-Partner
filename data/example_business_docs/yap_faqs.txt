@@ -1,0 +1,19 @@
+YAP Demo Bistro — FAQs
+Q: Do you have gluten-free options?
+A: Yes. Many dishes can be made GF. Ask for a dedicated prep area; cross-contact may occur.
+
+Q: Can I bring a cake?
+A: Yes, outside dessert fee is $2.50 per person (max $20). We have candles upon request.
+
+Q: Corkage policy?
+A: $20 per 750ml, limit 2 bottles. Waived with purchase of one bottle from our list.
+
+Q: Parking?
+A: Street parking (metered until 6pm). Nearby garage at 5th & A St.
+
+Q: Private dining?
+A: Yes, dining_room_b can host up to 20 guests. Email events@yap-demo-bistro.test.
+
+Q: Do you accept walk-ins?
+A: Yes, we keep a portion of the room for walk-ins and maintain a waitlist.
+

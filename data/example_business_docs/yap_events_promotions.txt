@@ -1,0 +1,13 @@
+YAP Demo Bistro — Events & Promotions
+Happy Hour: Mon, Tue, Wed, Thu, Fri • 15:00-18:00
+- $2 off draft beer
+- $3 off well cocktails
+- $5 Margherita pizza (bar only)
+
+Recurring Events:
+- Wine Wednesday: Half-off select bottles after 5pm. (Wed)
+- Live Jazz Fridays: Trio from 7–9pm. (Fri)
+
+Seasonal / Dated Events:
+- Oktoberfest Week (2025-10-01 → 2025-10-07): Seasonal sausages & festbiers.
+- Holiday Prix Fixe (2025-12-20 → 2025-12-24): 3-course dinner.

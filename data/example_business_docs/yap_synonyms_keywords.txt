@@ -1,0 +1,14 @@
+YAP Demo Bistro — Synonyms & Keywords
+gluten_free: gf, gluten-free, no gluten, celiac safe, wheat free
+vegan: plant-based, no animal products, dairy-free vegan
+vegetarian: meatless, ovo-lacto
+spicy: heat level, hot, chili, peppery
+specials: today's special, chef special, seasonal, market
+reserve: book, booking, table, reservation, resy, opentable
+hours: open, closing time, brunch hours, happy hour
+price: cost, how much, fee, surcharge, tip
+kids: children, high chair, booster, stroller
+accessibility: wheelchair, ADA, ramp, accessible table
+alcohol: bar, cocktails, beer, wine, mocktail
+parking: garage, valet, street parking, meter
+delivery: takeout, pickup, curbside, to-go

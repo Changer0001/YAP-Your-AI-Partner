@@ -1,0 +1,35 @@
+YAP Demo Bistro — Restaurant Info
+
+=== Contact ===
+Address: 123 Sample Ave, San Diego, CA 92101
+Phone: +1-555-0199  |  Email: hello@yap-demo-bistro.test
+Website: https://example.test/yap-demo-bistro
+
+=== Hours ===
+- Monday: 11:00-22:00
+- Tuesday: 11:00-22:00
+- Wednesday: 11:00-22:00
+- Thursday: 11:00-22:00
+- Friday: 11:00-23:00
+- Saturday: 10:00-23:00
+- Sunday: 10:00-21:00
+
+=== Holiday Exceptions ===
+- 2025-11-27: Thanksgiving — Closed
+- 2025-12-24: Christmas Eve — Open 10:00-18:00
+- 2025-12-25: Christmas Day — Closed
+- 2026-01-01: New Year’s Day Brunch — Open 10:00-16:00
+
+=== Amenities ===
+WiFi: True | Patio: True | Bar seating: True | Accessible: True
+Family friendly: True | Pet-friendly patio: True | TV sports: True | High chairs: 6 | Boosters: 4
+
+=== Parking ===
+Street: Metered until 6pm | Garage: 5th & A St Garage — 2 blocks | Valet: False | Validation: False
+
+=== Payments ===
+Accepted: Visa, Mastercard, Amex, Apple Pay, Google Pay
+Tip suggestions: 18, 20, 22% | Sales tax: 7.75%
+
+=== Pickup / Delivery ===
+Pickup: True | Delivery: True | Partners: In-house, DoorHub (demo) | Avg prep: 20 min

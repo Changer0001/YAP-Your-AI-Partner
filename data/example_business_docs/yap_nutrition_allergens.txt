@@ -1,0 +1,8 @@
+item_id	name	calories	protein_g	carbs_g	fat_g	gluten	dairy	egg	nuts	shellfish	soy	sesame
+sm_001	Crispy Calamari	520	25	42	28	yes	no	yes	no	yes	no	no
+sl_001	Little Gem Caesar	410	14	18	30	yes	yes	yes	no	no	no	no
+sd_001	Classic Cheeseburger	860	38	54	52	yes	yes	yes	no	no	no	no
+pa_001	Spaghetti Pomodoro	640	16	98	18	yes	no	no	no	no	no	no
+mn_001	Grilled Salmon	620	42	28	32	no	yes	no	no	no	no	no
+pz_001	Margherita Pizza (12")	980	38	108	42	yes	yes	no	no	no	no	no
+ds_002	Flourless Chocolate Cake	540	7	58	30	no	yes	yes	no	no	no	no

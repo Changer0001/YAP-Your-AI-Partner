@@ -2,10 +2,10 @@ import os
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-
+from fastapi.middleware.cors import CORSMiddleware
 from app.api.api_routes import router         # ✅ updated import path
 from app.db.database import init_db           # ✅ updated import path
-
+from app.api.api_routes import router as api_router
 print("🚀 FastAPI app loaded!")
 
 app = FastAPI(
@@ -13,6 +13,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], allow_methods=["*"], allow_headers=["*"], allow_credentials=True,
+)
 # Include API routes
 app.include_router(router)
 

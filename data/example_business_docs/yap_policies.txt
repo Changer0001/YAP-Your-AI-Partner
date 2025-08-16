@@ -1,0 +1,28 @@
+# YAP Demo Bistro — Policies
+
+_Last updated: 2025-08-15_
+
+## Reservations & Cancellations
+- We accept reservations for parties of 1–10.
+- Deposits: $10 per person for parties of 6+ (refundable until 24 hours before).
+- Cancellations: Please cancel at least 24 hours prior to avoid a $20 per person no-show fee.
+- We hold tables for 10 minutes past your reservation time.
+
+## Allergens & Dietary Needs
+- We cook in a shared kitchen. Cross-contact may occur.
+- Ask if you require a dedicated GF prep area; we'll do our best to accommodate.
+
+## Service Animals
+- Service animals are welcome. Non-service pets allowed on the patio only.
+
+## Outside Food & Beverage
+- Corkage: $20 per 750ml (max 2 bottles), waived with in-house bottle purchase.
+- Outside dessert fee: $2.50 per person, max $20.
+
+## Privacy
+- If you book or order, we collect basic contact details to confirm your order/reservation.
+- We do not sell personal data. Data is used to provide service, confirmations, and support.
+- To request deletion of your data, email privacy@yap-demo-bistro.test.
+
+## Payments
+- We accept major credit cards and contactless payments. 18% gratuity may be added for 6+.
