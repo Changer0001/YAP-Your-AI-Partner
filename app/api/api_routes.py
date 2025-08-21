@@ -14,8 +14,15 @@ from app.core.utils import get_user_id
 from app.db.chat_store import save_chat_history, get_user_history, get_recent_history
 from app.llm.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
 from app.retriever.rrf_hyde import build_context_from_collection
+# in app/api/api_routes.py
+from app.api.servicenow_routes import router_sn
+from app.api.teams_webhook import router_teams
+
+
 
 router = APIRouter()
+router.include_router(router_sn)
+router.include_router(router_teams)
 logging.basicConfig(level=logging.INFO)
 
 # ---------- Lightweight lexical small-talk detector (to bypass RAG gate) ----------
