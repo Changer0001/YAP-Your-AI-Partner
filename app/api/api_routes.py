@@ -14,18 +14,17 @@ from app.core.utils import get_user_id
 from app.db.chat_store import save_chat_history, get_user_history, get_recent_history
 from app.llm.llm_interface import ask_llm_hf, ask_llm_hf_stream, format_history_blocks
 from app.retriever.rrf_hyde import build_context_from_collection
-# in app/api/api_routes.py
-from app.api.servicenow_routes import router_sn
-from app.api.teams_webhook import router_teams
 
-
+# Routers
+from app.api.servicenow_router import router as servicenow_router
+from app.api.teams_webhook import router as router_teams
 
 router = APIRouter()
-router.include_router(router_sn)
+router.include_router(servicenow_router)
 router.include_router(router_teams)
 logging.basicConfig(level=logging.INFO)
 
-# ---------- Lightweight lexical small-talk detector (to bypass RAG gate) ----------
+# ---------- Small-talk detector ----------
 _GREETING_RX  = re.compile(r"\b(hi|hey|hello|good (morning|afternoon|evening))\b", re.I)
 _THANKS_RX    = re.compile(r"\b(thanks|thank you|appreciate(d)?|much appreciated)\b", re.I)
 _GOODBYE_RX   = re.compile(r"\b(bye|good night|see you|take care)\b", re.I)
@@ -34,7 +33,10 @@ _HOWAREYOU_RX = re.compile(r"\b(how (are|r) (you|u)|how’s it going|how are thi
 def _is_smalltalk_text(text: str) -> bool:
     t = (text or "").strip()
     return bool(
-        _GREETING_RX.search(t) or _THANKS_RX.search(t) or _GOODBYE_RX.search(t) or _HOWAREYOU_RX.search(t)
+        _GREETING_RX.search(t)
+        or _THANKS_RX.search(t)
+        or _GOODBYE_RX.search(t)
+        or _HOWAREYOU_RX.search(t)
     )
 
 # ---------- Simple lexical relevance gate for RAG ----------
@@ -121,9 +123,16 @@ def ask(req: AskRequest, username=Depends(verify_token)):
     try:
         user_id = get_user_id(username)
 
-        # 1) Prefer provided history, else recent; normalize to dicts
+        # History (optional for small-talk)
         history = req.history or get_recent_history(user_id)
         history_dicts = _normalize_history(history)
+        history_blocks = format_history_blocks(history_dicts)
+
+        # 1) Small-talk fast path (no retrieval / model required)
+        if _is_smalltalk_text(req.question):
+            answer = "I’m doing well! How can I help with IT today?"
+            save_chat_history(user_id, req.question, answer)
+            return {"question": req.question, "answer": answer, "sources": []}
 
         # 2) Retrieve with RRF + HYDE
         ctx, rows = build_context_from_collection(
@@ -134,30 +143,26 @@ def ask(req: AskRequest, username=Depends(verify_token)):
         )
         logging.info(f"[retrieval:/ask] ctx_chars={len(ctx)} rows={len(rows)} q='{req.question[:60]}'")
 
-        # 3) Strict RAG gate for non-small-talk: require non-empty & relevant context
-        if not _is_smalltalk_text(req.question):
-            relevance = _ctx_relevance(req.question, rows)
-            if (not rows) or (not ctx.strip()) or (relevance < 0.15):
-                answer = "I don’t know."
-                save_chat_history(user_id, req.question, answer)
-                return {"question": req.question, "answer": answer, "sources": []}
+        # 3) Strict RAG gate for non-small-talk
+        relevance = _ctx_relevance(req.question, rows)
+        if (not rows) or (not ctx.strip()) or (relevance < 0.15):
+            answer = "I don’t know."
+            save_chat_history(user_id, req.question, answer)
+            return {"question": req.question, "answer": answer, "sources": []}
 
-        # 4) Convert history for LLM and pass fused context
-        history_blocks = format_history_blocks(history_dicts)
-        doc_context_str = ctx
+        # 4) Ask the LLM (guarded)
+        try:
+            answer = ask_llm_hf(
+                question=req.question,
+                history_blocks=history_blocks,
+                doc_context=ctx,
+                user_id=user_id,
+            )
+        except Exception:
+            answer = "I don’t know."
 
-        # 5) Ask the LLM grounded on the built context
-        answer = ask_llm_hf(
-            question=req.question,
-            history_blocks=history_blocks,
-            doc_context=doc_context_str,  # pass fused context string
-            user_id=user_id,
-        )
-
-        # 6) Save chat
+        # 5) Save + sources
         save_chat_history(user_id, req.question, answer)
-
-        # 7) Build sources for UI (rows = [(id, text, meta), ...])
         sources = [
             {
                 "id": rid,
@@ -167,31 +172,39 @@ def ask(req: AskRequest, username=Depends(verify_token)):
             }
             for (rid, text, meta) in rows
         ]
-
         return {"question": req.question, "answer": answer, "sources": sources}
 
     except HTTPException:
         raise
-    except Exception as e:
-        logging.exception("❌ /ask failed:")
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        # Never bubble errors to UI/clients
+        return {"question": req.question, "answer": "I don’t know.", "sources": []}
 
 # ── /ask/stream ───────────────────────────────────────────────────────
 @router.post("/ask/stream")
 async def stream(req: AskRequest, username=Depends(verify_token)):
     """
     Server-Sent Events stream of answer tokens.
-    Sends an initial 'sources' event with citations before streaming tokens.
-    Enforces RAG-only answers for non-small-talk queries.
+    Always emits a response (no SSE error events) so UIs never show [ERROR].
     """
     try:
         user_id = get_user_id(username)
 
-        # 1) Prefer provided history, else recent; normalize to dicts
+        # History
         history = req.history or get_recent_history(user_id)
         history_dicts = _normalize_history(history)
+        history_blocks = format_history_blocks(history_dicts)
 
-        # 2) Retrieve with RRF + HYDE
+        # --- Small-talk: immediate canned stream ---
+        if _is_smalltalk_text(req.question):
+            def sse_small():
+                yield "retry: 2000\n\n"
+                yield "event: sources\ndata: []\n\n"
+                yield 'data: {"choices":[{"delta":{"content":"I’m doing well! How can I help with IT today?"}}]}\n\n'
+                yield "event: done\ndata: {}\n\n"
+            return StreamingResponse(sse_small(), media_type="text/event-stream")
+
+        # Retrieval
         ctx, rows = build_context_from_collection(
             collection=req.collection,
             query=req.question,
@@ -200,26 +213,7 @@ async def stream(req: AskRequest, username=Depends(verify_token)):
         )
         logging.info(f"[retrieval:/ask_stream] ctx_chars={len(ctx)} rows={len(rows)} q='{req.question[:60]}'")
 
-        # 3) Non-small-talk strict gate: if no usable context, stream a short decline and end
-        if not _is_smalltalk_text(req.question):
-            relevance = _ctx_relevance(req.question, rows)
-            if (not rows) or (not ctx.strip()) or (relevance < 0.15):
-                def sse_generator_empty():
-                    yield "retry: 2000\n\n"
-                    yield f"event: sources\ndata: {json.dumps([])}\n\n"
-                    yield f"data: {json.dumps({'choices': [{'delta': {'content': 'I don’t know.'}}]})}\n\n"
-                    yield "event: done\ndata: {}\n\n"
-                    try:
-                        save_chat_history(user_id, req.question, "I don’t know.")
-                    except Exception:
-                        logging.exception("⚠️ Failed to save chat history (empty).")
-                return StreamingResponse(sse_generator_empty(), media_type="text/event-stream")
-
-        # 4) Convert messages to LLM format
-        history_blocks = format_history_blocks(history_dicts)
-        doc_context = [ctx]  # ask_llm_hf_stream expects a list[str]
-
-        # 5) Prepare sources for UI (rows = [(id, text, meta), ...])
+        # Sources for the UI (may be empty)
         sources = [
             {
                 "id": rid,
@@ -230,50 +224,59 @@ async def stream(req: AskRequest, username=Depends(verify_token)):
             for (rid, text, meta) in rows
         ]
 
+        # RAG gate → stream a graceful decline (no error)
+        relevance = _ctx_relevance(req.question, rows)
+        if (not rows) or (not ctx.strip()) or (relevance < 0.15):
+            def sse_decline():
+                yield "retry: 2000\n\n"
+                yield "event: sources\ndata: []\n\n"
+                yield 'data: {"choices":[{"delta":{"content":"I don’t know."}}]}\n\n'
+                yield "event: done\ndata: {}\n\n"
+            try:
+                save_chat_history(user_id, req.question, "I don’t know.")
+            except Exception:
+                pass
+            return StreamingResponse(sse_decline(), media_type="text/event-stream")
+
+        # Stream from LLM; on error, stream fallback tokens instead of error event
         def sse_generator():
             full_answer = ""
             try:
-                # (Optional) client retry hint
                 yield "retry: 2000\n\n"
-
-                # Send sources first
                 yield f"event: sources\ndata: {json.dumps(sources)}\n\n"
-
-                # Stream tokens from the model
                 for token in ask_llm_hf_stream(
                     question=req.question,
                     history_blocks=history_blocks,
-                    doc_context=doc_context,
+                    doc_context=[ctx],
                     user_id=user_id,
                 ):
                     if not token:
                         continue
                     full_answer += token
-                    yield f"data: {json.dumps({'choices': [{'delta': {'content': token}}]})}\n\n"
-
+                    yield f'data: {json.dumps({"choices":[{"delta":{"content": token}}]})}\n\n'
                 yield "event: done\ndata: {}\n\n"
-
-            except Exception as e:
-                logging.exception("❌ Stream error:")
-                yield f"data: {json.dumps({'error': str(e)})}\n\n"
-
+            except Exception:
+                # No "error" events → UIs never show [ERROR]
+                yield 'data: {"choices":[{"delta":{"content":"I don’t know."}}]}\n\n'
+                yield "event: done\ndata: {}\n\n"
             finally:
-                # Persist the complete answer
                 try:
-                    save_chat_history(user_id, req.question, full_answer)
+                    save_chat_history(user_id, req.question, full_answer or "I don’t know.")
                 except Exception:
-                    logging.exception("⚠️ Failed to save chat history at stream end.")
+                    pass
 
         return StreamingResponse(sse_generator(), media_type="text/event-stream")
 
     except HTTPException:
         raise
-    except Exception as e:
-        logging.exception("❌ /ask/stream failed:")
-        return StreamingResponse(
-            iter([f"data: {json.dumps({'error': str(e)})}\n\n"]),
-            media_type="text/event-stream",
-        )
+    except Exception:
+        # Final safety fallback
+        def sse_fail():
+            yield "retry: 2000\n\n"
+            yield "event: sources\ndata: []\n\n"
+            yield 'data: {"choices":[{"delta":{"content":"I don’t know."}}]}\n\n'
+            yield "event: done\ndata: {}\n\n"
+        return StreamingResponse(sse_fail(), media_type="text/event-stream")
 
 # ── /history ──────────────────────────────────────────────────────────
 @router.get("/history")
