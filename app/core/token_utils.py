@@ -1,23 +1,26 @@
+# app/core/token_utils.py
 from transformers import AutoTokenizer
-from sentencepiece import SentencePieceProcessor
-from pathlib import Path
 
-# ✅ Use the exact tokenizer that vLLM uses for mistralai/Mistral-7B
-tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
+# IMPORTANT:
+# Use the same model family you're serving on RunPod.
+# If you're now serving Qwen2.5, set it to Qwen.
+# If you’re still serving Mistral, keep Mistral.
+DEFAULT_TOKENIZER_MODEL = "Qwen/Qwen2.5-7B-Instruct"  # <-- change if needed
 
-sp = SentencePieceProcessor()
-model_path = Path(__file__).parent / "tokenizer_assets" / "tokenizer.model"
-sp.load(str(model_path.resolve()))  # Must match vLLM's tokenizer.model
+_tokenizer = None
 
-def count_tokens(text: str) -> int:
-    """Count tokens using SentencePiece as vLLM does."""
-    return len(sp.encode(text))
+def get_tokenizer(model_name: str = DEFAULT_TOKENIZER_MODEL):
+    global _tokenizer
+    if _tokenizer is None:
+        _tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    return _tokenizer
+
+def count_tokens(text: str, model_name: str = DEFAULT_TOKENIZER_MODEL) -> int:
+    """Count tokens using the HF tokenizer (good match for vLLM / OpenAI-style serving)."""
+    tok = get_tokenizer(model_name)
+    return len(tok.encode(text))
 
 def trim_messages_by_tokens(messages, max_tokens: int, reserved_completion: int = 300, verbose: bool = False):
-    """
-    Trim chat messages to fit within the model's token limit.
-    Always includes the system prompt (first message).
-    """
     if not messages:
         return []
 
@@ -29,9 +32,8 @@ def trim_messages_by_tokens(messages, max_tokens: int, reserved_completion: int 
     total = system_tokens
     trimmed = [system_msg]
 
-    # Walk backward from most recent to oldest (excluding system)
     for msg in reversed(messages[1:]):
-        tokens = count_tokens(msg["content"])
+        tokens = count_tokens(msg.get("content", ""))
         if total + tokens + reserved_completion > max_tokens:
             break
         trimmed.insert(1, msg)
@@ -43,9 +45,6 @@ def trim_messages_by_tokens(messages, max_tokens: int, reserved_completion: int 
     return trimmed
 
 def trim_chunks_by_tokens(chunks: list[str], max_tokens: int, verbose: bool = False) -> list[str]:
-    """
-    Trim document chunks for RAG based on token limit.
-    """
     trimmed = []
     total = 0
     for chunk in chunks:
@@ -61,13 +60,15 @@ def trim_chunks_by_tokens(chunks: list[str], max_tokens: int, verbose: bool = Fa
     return trimmed
 
 def allocate_token_budget(messages, doc_chunks, max_total_tokens=4096, reserved_completion=300, verbose=False):
-    """
-    Dynamically trims both chat messages and document context to fit within total context limit.
-    """
-    trimmed_messages = trim_messages_by_tokens(messages, max_total_tokens, reserved_completion, verbose=verbose)
-    msg_token_total = sum(count_tokens(msg["content"]) for msg in trimmed_messages)
-    
+    trimmed_messages = trim_messages_by_tokens(
+        messages, max_total_tokens, reserved_completion, verbose=verbose
+    )
+    msg_token_total = sum(count_tokens(msg.get("content", "")) for msg in trimmed_messages)
+
     available_doc_tokens = max_total_tokens - msg_token_total - reserved_completion
+    if available_doc_tokens < 0:
+        available_doc_tokens = 0
+
     trimmed_docs = trim_chunks_by_tokens(doc_chunks, max_tokens=available_doc_tokens, verbose=verbose)
 
     if verbose:
