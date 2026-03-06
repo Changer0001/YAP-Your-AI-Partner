@@ -15,7 +15,7 @@ VLLM_API_URL = os.getenv("VLLM_API_URL")
 if not VLLM_API_URL:
     raise RuntimeError("VLLM_API_URL environment variable is missing!")
 
-MODEL_NAME = os.getenv("VLLM_MODEL", "Qwen/Qwen2.5-14B-Instruct")
+MODEL_NAME = os.getenv("VLLM_MODEL", "Qwen/Qwen2.5-7B-Instruct")
 MAX_TOKENS = int(os.getenv("MAX_TOKENS", "32768"))
 RESERVED_COMPLETION = int(os.getenv("RESERVED_COMPLETION", "1536"))
 RESERVED_HEADROOM = int(os.getenv("RESERVED_HEADROOM", "300"))
@@ -87,15 +87,14 @@ def build_safe_messages(system_prompt, chat_history, doc_chunks, user_query):
 def _chat_once(chat_history, doc_chunks, user_query, system_prompt, max_tokens=300, temperature=0.7):
     try:
         messages = build_safe_messages(system_prompt, chat_history, doc_chunks, user_query)
-        allowed_tokens = MAX_TOKENS - max_tokens
-        trimmed_messages = trim_messages_by_tokens(messages, allowed_tokens)
+        
 
         response = requests.post(
-            f"{VLLM_API_URL}/v1/chat/completions",  # ✅ FIXED PATH
+            f"{VLLM_API_URL.rstrip('/')}/chat/completions",  # ✅ FIXED PATH
             headers={"Content-Type": "application/json"},
             json={
                 "model": MODEL_NAME,
-                "messages": trimmed_messages,
+                "messages": messages,
                 "max_tokens": max_tokens,
                 "temperature": temperature,
                 "stream": False
@@ -111,15 +110,14 @@ def _chat_once(chat_history, doc_chunks, user_query, system_prompt, max_tokens=3
 def _chat_stream(chat_history, doc_chunks, user_query, system_prompt, max_tokens=300, temperature=0.7):
     try:
         messages = build_safe_messages(system_prompt, chat_history, doc_chunks, user_query)
-        allowed_tokens = MAX_TOKENS - max_tokens
-        trimmed_messages = trim_messages_by_tokens(messages, allowed_tokens)
+    
 
         response = requests.post(
-            f"{VLLM_API_URL}/v1/chat/completions",  # ✅ FIXED PATH
+            f"{VLLM_API_URL.rstrip('/')}/chat/completions",  # ✅ FIXED PATH
             headers={"Content-Type": "application/json"},
             json={
                 "model": MODEL_NAME,
-                "messages": trimmed_messages,
+                "messages": messages,
                 "max_tokens": max_tokens,
                 "temperature": temperature,
                 "stream": True

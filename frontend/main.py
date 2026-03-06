@@ -1,6 +1,15 @@
 import streamlit as st
 import requests, re, json
 from textwrap import dedent
+import html
+
+def sanitize_for_html(s: str) -> str:
+    if s is None:
+        return ""
+    # Remove control chars (except \n and \t)
+    s = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", s)
+    # Escape HTML special chars
+    return html.escape(s)
 
 st.set_page_config(page_title="YAP", page_icon="🤖", layout="centered")
 API_URL = "http://localhost:8000"
@@ -70,7 +79,6 @@ def inject_styles():
       .stButton > button:focus{outline:none; box-shadow:0 0 0 2px rgba(125,211,252,.35);}
 
       /* ---- Chat bubbles ---- */
-      /* Hide Streamlit default avatar/wrapper to remove emoji and extra padding */
       [data-testid^="stChatMessageAvatar"]{display:none!important;}
       [data-testid="stChatMessage"]{background:transparent!important;padding:0!important;border:0!important;}
       [data-testid="stChatMessage"] > div{background:transparent!important;padding:0!important;box-shadow:none!important;}
@@ -80,7 +88,7 @@ def inject_styles():
       /* glossy USER bubble */
       .user-outer{
         padding:1px;
-        background:linear-gradient(135deg, rgba(99,102,241,.55), rgba(56,189,248,.45)); /* indigo -> cyan */
+        background:linear-gradient(135deg, rgba(99,102,241,.55), rgba(56,189,248,.45));
         border-radius:16px;
         box-shadow:0 16px 40px rgba(56,189,248,.12);
       }
@@ -119,10 +127,11 @@ def brand_header():
 
 # ───────────────────── Formatting helpers ─────────────────────
 def format_answer(text: str) -> str:
-    t = (text or "").strip()
+    t = sanitize_for_html((text or "").strip())
     t = re.sub(r"(?<!\n)(\d+\.)", r"\n\1", t)
     t = re.sub(r"(?m)^\s*(\d+)\.\s*(.*)", r"<li>\2</li>", t)
-    if "<li>" in t: t = f"<ol>{t}</ol>"
+    if "<li>" in t:
+        t = f"<ol>{t}</ol>"
     return f"<div class='answer' style='font-size:1.05rem; line-height:1.75em; color:#e2e8f0'>{t}</div>"
 
 def _headline(text: str, max_len: int = 60) -> str:
@@ -147,7 +156,7 @@ def login(username, password):
             st.error("Login succeeded but no token returned."); return
         st.session_state.token = token
         st.session_state.history = []
-        st.rerun()  # one-click proceed
+        st.rerun()
     except Exception as e:
         st.error(f"Error: {e}")
 
@@ -165,35 +174,91 @@ def register(username, password):
 
 # ──────────────────────── Streaming (SSE) ─────────────────────
 def stream_answer(prompt, history, on_update):
-    payload = {"question": prompt, "history": history}
-    headers = {"Authorization": f"Bearer {st.session_state.token}"}
+    payload = {"question": prompt}
+    headers = {
+        "Authorization": f"Bearer {st.session_state.token}",
+        "Content-Type": "application/json",
+    }
+
     answer = ""
+    current_event = None
+
     try:
-        with requests.post(f"{API_URL}/ask/stream", json=payload, headers=headers, stream=True, timeout=(10, 120)) as resp:
-            resp.raise_for_status()
+        with requests.post(
+            f"{API_URL}/ask/stream",
+            json=payload,
+            headers=headers,
+            stream=True,
+            timeout=(10, 300),
+        ) as resp:
+            if not resp.ok:
+                on_update(f"❌ API {resp.status_code}: {resp.text}")
+                return "[ERROR]"
+
             for raw in resp.iter_lines(decode_unicode=True):
-                if not raw:
+                if raw is None:
                     continue
-                if raw.startswith((":", "retry:", "event:")):
-                    if raw.strip() in ("event: done",):
+
+                line = raw.strip()
+                if not line:
+                    continue
+
+                # SSE event line
+                if line.startswith("event:"):
+                    current_event = line.split("event:", 1)[1].strip().lower()
+                    if current_event in ("done", "end", "complete", "finished"):
                         break
                     continue
-                if raw.startswith("data:"):
-                    data_str = raw.split("data:", 1)[1].strip()
-                    if not data_str or data_str in ("[DONE]", "{}"):
+
+                # Ignore comments/retry
+                if line.startswith(":") or line.startswith("retry:"):
+                    continue
+
+                if line.startswith("data:"):
+                    data_str = line.split("data:", 1)[1].strip()
+
+                    # common terminators
+                    if data_str in ("[DONE]", "DONE", "__DONE__", ""):
+                        break
+
+                    # sources event — store but don't render
+                    if current_event == "sources":
+                        try:
+                            st.session_state["last_sources"] = json.loads(data_str)
+                        except Exception:
+                            st.session_state["last_sources"] = data_str
+                        current_event = None  # ← add this line
                         continue
+
+                    # ── token/content parsing ──────────────────────────────
+                    piece = ""
                     try:
-                        payload_obj = json.loads(data_str)
-                        delta = payload_obj.get("choices", [{}])[0].get("delta", {})
-                        piece = delta.get("content", "")
-                        if piece:
-                            answer += piece
-                            on_update(answer)
+                        obj = json.loads(data_str)
+                        if isinstance(obj, str):
+                            piece = obj
+                        elif isinstance(obj, dict):
+                            # FIX: handle OpenAI-style choices[0].delta.content
+                            piece = (
+                                obj.get("token")
+                                or obj.get("text")
+                                or obj.get("content")
+                                or obj.get("answer")
+                                or (obj.get("choices") or [{}])[0].get("delta", {}).get("content", "")
+                                or ""
+                            )
+                        else:
+                            piece = str(obj)
                     except Exception:
-                        continue
+                        piece = data_str
+
+                    if piece:
+                        answer += piece
+                        on_update(answer)
+
     except Exception as e:
         on_update(f"❌ Stream error: {e}")
         return "[ERROR]"
+
     return answer.strip()
 
 # ─────────────────────────── Pages ────────────────────────────
@@ -287,6 +352,7 @@ def ask_page():
 
         # Streaming inside glossy AI bubble
         ph = st.empty()
+
         def paint(current_text: str):
             ph.markdown(
                 "<div class='bubble ai-outer'><div class='ai-inner'>"
@@ -296,7 +362,7 @@ def ask_page():
                 unsafe_allow_html=True,
             )
 
-        paint("")  # draw empty bubble shell
+        # FIX: removed paint("") — it was overwriting the bubble with empty content
         answer = stream_answer(prompt, st.session_state.history, on_update=paint)
         if answer and not answer.startswith("[ERROR]"):
             st.session_state.history.append({"role": "assistant", "content": answer})

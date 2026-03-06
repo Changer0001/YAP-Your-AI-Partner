@@ -582,3 +582,45 @@ Please provide the specific dates you want to book for.",2025-08-21T04:44:03.048
 1,What is the Wi-Fi policy?,I don't know.,2025-08-23T06:26:23.437055
 1,stream a short reply,I don’t know.,2025-08-23T06:26:23.509949
 1,Do you know my name ?,"Yes, you introduced yourself as Burak.",2025-08-23T06:26:57.338479
+1,How do you know that ,I don’t know.,2026-03-05T06:41:53.919166
+1,Can you tell me how to create a user in simphony,I don’t know.,2026-03-05T06:42:09.046320
+1,what do you know then ?,I don’t know.,2026-03-05T06:42:16.998099
+1,how to add user in sertifi,I don’t know.,2026-03-05T06:42:35.642982
+1,what is your refund policy,I don’t know.,2026-03-05T06:43:54.936165
+1,do you know who i am ,I don’t know.,2026-03-05T06:44:53.753839
+1,who do you know ,I don’t know.,2026-03-05T06:45:07.871431
+1,do you know how to add user on sertifi,[ERROR] ,2026-03-05T06:52:08.034116
+1,how to user on sertifi,[ERROR] ,2026-03-05T06:52:44.182408
+1,What is the refund policy?,[ERROR] ,2026-03-05T06:57:53.384791
+1,how to add user on sertifi,[ERROR] ,2026-03-05T06:58:55.585343
+1,how to add user on sertifi,[ERROR] ,2026-03-05T07:05:15.906502
+1,how to add user on sertifi,[ERROR] ,2026-03-05T07:07:30.564835
+1,what is the weather today,I don’t know.,2026-03-06T19:27:21.509039
+1,how to add user on sertiif,[ERROR] ,2026-03-06T19:34:44.164670
+1,how to add user on sertiif,[ERROR] ,2026-03-06T19:35:47.068329
+1,how to add user on sertifi,[ERROR] ,2026-03-06T19:40:12.380736
+1,What is the refund policy?,"[ERROR] {""detail"":""Not Found""}",2026-03-06T20:15:51.661900
+1,What is the refund policy?,"To add a user on ServiceNow (specifically for Citrix Access), follow these steps:
+
+1. Go to: https://hyatt.service-now.com/serviceportal
+2. Type ""Citrix Access Request"" in the search bar
+3. Click on ""Citrix Access Request""
+4. Under ""Who is the user needing access?"", enter the user's Global ID
+5. Once the Global ID is entered, the other two boxes (""Who is the user's manager?"" and ""What is the user's location (SPIRIT Code)?"") should automatically populate
+6. Select the appropriate application. If the desired application is not listed, then select ""Other"" and manually enter the information
+7. Once completed, click on the ""Submit"" blue-colored button located at the top-right of the screen",2026-03-06T20:28:22.107400
+1,how to add user on sertifi,"- Open a web browser and go to: <https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1>
+- Click on ""log in with enterprise id""
+- Click on ""Administration"" > ""Create Admins""
+- Enter the credentials, then click ""Create Admin""
+  - Email = email...
+  - Role = Power Admin
+  - Enterprise ID = Global ID",2026-03-06T20:30:09.923204
+1,how to add user on sertiif,- I don't know.,2026-03-06T20:32:55.864517
+1,how to add user on sertifi,"- Open a web browser and go to: <https://www.sertifi.com/HYATT-SANEN/profile.aspx?edit=1>
+- Click on ""log in with enterprise id""
+- Click on ""Administration"" > ""Create Admins""
+- Enter the credentials, then click ""Create Admin""
+  - Email = email...
+  - Role = Power Admin
+  - Enterprise ID = Global ID",2026-03-06T20:38:22.591413
