@@ -33,7 +33,7 @@ This matters before you build on it.
 
 | Area | README / docs claim (latest by date, 2025-08-16) | What's actually in the repo |
 |------|--------------------------------------------------|------------------------------|
-| LLM | Qwen 2.5 14B via vLLM (Phase 3, "current") | `app.py` uses **phi-2 (local)** or **OpenAI gpt-3.5-turbo** |
+| LLM | Qwen 2.5 14B via vLLM (Phase 3, "current") | `app.py` has a phi-2 branch + a leftover OpenAI branch (see note below); real inference is the cloud vLLM endpoint, not committed |
 | Retrieval | HyDE + Reciprocal Rank Fusion + adaptive thresholding | Plain top-3 cosine similarity |
 | API | FastAPI `/ask` + `/ask/stream` streaming | None in repo (CLI `input()` loop only) |
 | Auth | JWT login/registration | None in repo |
@@ -146,18 +146,25 @@ there are several ways around it, ranging from "needs zero permission" to "ask I
 
 This is the most important paragraph in the document.
 
-`src/app.py` currently sends the question **and the retrieved document context** to
-**OpenAI's API** by default. For Hyatt internal IT documentation, that means **corporate data
-leaving the network to a third party** — almost certainly a policy violation.
+**Correction (per Burak):** the **OpenAI key/branch in `app.py` is leftover and not actually
+used** — real inference goes through your **cloud vLLM (Qwen)** endpoint. So OpenAI isn't the
+exposure. The real question becomes: **where does that cloud GPU actually live?** If the vLLM
+server is on Colab or a general public-cloud VM, then for real Hyatt content you're still sending
+**the question + retrieved internal-doc context to a machine outside Hyatt's control** — which is
+the same policy problem, just relocated from OpenAI to your own cloud box.
 
 For your work build:
-- **Use only the self-hosted LLM path (your vLLM/Qwen server on private GPU).** Disable / remove the
-  OpenAI branch for any real-data deployment, or gate it behind a "demo data only" flag.
+- **Clean up the dead OpenAI branch** so no one can accidentally route Hyatt data to it, and remove
+  the unused `OPENAI_API_KEY`.
+- **Decide where the vLLM endpoint runs.** For a sanitized demo, Colab/public cloud is fine. For
+  **real Hyatt IT docs**, the model needs to run on infrastructure Hyatt controls (Level 2/3) —
+  e.g. an internal GPU box, a Hyatt-approved private cloud tenant, or on-prem. Colab is a demo
+  tool, not a place for internal corporate documents.
 - The **embedding model (`all-MiniLM-L6-v2`) already runs locally** — good, keep it that way.
   Embeddings of sensitive text should never go to a hosted embedding API either.
 - Map this to your own `scalibility.md`: you want **Level 2 (private hosted)** or **Level 3
-  (on-prem / air-gapped)**. Level 1 (public API) is fine for a sanitized demo, **not** for Hyatt
-  data.
+  (on-prem / air-gapped)**. Level 1 / public-cloud GPU is fine for a sanitized demo, **not** for
+  Hyatt data.
 - Keep chat history + logs (the SQLite/CSV layer) **on the internal server**, and treat them as
   sensitive — they'll contain snippets of internal docs.
 
