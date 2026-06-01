@@ -147,24 +147,31 @@ there are several ways around it, ranging from "needs zero permission" to "ask I
 This is the most important paragraph in the document.
 
 **Correction (per Burak):** the **OpenAI key/branch in `app.py` is leftover and not actually
-used** — real inference goes through your **cloud vLLM (Qwen)** endpoint. So OpenAI isn't the
-exposure. The real question becomes: **where does that cloud GPU actually live?** If the vLLM
-server is on Colab or a general public-cloud VM, then for real Hyatt content you're still sending
-**the question + retrieved internal-doc context to a machine outside Hyatt's control** — which is
-the same policy problem, just relocated from OpenAI to your own cloud box.
+used** — real inference goes through your **cloud vLLM (Qwen) endpoint running on RunPod**. So
+OpenAI isn't the exposure. The real question becomes: **is RunPod an acceptable place to send
+Hyatt internal IT-doc content?** RunPod is a **third-party GPU cloud outside Hyatt's network**, so
+sending it the question + retrieved internal-doc context is the same policy problem as OpenAI was —
+just relocated to your own pod.
 
 For your work build:
 - **Clean up the dead OpenAI branch** so no one can accidentally route Hyatt data to it, and remove
   the unused `OPENAI_API_KEY`.
-- **Decide where the vLLM endpoint runs.** For a sanitized demo, Colab/public cloud is fine. For
-  **real Hyatt IT docs**, the model needs to run on infrastructure Hyatt controls (Level 2/3) —
-  e.g. an internal GPU box, a Hyatt-approved private cloud tenant, or on-prem. Colab is a demo
-  tool, not a place for internal corporate documents.
+- **RunPod is great for a demo/POC — and probably fine for *sanitized* example data.** It is **not**
+  automatically OK for real Hyatt IT docs without security sign-off, because the data leaves
+  Hyatt's network to a vendor. Treat that as an approval question, not a technical one.
+- **If you do run real data on RunPod, harden it:**
+  - Use **Secure Cloud** (SOC2 / T3-T4 data centers), **not Community Cloud** (which is peer-hosted
+    on strangers' machines — never put corporate docs there).
+  - Use a **dedicated pod**, keep it **ephemeral**, and **don't persist docs/embeddings/chat logs on
+    the pod** — pull them from, and write them back to, somewhere you control.
+  - Lock the endpoint down: **auth on the vLLM API, TLS, IP allow-listing**, no public exposure.
+  - Remember RunPod is **compute, not a data processor agreement** — there's typically no BAA/DPA
+    covering your content, which is exactly what corporate security will ask about.
+- **The fully-compliant target** is the model running on **infrastructure Hyatt controls** — a
+  Hyatt-approved cloud tenant/VPC or on-prem GPU (your `scalibility.md` Level 2/3). RunPod sits at
+  **Level 1.5**: real GPUs you rent, but still a third party.
 - The **embedding model (`all-MiniLM-L6-v2`) already runs locally** — good, keep it that way.
   Embeddings of sensitive text should never go to a hosted embedding API either.
-- Map this to your own `scalibility.md`: you want **Level 2 (private hosted)** or **Level 3
-  (on-prem / air-gapped)**. Level 1 / public-cloud GPU is fine for a sanitized demo, **not** for
-  Hyatt data.
 - Keep chat history + logs (the SQLite/CSV layer) **on the internal server**, and treat them as
   sensitive — they'll contain snippets of internal docs.
 
