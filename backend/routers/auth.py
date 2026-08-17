@@ -1,8 +1,13 @@
 """Authentication endpoints (public).
 
-Flow: on first run there are no users -> the UI shows a one-time "create admin" screen
-(`/setup`). After that, `/login` issues a signed session token. `/me` validates a token.
+- First run: `/setup` creates the first admin.
+- `/register` self-service creates a regular `user` account.
+- `/login` issues a signed session token. `/status` and `/me` report the caller.
+- Password reset on a local, mail-less app is admin-initiated (see admin router); `/forgot` just
+  returns guidance rather than pretending to send an email.
 """
+from typing import Optional
+
 from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel
 
@@ -14,32 +19,56 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 class Credentials(BaseModel):
     username: str
     password: str
+    full_name: Optional[str] = None
+
+
+def _issue(user: dict):
+    return {"token": auth.token_for(user), "user": user}
+
+
+def _validate(username: str, password: str):
+    if len(username.strip()) < 3:
+        raise HTTPException(400, "Username/email must be at least 3 characters")
+    issues = auth.password_issues(password)
+    if issues:
+        raise HTTPException(400, "Password needs: " + ", ".join(issues).lower())
 
 
 @router.get("/status")
 def status(authorization: str = Header(default="")):
-    """Public: does the app need first-run setup, and is the caller authenticated?"""
-    authed = False
-    user = None
+    authed, user = False, None
     if authorization.lower().startswith("bearer "):
         claims = auth.verify_token(authorization.split(" ", 1)[1].strip())
         if claims:
             authed = True
-            user = {"username": claims.get("sub"), "role": claims.get("role")}
+            user = {"username": claims.get("sub"), "full_name": claims.get("name", ""),
+                    "role": claims.get("role")}
     return {"needs_setup": auth.user_count() == 0, "authenticated": authed, "user": user}
 
 
 @router.post("/setup")
 def setup(creds: Credentials):
-    """Create the first admin account. Allowed only when no users exist yet."""
     if auth.user_count() > 0:
         raise HTTPException(409, "Setup already completed")
-    username = creds.username.strip()
-    if len(username) < 3 or len(creds.password) < 8:
-        raise HTTPException(400, "Username min 3 chars, password min 8 chars")
-    auth.create_user(username, creds.password, role="admin")
-    token = auth.sign_token({"sub": username, "role": "admin"})
-    return {"token": token, "user": {"username": username, "role": "admin"}}
+    _validate(creds.username, creds.password)
+    auth.create_user(creds.username.strip(), creds.password, role="admin",
+                     full_name=(creds.full_name or "").strip())
+    return _issue({"username": creds.username.strip(),
+                   "full_name": (creds.full_name or "").strip(), "role": "admin"})
+
+
+@router.post("/register")
+def register(creds: Credentials):
+    """Self-service registration -> regular `user` role. Admins manage roles afterwards."""
+    if auth.user_count() == 0:
+        raise HTTPException(400, "Create the first admin account via setup first")
+    _validate(creds.username, creds.password)
+    if auth.get_user(creds.username.strip()):
+        raise HTTPException(409, "An account with that email already exists")
+    auth.create_user(creds.username.strip(), creds.password, role="user",
+                     full_name=(creds.full_name or "").strip())
+    return _issue({"username": creds.username.strip(),
+                   "full_name": (creds.full_name or "").strip(), "role": "user"})
 
 
 @router.post("/login")
@@ -49,10 +78,16 @@ def login(creds: Credentials):
     user = auth.authenticate(creds.username.strip(), creds.password)
     if not user:
         auth.record_failure(key)
-        raise HTTPException(401, "Invalid username or password")
+        raise HTTPException(401, "Invalid email or password")
     auth.clear_failures(key)
-    token = auth.sign_token({"sub": user["username"], "role": user["role"]})
-    return {"token": token, "user": user}
+    return _issue(user)
+
+
+@router.get("/forgot")
+def forgot():
+    # Local, mail-less deployment: no email reset. Be honest about the real path.
+    return {"message": "This is a local application with no email server. Ask an administrator to "
+                       "reset your password from the Users page."}
 
 
 @router.get("/me")
@@ -62,4 +97,5 @@ def me(authorization: str = Header(default="")):
     claims = auth.verify_token(authorization.split(" ", 1)[1].strip())
     if not claims:
         raise HTTPException(401, "Invalid or expired session")
-    return {"username": claims.get("sub"), "role": claims.get("role")}
+    return {"username": claims.get("sub"), "full_name": claims.get("name", ""),
+            "role": claims.get("role")}

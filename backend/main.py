@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.config import settings
+from backend.routers import admin
 from backend.routers import auth as auth_router
 from backend.routers import chat, documents, integrations, search, system
 from backend.services import auth as auth_service
@@ -78,6 +79,8 @@ app.include_router(documents.router, dependencies=_auth)
 app.include_router(search.router, dependencies=_auth)
 app.include_router(system.router, dependencies=_auth)
 app.include_router(integrations.router, dependencies=_auth)
+# Admin-only endpoints — require the admin role on every route.
+app.include_router(admin.router, dependencies=[Depends(auth_service.require_admin)])
 
 # Serve the frontend SPA (mounted last so /api/* wins). html=True serves index.html.
 _frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
