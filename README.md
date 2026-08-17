@@ -63,9 +63,12 @@ uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
 ## First use
 
-1. Open **http://127.0.0.1:8000**. On first run you'll **create an admin account**; after that you
-   sign in each session. Additional people can **Create account** (they get the `user` role); admins
-   manage roles, resets, and access from the **Users** page. Toggle **light/dark** from the top bar.
+1. Open **http://127.0.0.1:8000**. On first run you create the **super-admin** account (using the
+   setup key printed in the server terminal). Accounts are **invite-only** — the super-admin/admins
+   create users from the **Users** page. Toggle **light/dark** from the top bar.
+2. **Properties (multi-tenant):** each property/site is an **isolated knowledge base** (its own
+   vector collection). Users are scoped to one property; the **super-admin** manages properties and
+   can switch between any of them with the property picker in the top bar.
 2. **Documents** → upload a PDF/DOCX/XLSX/TXT/MD/CSV (optionally set Site, Version, Date…), or drop
    many exported files into `data/import/` and click **Import from folder**.
 3. Go to **Chat** and ask a question. The answer cites the documents it used.
