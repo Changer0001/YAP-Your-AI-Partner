@@ -1,104 +1,120 @@
-# YAP – Your AI Partner  
-**Business LLM Assistant (Prototype)**  
+# IT Copilot — Local, Private IT Knowledge Base
+
+A completely **local** AI assistant for IT work. Load your own IT documentation
+(SOPs, network docs, configs, PDFs, Word, Excel, notes…) and ask questions about
+it. Answers are grounded in **your** documents via RAG and always show their
+**sources** — and the assistant refuses to invent things it can't find.
+
+- 🔒 **Local-first / private** — documents, embeddings, vector DB and the LLM all
+  run on your machine. No external AI API. No internet needed to answer questions.
+  No telemetry, no document upload to third parties.
+- 🧠 **Qwen 2.5 3B** (chat) + **nomic-embed-text** (embeddings) via **Ollama**.
+- 📚 **RAG** with metadata filtering, similarity threshold, and source citations.
+- 🗂 **Document management** — upload / re-index / delete, with metadata (site,
+  version, date, author, …).
+- 🚫 **Hallucination control** — if it isn't in your documents, it says so.
+
+> Swapping the model later is one line in `.env` — the architecture doesn't depend
+> on the 3B model.
 
 ---
 
-## 🎯 Objective  
-YAP is a prototype for building **lightweight, domain-specific AI assistants** tailored for small and medium businesses (SMBs).  
+## Architecture
 
-Instead of training massive LLMs, YAP enhances **retrieval-augmented generation (RAG)** with business-specific data (FAQs, menus, policies, booking APIs).  
-It runs **locally on CPU with quantized models** or scales to **GPU inference servers** (Mistral/Qwen) for advanced performance.  
+```
+Frontend (SPA)  ──►  FastAPI backend  ──►  ┌ Document Service (parse + chunk)
+   Chat / Docs                             ├ RAG Service (embed + search + rank)
+   Search / Dashboard                      └ Chat Service (Qwen 2.5 3B)
+                                                    │
+                        ChromaDB (vectors, local) ──┘   SQLite (doc registry)
+                        Ollama (Qwen + embeddings, local)
+```
 
----
-
-## ✨ Key Features  
-- ✅ **RAG-powered answers** grounded in real business data  
-- ✅ **Smart Retrieval** → HyDE + Reciprocal Rank Fusion (RRF)  
-- ✅ **Multiple inference modes** → quantized CPU or full-scale GPU  
-- ✅ **Persistent storage** → ChromaDB for documents, SQLite for user data + chat history  
-- ✅ **Authentication** → JWT-based login/registration  
-- ✅ **Extensible APIs** → Stripe (payments), OpenTable (bookings), ServiceNow (IT tickets)  
-- ✅ **Modern UI** → Streamlit frontend with Apple-like theme, chat history, and streaming answers  
+Everything runs on one computer. See `docs/` for the deeper design rationale.
 
 ---
 
-## ⚙️ How It Works  
-1. **Ingest & Chunk**  
-   - Upload FAQs, menus, PDFs, policies, or scrape websites  
-   - Split into metadata-rich chunks (filename, heading, position)  
+## Prerequisites
 
-2. **Embedding & Storage**  
-   - Embeddings generated with `all-MiniLM-L6-v2`  
-   - Stored in **ChromaDB** (persistent collections)  
+1. **Python 3.10+**
+2. **[Ollama](https://ollama.com)** installed and running, with the models pulled:
+   ```bash
+   ollama pull qwen2.5:3b
+   ollama pull nomic-embed-text
+   ```
 
-3. **Smart Retrieval**  
-   - HyDE (Hypothetical Document Embeddings)  
-   - RRF (Reciprocal Rank Fusion)  
-   - Adaptive thresholding to filter irrelevant chunks  
+## Run
 
-4. **LLM Inference**  
-   - **Phase 1 – Flan-T5 (CPU, Quantized)**  
-     - Hugging Face pipeline (`text2text-generation`)  
-     - Used **quantization (8-bit)** for speed  
-     - Pros: no GPU required, fast startup  
-     - Cons: weaker accuracy, small context window  
+```bash
+./run.sh
+```
+That creates a virtualenv, installs dependencies, copies `.env.example` → `.env`
+(first run), and starts the app at **http://127.0.0.1:8000**.
 
-   - **Phase 2 – Mistral-7B (GPU, Colab vLLM)**  
-     - Hosted via **vLLM** server on Colab  
-     - Added **streaming APIs**, better reasoning, ~4k token context  
-     - Introduced **hallucination rejection + context enforcement**  
+<details><summary>Manual start (instead of run.sh)</summary>
 
-   - **Phase 3 – Qwen 2.5 (14B, GPU, Colab vLLM)** *(Current)*  
-     - Migration to **Qwen 2.5 Instruct** with **32k token context**  
-     - Runs on GPU (Colab vLLM)  
-     - Better multilingual, reasoning, and factual grounding  
+```bash
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn backend.main:app --host 127.0.0.1 --port 8000
+```
+</details>
 
-5. **Answer Generation**  
-   - Strict **document-grounding** (rejects unsupported answers)  
-   - **Streaming output** for smooth UI  
+## First use
 
----
+1. Open **http://127.0.0.1:8000** → **Documents** → upload a PDF/DOCX/XLSX/TXT/MD/CSV
+   (optionally set Site, Version, Date…).
+2. Go to **Chat** and ask a question. The answer cites the documents it used.
+3. Use **Search** to inspect the index directly (no AI), and **Dashboard** /
+   **Settings** for stats and system/model status.
 
-## 🚀 Evolution & Upgrades  
+## Configuration (`.env`)
 
-### 🔹 Phase 1 – Early CPU Prototype  
-- Model: **Flan-T5-Small**  
-- Setup: CPU-only, Hugging Face pipeline  
-- Optimizations: **quantization** (8-bit) for faster inference  
-- Strength: runs anywhere, no GPU  
-- Limitation: small context, weaker performance  
+| Key | Default | Meaning |
+|-----|---------|---------|
+| `CHAT_MODEL` | `qwen2.5:3b` | Ollama chat model |
+| `EMBED_MODEL` | `nomic-embed-text` | Ollama embedding model |
+| `CHUNK_SIZE` / `CHUNK_OVERLAP` | `250` / `50` | chunking (words) |
+| `TOP_K` | `5` | chunks retrieved per question |
+| `SIMILARITY_THRESHOLD` | `0.2` | drop weak matches (0–1) |
+| `MAX_CONTEXT_CHARS` | `6000` | context size sent to the model |
+| `MAX_UPLOAD_MB` | `25` | upload size limit |
 
-### 🔹 Phase 2 – Mistral Upgrade  
-- Model: **Mistral-7B-Instruct-v0.2**  
-- Hosted on **Colab GPU via vLLM**  
-- Features: streaming responses, hallucination rejection  
-- Context window: **4k tokens**  
+## Security
 
-### 🔹 Phase 3 – Qwen Migration (Current)  
-- Model: **Qwen 2.5 (14B Instruct)**  
-- Hosted on **Colab GPU via vLLM**  
-- Context window: **32k tokens**  
-- Best accuracy, reasoning, and retrieval performance so far  
+- `.env` is gitignored; **never commit secrets**.
+- Uploads are extension-checked, size-limited, filename-sanitised, and stored under
+  generated names (no path traversal).
+- The LLM cannot execute shell commands; documents cannot execute code.
+- Retrieved document text is treated as **untrusted data** — the model is
+  instructed never to follow instructions embedded in it (prompt-injection defence).
+- Binds to `127.0.0.1` by default.
 
----
+## Project layout
 
-## 🔧 Recent Additions (2025)  
-- 🧩 **Smart RAG** → HyDE + RRF scoring  
-- 🔒 **JWT Authentication** → secure user sessions  
-- 🗄 **Persistence Layer** → SQLite (users, chat history) + ChromaDB (docs)  
-- 💾 **OCR Pipeline** → PDF ingestion support  
-- 🖥 **Frontend UI** → Streamlit dark theme, Apple-like design, login & chat history  
-- 🌐 **API Endpoints** → `/ask` & `/ask/stream` with FastAPI  
-- 📊 **Logging** → CSV exports + monitoring  
+```
+backend/
+  config.py            settings (.env)
+  main.py              FastAPI app
+  models.py            request/response schemas
+  routers/             chat, documents, search, system
+  services/            documents, embeddings, vectorstore, rag, chat, ingestion, registry
+  utils/security.py    upload validation
+frontend/              index.html, styles.css, app.js  (served by FastAPI)
+tests/                 parsing/chunking tests
+docs/                  architecture & design docs
+```
 
----
+## Tests
 
-## 🧠 Technical Notes  
-- **Embeddings:** `all-MiniLM-L6-v2`  
-- **Vector DB:** ChromaDB  
-- **LLMs Used (Chronological):**  
-  1. **Flan-T5-Small (quantized)** – CPU baseline  
-  2. **Mistral-7B (vLLM, GPU)** – stronger reasoning  
-  3. **Qwen 2.5 14B (vLLM, GPU)** – current production, 32k context  
-- **Token Handling:** dynamic budget allocation, truncation for overflow  
-- **Security:** JWT auth, HTTPS-ready, hallucination filtering  
+```bash
+pip install pytest
+pytest -q
+```
+
+## Roadmap
+
+Phase 2 email/document intelligence (OCR, thread reconstruction) · Phase 3 network
+config parsing (ciscoconfparse2 / Batfish) · Phase 4 Teams/tickets · Phase 5
+multi-user + RBAC. See `docs/IT-Copilot-Build-Plan.md`.

@@ -1,0 +1,12 @@
+# IT Copilot — local, private IT knowledge base.
+# All AI runs locally via Ollama; nothing here calls an external AI service.
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+python-dotenv>=1.0
+ollama>=0.3
+chromadb>=0.5
+pypdf>=4.2
+python-docx>=1.1
+openpyxl>=3.1
+psutil>=5.9
