@@ -20,6 +20,7 @@ class Credentials(BaseModel):
     username: str
     password: str
     full_name: Optional[str] = None
+    setup_key: Optional[str] = None
 
 
 def _issue(user: dict):
@@ -50,9 +51,13 @@ def status(authorization: str = Header(default="")):
 def setup(creds: Credentials):
     if auth.user_count() > 0:
         raise HTTPException(409, "Setup already completed")
+    if not auth.verify_setup_key(creds.setup_key or ""):
+        raise HTTPException(403, "Invalid setup key. It is shown in the server terminal on first "
+                                 "run and saved in data/setup_key.txt.")
     _validate(creds.username, creds.password)
     auth.create_user(creds.username.strip(), creds.password, role="admin",
                      full_name=(creds.full_name or "").strip())
+    auth.clear_setup_key()
     return _issue({"username": creds.username.strip(),
                    "full_name": (creds.full_name or "").strip(), "role": "admin"})
 

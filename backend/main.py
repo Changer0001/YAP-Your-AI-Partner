@@ -28,6 +28,13 @@ logger = logging.getLogger("it_copilot")
 async def lifespan(app: FastAPI):
     registry.init_db()
     auth_service.init_db()
+    if auth_service.user_count() == 0:
+        key = auth_service.setup_key()
+        print("\n" + "=" * 64, flush=True)
+        print("  FIRST RUN — create your admin account in the browser.", flush=True)
+        print(f"  Admin setup key:  {key}", flush=True)
+        print("  (also saved in data/setup_key.txt — keep it to yourself)", flush=True)
+        print("=" * 64 + "\n", flush=True)
     yield
 
 

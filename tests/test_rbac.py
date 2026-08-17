@@ -27,14 +27,29 @@ def _hdr(tok):
     return {"Authorization": "Bearer " + tok}
 
 
-def test_setup_register_and_rbac(client):
-    # weak password rejected
+def _setup_key():
+    from backend.services import auth
+    return auth.setup_key()
+
+
+def test_setup_requires_key(client):
     assert client.post("/api/auth/setup",
-                       json={"username": "admin@x.com", "password": "weak"}).status_code == 400
+                       json={"username": "admin@x.com", "password": "Str0ng!pass"}).status_code == 403
+    assert client.post("/api/auth/setup",
+                       json={"username": "admin@x.com", "password": "Str0ng!pass",
+                             "setup_key": "wrong"}).status_code == 403
+
+
+def test_setup_register_and_rbac(client):
+    key = _setup_key()
+    # weak password rejected (with a valid key)
+    assert client.post("/api/auth/setup",
+                       json={"username": "admin@x.com", "password": "weak",
+                             "setup_key": key}).status_code == 400
     # first admin
     admin = client.post("/api/auth/setup",
                         json={"username": "admin@x.com", "password": "Str0ng!pass",
-                              "full_name": "Admin"}).json()
+                              "full_name": "Admin", "setup_key": key}).json()
     assert admin["user"]["role"] == "admin"
     # self-register -> user role
     user = client.post("/api/auth/register",
@@ -51,7 +66,8 @@ def test_setup_register_and_rbac(client):
 
 def test_last_admin_protection(client):
     admin = client.post("/api/auth/setup",
-                        json={"username": "a@x.com", "password": "Str0ng!pass"}).json()
+                        json={"username": "a@x.com", "password": "Str0ng!pass",
+                              "setup_key": _setup_key()}).json()
     h = _hdr(admin["token"])
     # cannot demote / delete the only admin
     assert client.patch("/api/admin/users/a@x.com", json={"role": "user"}, headers=h).status_code == 400

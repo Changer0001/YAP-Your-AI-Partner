@@ -139,6 +139,39 @@ def user_count() -> int:
         return conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
 
 
+# --------------------------------------------------------------------------- admin setup key
+def setup_key() -> str:
+    """One-time key required to create the FIRST (admin) account.
+
+    Precedence: ADMIN_SETUP_KEY env var, else a random key stored in data/setup_key.txt so only
+    someone with access to this machine (i.e. you) can claim the admin account.
+    """
+    env = os.getenv("ADMIN_SETUP_KEY")
+    if env:
+        return env.strip()
+    path = settings.data_dir / "setup_key.txt"
+    if path.exists():
+        return path.read_text().strip()
+    key = base64.urlsafe_b64encode(os.urandom(9)).decode().rstrip("=")
+    path.write_text(key)
+    try:
+        os.chmod(path, 0o600)
+    except OSError:
+        pass
+    return key
+
+
+def verify_setup_key(key: str) -> bool:
+    return bool(key) and hmac.compare_digest(key.strip(), setup_key())
+
+
+def clear_setup_key() -> None:
+    try:
+        (settings.data_dir / "setup_key.txt").unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
 def create_user(username: str, password: str, role: str = "user",
                 full_name: str = "") -> None:
     salt, pwhash = hash_password(password)
