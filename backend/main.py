@@ -73,8 +73,13 @@ async def security_headers(request: Request, call_next):
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["Content-Security-Policy"] = (
         "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; "
-        "script-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'self'"
+        "script-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; "
+        "base-uri 'none'; form-action 'self'"
     )
+    # Static app assets must always revalidate so UI updates load after a redeploy
+    # (prevents the browser serving a stale cached page).
+    if not request.url.path.startswith("/api"):
+        response.headers["Cache-Control"] = "no-cache"
     return response
 
 
