@@ -12,7 +12,7 @@ from backend.config import settings
 _FIELDS = [
     "id", "filename", "doc_type", "size_bytes", "chunk_count", "index_status",
     "site", "department", "category", "version", "doc_date", "author", "status",
-    "created_at", "updated_at", "stored_path",
+    "created_at", "updated_at", "stored_path", "content_hash",
 ]
 
 
@@ -39,10 +39,15 @@ def init_db() -> None:
                 index_status TEXT DEFAULT 'pending',
                 site TEXT, department TEXT, category TEXT, version TEXT,
                 doc_date TEXT, author TEXT, status TEXT,
-                created_at TEXT, updated_at TEXT, stored_path TEXT
+                created_at TEXT, updated_at TEXT, stored_path TEXT,
+                content_hash TEXT
             )
             """
         )
+        # Migration for databases created before content_hash existed.
+        cols = {r[1] for r in conn.execute("PRAGMA table_info(documents)").fetchall()}
+        if "content_hash" not in cols:
+            conn.execute("ALTER TABLE documents ADD COLUMN content_hash TEXT")
 
 
 def add_document(doc: dict[str, Any]) -> None:
@@ -90,6 +95,16 @@ def list_documents() -> list[dict[str, Any]]:
 def delete_document(doc_id: str) -> None:
     with _conn() as conn:
         conn.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
+
+
+def find_by_hash(content_hash: str) -> Optional[dict[str, Any]]:
+    if not content_hash:
+        return None
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT * FROM documents WHERE content_hash = ?", (content_hash,)
+        ).fetchone()
+    return dict(row) if row else None
 
 
 def stats() -> dict[str, Any]:

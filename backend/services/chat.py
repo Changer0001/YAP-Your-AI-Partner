@@ -11,6 +11,7 @@ from functools import lru_cache
 from typing import Any, Optional
 
 from backend.config import settings
+from backend.services import intent as intent_router
 from backend.services import rag
 
 NOT_FOUND = "I couldn't find this information in the indexed documentation."
@@ -40,6 +41,12 @@ def _client():
 
 
 def answer(question: str, filters: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+    # Conversational / identity intents are answered deterministically (no RAG, no model).
+    intent = intent_router.classify(question)
+    if intent.type != intent_router.KNOWLEDGE:
+        return {"answer": intent.response, "sources": [], "mode": "assistant",
+                "intent": intent.type, "timing": {"retrieve": 0.0, "generate": 0.0}}
+
     t0 = time.perf_counter()
     hits = rag.retrieve(question, filters)
     t1 = time.perf_counter()

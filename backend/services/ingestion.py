@@ -3,6 +3,8 @@
 Ties together documents, embeddings, vectorstore and registry. Re-indexing a
 document cleanly removes its old chunks first, so updates never leave orphans.
 """
+import hashlib
+import shutil
 import uuid
 from pathlib import Path
 from typing import Any
@@ -10,6 +12,12 @@ from typing import Any
 from backend.config import settings
 from backend.services import documents, registry, vectorstore
 from backend.services.embeddings import embed_batch
+from backend.utils.security import (extension_of, is_allowed_extension,
+                                    sanitize_filename)
+
+
+def hash_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
 
 
 def _chunk_metadata(doc: dict[str, Any], chunk: dict[str, Any], idx: int) -> dict[str, Any]:
@@ -64,7 +72,8 @@ def index_document(doc_id: str) -> int:
 
 
 def register_and_index(filename: str, stored_path: Path, size_bytes: int,
-                       metadata: dict[str, Any]) -> dict[str, Any]:
+                       metadata: dict[str, Any],
+                       content_hash: str | None = None) -> dict[str, Any]:
     """Create a registry entry for an already-saved file, then index it."""
     doc_id = uuid.uuid4().hex
     doc = {
@@ -75,12 +84,42 @@ def register_and_index(filename: str, stored_path: Path, size_bytes: int,
         "chunk_count": 0,
         "index_status": "pending",
         "stored_path": str(stored_path),
+        "content_hash": content_hash,
     }
     for field in ("site", "department", "category", "version", "doc_date", "author", "status"):
         doc[field] = (metadata or {}).get(field)
     registry.add_document(doc)
     index_document(doc_id)
     return registry.get_document(doc_id)
+
+
+def import_folder(folder: Path | None = None) -> dict[str, Any]:
+    """Bulk-ingest every supported file in the import folder.
+
+    Skips files already indexed (by content hash), so it is safe to re-run after
+    dropping in more exports. This is the legitimate path for M365 data: a human
+    exports to files, drops them here, and the app indexes them locally.
+    """
+    folder = folder or settings.import_dir
+    folder.mkdir(parents=True, exist_ok=True)
+    added, skipped, errors = [], [], []
+    for path in sorted(folder.rglob("*")):
+        if not path.is_file() or not is_allowed_extension(path.name):
+            continue
+        try:
+            data = path.read_bytes()
+            digest = hash_bytes(data)
+            if registry.find_by_hash(digest):
+                skipped.append(path.name)
+                continue
+            stored = settings.upload_dir / f"{uuid.uuid4().hex}{extension_of(path.name)}"
+            shutil.copy2(path, stored)
+            register_and_index(sanitize_filename(path.name), stored, len(data), {}, digest)
+            added.append(path.name)
+        except Exception as exc:  # keep going on a bad file
+            errors.append({"file": path.name, "error": str(exc)})
+    return {"added": added, "skipped": skipped, "errors": errors,
+            "import_dir": str(folder)}
 
 
 def remove_document(doc_id: str) -> None:

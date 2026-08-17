@@ -43,6 +43,11 @@ class Settings:
     host: str = _get("HOST", "127.0.0.1")
     port: int = int(_get("PORT", "8000"))
 
+    # --- Assistant identity (from config, never from company documents) ---
+    assistant_name: str = _get("ASSISTANT_NAME", "IT Copilot")
+    assistant_owner: str = _get("ASSISTANT_OWNER", "your IT team")
+    org_name: str = _get("ORG_NAME", "")
+
     @property
     def chroma_dir(self) -> Path:
         return self.data_dir / "chroma"
@@ -52,6 +57,10 @@ class Settings:
         return self.data_dir / "uploads"
 
     @property
+    def import_dir(self) -> Path:
+        return self.data_dir / "import"
+
+    @property
     def registry_path(self) -> Path:
         return self.data_dir / "registry.sqlite3"
 
@@ -59,5 +68,5 @@ class Settings:
 settings = Settings()
 
 # Ensure local storage exists.
-for _p in (settings.data_dir, settings.chroma_dir, settings.upload_dir):
+for _p in (settings.data_dir, settings.chroma_dir, settings.upload_dir, settings.import_dir):
     _p.mkdir(parents=True, exist_ok=True)

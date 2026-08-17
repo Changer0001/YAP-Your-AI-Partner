@@ -40,5 +40,6 @@ class Source(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     sources: list[Source] = []
-    mode: str  # "knowledge_base" | "no_results"
+    mode: str  # "knowledge_base" | "no_results" | "assistant"
+    intent: Optional[str] = None
     timing: dict[str, float] = {}

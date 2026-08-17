@@ -48,6 +48,12 @@ async def upload_document(
     if not data:
         raise HTTPException(400, "Empty file")
 
+    # Skip exact duplicates (same content already indexed).
+    digest = ingestion.hash_bytes(data)
+    existing = registry.find_by_hash(digest)
+    if existing:
+        return {**existing, "duplicate": True}
+
     # Store under a generated name (no user-controlled path -> no traversal).
     stored_path = settings.upload_dir / f"{uuid.uuid4().hex}{extension_of(filename)}"
     stored_path.write_bytes(data)
@@ -56,10 +62,17 @@ async def upload_document(
                 "version": version, "doc_date": doc_date, "author": author,
                 "status": status}
     try:
-        doc = ingestion.register_and_index(filename, stored_path, len(data), metadata)
+        doc = ingestion.register_and_index(filename, stored_path, len(data), metadata, digest)
     except Exception as exc:
         raise HTTPException(500, f"Indexing failed: {exc}")
     return doc
+
+
+@router.post("/import")
+def import_from_folder():
+    """Bulk-import every supported file dropped into the local import folder."""
+    result = ingestion.import_folder()
+    return result
 
 
 @router.patch("/{doc_id}")

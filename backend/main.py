@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from backend.config import settings
-from backend.routers import chat, documents, search, system
+from backend.routers import chat, documents, integrations, search, system
 from backend.services import registry
 
 
@@ -45,6 +45,7 @@ app.include_router(chat.router)
 app.include_router(documents.router)
 app.include_router(search.router)
 app.include_router(system.router)
+app.include_router(integrations.router)
 
 # Serve the frontend SPA (mounted last so /api/* wins). html=True serves index.html.
 _frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
