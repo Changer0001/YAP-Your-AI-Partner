@@ -2,26 +2,25 @@
 import platform
 import shutil
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from backend.config import settings
 from backend.services import chat as chat_service
 from backend.services import registry, vectorstore
+from backend.services.properties import current_property
 
 router = APIRouter(prefix="/api", tags=["system"])
 
 
 @router.get("/stats")
-def stats():
-    reg = registry.stats()
-    try:
-        chunk_total = vectorstore.count()
-    except Exception:
-        chunk_total = reg.get("chunks", 0)
+def stats(prop: dict = Depends(current_property)):
+    reg = registry.stats(prop["id"])
+    chunk_total = vectorstore.count(prop["collection"]) or reg.get("chunks", 0)
     return {
         "documents": reg["documents"],
         "chunks": chunk_total,
         "properties": reg["properties"],
+        "property": prop["name"],
         "chat_model": settings.chat_model,
         "embed_model": settings.embed_model,
         "vector_db": "ChromaDB (local)",

@@ -13,14 +13,14 @@ from backend.services import vectorstore
 from backend.services.embeddings import embed_text
 
 
-def retrieve(question: str, filters: Optional[dict[str, Any]] = None,
+def retrieve(collection: str, question: str, filters: Optional[dict[str, Any]] = None,
              top_k: Optional[int] = None,
              threshold: Optional[float] = None) -> list[dict[str, Any]]:
     top_k = top_k or settings.top_k
     threshold = settings.similarity_threshold if threshold is None else threshold
 
     qvec = embed_text(question)
-    hits = vectorstore.query(qvec, top_k, _build_where(filters))
+    hits = vectorstore.query(collection, qvec, top_k, _build_where(filters))
 
     # similarity threshold
     hits = [h for h in hits if h["similarity"] >= threshold]

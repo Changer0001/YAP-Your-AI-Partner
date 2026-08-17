@@ -1,109 +1,97 @@
-"""Document management endpoints: upload, list, view, edit metadata, re-index, delete."""
+"""Document management — scoped to the caller's property (tenant)."""
 import uuid
-from pathlib import Path
 from typing import Optional
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 
 from backend.config import settings
 from backend.services import ingestion, registry
-from backend.utils.security import (extension_of, is_allowed_extension,
-                                    sanitize_filename)
+from backend.services.properties import current_property
+from backend.utils.security import (extension_of, is_allowed_extension, sanitize_filename)
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
 
 
+def _owned(doc_id: str, prop: dict) -> dict:
+    doc = registry.get_document(doc_id)
+    if not doc or doc.get("property_id") != prop["id"]:
+        raise HTTPException(404, "Document not found")
+    return doc
+
+
 @router.get("")
-def list_documents():
-    return registry.list_documents()
+def list_documents(prop: dict = Depends(current_property)):
+    return registry.list_documents(prop["id"])
 
 
 @router.get("/{doc_id}")
-def get_document(doc_id: str):
-    doc = registry.get_document(doc_id)
-    if not doc:
-        raise HTTPException(404, "Document not found")
-    return doc
+def get_document(doc_id: str, prop: dict = Depends(current_property)):
+    return _owned(doc_id, prop)
 
 
 @router.post("")
 async def upload_document(
     file: UploadFile = File(...),
-    site: Optional[str] = Form(None),
-    department: Optional[str] = Form(None),
-    category: Optional[str] = Form(None),
-    version: Optional[str] = Form(None),
-    doc_date: Optional[str] = Form(None),
-    author: Optional[str] = Form(None),
+    site: Optional[str] = Form(None), department: Optional[str] = Form(None),
+    category: Optional[str] = Form(None), version: Optional[str] = Form(None),
+    doc_date: Optional[str] = Form(None), author: Optional[str] = Form(None),
     status: Optional[str] = Form(None),
+    prop: dict = Depends(current_property),
 ):
     filename = sanitize_filename(file.filename or "")
     if not is_allowed_extension(filename):
-        raise HTTPException(400, f"Unsupported file type. Allowed: PDF, DOCX, XLSX, TXT, MD, CSV")
-
+        raise HTTPException(400, "Unsupported file type. Allowed: PDF, DOCX, XLSX, TXT, MD, CSV")
     data = await file.read()
-    max_bytes = settings.max_upload_mb * 1024 * 1024
-    if len(data) > max_bytes:
+    if len(data) > settings.max_upload_mb * 1024 * 1024:
         raise HTTPException(413, f"File too large (limit {settings.max_upload_mb} MB)")
     if not data:
         raise HTTPException(400, "Empty file")
 
-    # Skip exact duplicates (same content already indexed).
     digest = ingestion.hash_bytes(data)
-    existing = registry.find_by_hash(digest)
+    existing = registry.find_by_hash(digest, prop["id"])
     if existing:
         return {**existing, "duplicate": True}
 
-    # Store under a generated name (no user-controlled path -> no traversal).
     stored_path = settings.upload_dir / f"{uuid.uuid4().hex}{extension_of(filename)}"
     stored_path.write_bytes(data)
-
-    metadata = {"site": site, "department": department, "category": category,
-                "version": version, "doc_date": doc_date, "author": author,
-                "status": status}
+    metadata = {"site": site, "department": department, "category": category, "version": version,
+                "doc_date": doc_date, "author": author, "status": status}
     try:
-        doc = ingestion.register_and_index(filename, stored_path, len(data), metadata, digest)
+        return ingestion.register_and_index(filename, stored_path, len(data), metadata, digest,
+                                            prop["id"], prop["collection"])
     except Exception as exc:
         raise HTTPException(500, f"Indexing failed: {exc}")
-    return doc
 
 
 @router.post("/import")
-def import_from_folder():
-    """Bulk-import every supported file dropped into the local import folder."""
-    result = ingestion.import_folder()
-    return result
+def import_from_folder(prop: dict = Depends(current_property)):
+    return ingestion.import_folder(prop["id"], prop["collection"])
 
 
 @router.patch("/{doc_id}")
-def update_metadata(doc_id: str, updates: dict):
-    doc = registry.get_document(doc_id)
-    if not doc:
-        raise HTTPException(404, "Document not found")
+def update_metadata(doc_id: str, updates: dict, prop: dict = Depends(current_property)):
+    _owned(doc_id, prop)
     allowed = {"site", "department", "category", "version", "doc_date", "author", "status"}
     registry.update_document(doc_id, {k: v for k, v in updates.items() if k in allowed})
-    # Propagate new metadata into the chunks so filtering stays correct.
     try:
-        ingestion.index_document(doc_id)
+        ingestion.index_document(doc_id, prop["collection"])
     except Exception as exc:
-        raise HTTPException(500, f"Re-index after metadata update failed: {exc}")
+        raise HTTPException(500, f"Re-index failed: {exc}")
     return registry.get_document(doc_id)
 
 
 @router.post("/{doc_id}/reindex")
-def reindex(doc_id: str):
-    if not registry.get_document(doc_id):
-        raise HTTPException(404, "Document not found")
+def reindex(doc_id: str, prop: dict = Depends(current_property)):
+    _owned(doc_id, prop)
     try:
-        count = ingestion.index_document(doc_id)
+        count = ingestion.index_document(doc_id, prop["collection"])
     except Exception as exc:
         raise HTTPException(500, f"Re-index failed: {exc}")
     return {"doc_id": doc_id, "chunk_count": count, "status": "indexed"}
 
 
 @router.delete("/{doc_id}")
-def delete_document(doc_id: str):
-    if not registry.get_document(doc_id):
-        raise HTTPException(404, "Document not found")
-    ingestion.remove_document(doc_id)
+def delete_document(doc_id: str, prop: dict = Depends(current_property)):
+    _owned(doc_id, prop)
+    ingestion.remove_document(doc_id, prop["collection"])
     return {"deleted": doc_id}

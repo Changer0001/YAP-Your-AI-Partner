@@ -12,7 +12,7 @@ from backend.config import settings
 _FIELDS = [
     "id", "filename", "doc_type", "size_bytes", "chunk_count", "index_status",
     "site", "department", "category", "version", "doc_date", "author", "status",
-    "created_at", "updated_at", "stored_path", "content_hash",
+    "created_at", "updated_at", "stored_path", "content_hash", "property_id",
 ]
 
 
@@ -40,14 +40,19 @@ def init_db() -> None:
                 site TEXT, department TEXT, category TEXT, version TEXT,
                 doc_date TEXT, author TEXT, status TEXT,
                 created_at TEXT, updated_at TEXT, stored_path TEXT,
-                content_hash TEXT
+                content_hash TEXT, property_id INTEGER
             )
             """
         )
-        # Migration for databases created before content_hash existed.
         cols = {r[1] for r in conn.execute("PRAGMA table_info(documents)").fetchall()}
-        if "content_hash" not in cols:
-            conn.execute("ALTER TABLE documents ADD COLUMN content_hash TEXT")
+        for col, ddl in {"content_hash": "TEXT", "property_id": "INTEGER"}.items():
+            if col not in cols:
+                conn.execute(f"ALTER TABLE documents ADD COLUMN {col} {ddl}")
+
+
+def assign_missing_property(property_id: int) -> None:
+    with _conn() as conn:
+        conn.execute("UPDATE documents SET property_id=? WHERE property_id IS NULL", (property_id,))
 
 
 def add_document(doc: dict[str, Any]) -> None:
@@ -84,11 +89,13 @@ def get_document(doc_id: str) -> Optional[dict[str, Any]]:
     return dict(row) if row else None
 
 
-def list_documents() -> list[dict[str, Any]]:
+def list_documents(property_id: Optional[int] = None) -> list[dict[str, Any]]:
     with _conn() as conn:
-        rows = conn.execute(
-            "SELECT * FROM documents ORDER BY created_at DESC"
-        ).fetchall()
+        if property_id is None:
+            rows = conn.execute("SELECT * FROM documents ORDER BY created_at DESC").fetchall()
+        else:
+            rows = conn.execute("SELECT * FROM documents WHERE property_id = ? ORDER BY created_at DESC",
+                                (property_id,)).fetchall()
     return [dict(r) for r in rows]
 
 
@@ -97,25 +104,28 @@ def delete_document(doc_id: str) -> None:
         conn.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
 
 
-def find_by_hash(content_hash: str) -> Optional[dict[str, Any]]:
+def find_by_hash(content_hash: str, property_id: Optional[int] = None) -> Optional[dict[str, Any]]:
     if not content_hash:
         return None
     with _conn() as conn:
-        row = conn.execute(
-            "SELECT * FROM documents WHERE content_hash = ?", (content_hash,)
-        ).fetchone()
+        if property_id is None:
+            row = conn.execute("SELECT * FROM documents WHERE content_hash = ?", (content_hash,)).fetchone()
+        else:
+            row = conn.execute("SELECT * FROM documents WHERE content_hash = ? AND property_id = ?",
+                               (content_hash, property_id)).fetchone()
     return dict(row) if row else None
 
 
-def stats() -> dict[str, Any]:
+def stats(property_id: Optional[int] = None) -> dict[str, Any]:
+    where, params = ("", ())
+    if property_id is not None:
+        where, params = (" WHERE property_id = ?", (property_id,))
     with _conn() as conn:
-        total = conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
-        chunks = conn.execute(
-            "SELECT COALESCE(SUM(chunk_count), 0) FROM documents"
-        ).fetchone()[0]
+        total = conn.execute(f"SELECT COUNT(*) FROM documents{where}", params).fetchone()[0]
+        chunks = conn.execute(f"SELECT COALESCE(SUM(chunk_count), 0) FROM documents{where}", params).fetchone()[0]
         sites = conn.execute(
-            "SELECT COUNT(DISTINCT site) FROM documents WHERE site IS NOT NULL AND site != ''"
-        ).fetchone()[0]
+            f"SELECT COUNT(DISTINCT site) FROM documents WHERE site IS NOT NULL AND site != ''"
+            + (" AND property_id = ?" if property_id is not None else ""), params).fetchone()[0]
     return {"documents": total, "chunks": chunks, "properties": sites}
 
 

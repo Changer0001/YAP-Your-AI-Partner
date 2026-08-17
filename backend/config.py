@@ -48,6 +48,10 @@ class Settings:
     assistant_owner: str = _get("ASSISTANT_OWNER", "your IT team")
     org_name: str = _get("ORG_NAME", "")
 
+    # --- Accounts ---
+    # Invite-only by default: only admins create accounts. Set to true to allow self-registration.
+    allow_registration: bool = _get("ALLOW_REGISTRATION", "false").lower() in ("1", "true", "yes")
+
     @property
     def chroma_dir(self) -> Path:
         return self.data_dir / "chroma"

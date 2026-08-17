@@ -129,7 +129,7 @@ def init_db() -> None:
         )
         cols = {r[1] for r in conn.execute("PRAGMA table_info(users)").fetchall()}
         for col, ddl in {"full_name": "TEXT", "disabled": "INTEGER DEFAULT 0",
-                         "last_login": "TEXT"}.items():
+                         "last_login": "TEXT", "property_id": "INTEGER"}.items():
             if col not in cols:
                 conn.execute(f"ALTER TABLE users ADD COLUMN {col} {ddl}")
 
@@ -173,13 +173,13 @@ def clear_setup_key() -> None:
 
 
 def create_user(username: str, password: str, role: str = "user",
-                full_name: str = "") -> None:
+                full_name: str = "", property_id: Optional[int] = None) -> None:
     salt, pwhash = hash_password(password)
     with _conn() as conn:
         conn.execute(
-            "INSERT INTO users (username, full_name, salt, password_hash, role, disabled, created_at) "
-            "VALUES (?, ?, ?, ?, ?, 0, ?)",
-            (username, full_name, salt, pwhash, role, _now()),
+            "INSERT INTO users (username, full_name, salt, password_hash, role, disabled, created_at, property_id) "
+            "VALUES (?, ?, ?, ?, ?, 0, ?, ?)",
+            (username, full_name, salt, pwhash, role, _now(), property_id),
         )
 
 
@@ -192,18 +192,23 @@ def get_user(username: str) -> Optional[dict[str, Any]]:
 def _public(row: dict[str, Any]) -> dict[str, Any]:
     return {"username": row["username"], "full_name": row.get("full_name") or "",
             "role": row.get("role") or "user", "disabled": bool(row.get("disabled")),
+            "property_id": row.get("property_id"),
             "created_at": row.get("created_at"), "last_login": row.get("last_login")}
 
 
-def list_users() -> list[dict[str, Any]]:
+def list_users(property_id: Optional[int] = None) -> list[dict[str, Any]]:
     with _conn() as conn:
-        rows = conn.execute("SELECT * FROM users ORDER BY created_at").fetchall()
+        if property_id is None:
+            rows = conn.execute("SELECT * FROM users ORDER BY created_at").fetchall()
+        else:
+            rows = conn.execute("SELECT * FROM users WHERE property_id = ? ORDER BY created_at",
+                                (property_id,)).fetchall()
     return [_public(dict(r)) for r in rows]
 
 
 def update_user(username: str, **fields) -> None:
     allowed = {k: v for k, v in fields.items()
-               if k in ("full_name", "role", "disabled") and v is not None}
+               if k in ("full_name", "role", "disabled", "property_id") and v is not None}
     if not allowed:
         return
     sets = ", ".join(f"{k} = :{k}" for k in allowed)
@@ -227,7 +232,29 @@ def delete_user(username: str) -> None:
 def admin_count() -> int:
     with _conn() as conn:
         return conn.execute(
-            "SELECT COUNT(*) FROM users WHERE role='admin' AND disabled=0").fetchone()[0]
+            "SELECT COUNT(*) FROM users WHERE role IN ('admin','superadmin') AND disabled=0").fetchone()[0]
+
+
+def superadmin_count() -> int:
+    with _conn() as conn:
+        return conn.execute("SELECT COUNT(*) FROM users WHERE role='superadmin'").fetchone()[0]
+
+
+def promote_first_admin_to_super() -> None:
+    """Migration: the earliest admin becomes the global superadmin (property-independent)."""
+    with _conn() as conn:
+        row = conn.execute(
+            "SELECT username FROM users WHERE role='admin' ORDER BY created_at LIMIT 1").fetchone()
+        if row:
+            conn.execute("UPDATE users SET role='superadmin', property_id=NULL WHERE username=?",
+                         (row["username"],))
+
+
+def assign_missing_property(property_id: int) -> None:
+    """Migration: give any non-superadmin without a property the default one."""
+    with _conn() as conn:
+        conn.execute("UPDATE users SET property_id=? WHERE property_id IS NULL AND role!='superadmin'",
+                     (property_id,))
 
 
 def authenticate(username: str, password: str) -> Optional[dict[str, Any]]:
@@ -263,25 +290,44 @@ def clear_failures(key: str) -> None:
 
 
 # --------------------------------------------------------------------------- dependencies
-def require_auth(authorization: str = Header(default="")) -> dict[str, Any]:
+def user_from_bearer(authorization: str) -> Optional[dict[str, Any]]:
+    """Verify the token for identity, then resolve role/property from the DB (always current).
+
+    Returns None for a missing/expired/invalid token, a deleted user, or a disabled account.
+    """
     if not authorization.lower().startswith("bearer "):
-        raise HTTPException(401, "Authentication required")
+        return None
     claims = verify_token(authorization.split(" ", 1)[1].strip())
     if not claims:
+        return None
+    user = get_user(claims.get("sub"))
+    if not user or user.get("disabled"):
+        return None
+    return _public(user)
+
+
+def require_auth(authorization: str = Header(default="")) -> dict[str, Any]:
+    user = user_from_bearer(authorization)
+    if not user:
         raise HTTPException(401, "Invalid or expired session")
-    return {"username": claims.get("sub"), "full_name": claims.get("name", ""),
-            "role": claims.get("role", "user")}
+    return user
 
 
 def require_admin(user: dict[str, Any] = Depends(require_auth)) -> dict[str, Any]:
-    if user.get("role") != "admin":
+    if user.get("role") not in ("admin", "superadmin"):
         raise HTTPException(403, "Administrator access required")
+    return user
+
+
+def require_superadmin(user: dict[str, Any] = Depends(require_auth)) -> dict[str, Any]:
+    if user.get("role") != "superadmin":
+        raise HTTPException(403, "Super-administrator access required")
     return user
 
 
 def token_for(user: dict[str, Any]) -> str:
     return sign_token({"sub": user["username"], "name": user.get("full_name", ""),
-                       "role": user["role"]})
+                       "role": user["role"], "prop": user.get("property_id")})
 
 
 init_db()

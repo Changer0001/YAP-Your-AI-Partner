@@ -17,17 +17,31 @@ from fastapi.staticfiles import StaticFiles
 from backend.config import settings
 from backend.routers import admin
 from backend.routers import auth as auth_router
-from backend.routers import chat, documents, integrations, search, system
+from backend.routers import chat, documents, integrations
+from backend.routers import properties as properties_router
+from backend.routers import search, system
 from backend.services import auth as auth_service
+from backend.services import properties as properties_service
 from backend.services import registry
 
 logger = logging.getLogger("it_copilot")
+
+
+def _migrate_multitenant():
+    """Ensure a default property exists and back-fill existing users/documents into it."""
+    default = properties_service.ensure_default()
+    if auth_service.user_count() > 0 and auth_service.superadmin_count() == 0:
+        auth_service.promote_first_admin_to_super()
+    auth_service.assign_missing_property(default["id"])
+    registry.assign_missing_property(default["id"])
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     registry.init_db()
     auth_service.init_db()
+    properties_service.init_db()
+    _migrate_multitenant()
     if auth_service.user_count() == 0:
         key = auth_service.setup_key()
         print("\n" + "=" * 64, flush=True)
@@ -86,6 +100,7 @@ app.include_router(documents.router, dependencies=_auth)
 app.include_router(search.router, dependencies=_auth)
 app.include_router(system.router, dependencies=_auth)
 app.include_router(integrations.router, dependencies=_auth)
+app.include_router(properties_router.router, dependencies=_auth)
 # Admin-only endpoints — require the admin role on every route.
 app.include_router(admin.router, dependencies=[Depends(auth_service.require_admin)])
 

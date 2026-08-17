@@ -40,7 +40,8 @@ def _client():
     return Client(host=settings.ollama_host)
 
 
-def answer(question: str, filters: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+def answer(collection: str, question: str,
+           filters: Optional[dict[str, Any]] = None) -> dict[str, Any]:
     # Conversational / identity intents are answered deterministically (no RAG, no model).
     intent = intent_router.classify(question)
     if intent.type != intent_router.KNOWLEDGE:
@@ -48,7 +49,7 @@ def answer(question: str, filters: Optional[dict[str, Any]] = None) -> dict[str,
                 "intent": intent.type, "timing": {"retrieve": 0.0, "generate": 0.0}}
 
     t0 = time.perf_counter()
-    hits = rag.retrieve(question, filters)
+    hits = rag.retrieve(collection, question, filters)
     t1 = time.perf_counter()
 
     if not hits:

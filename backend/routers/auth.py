@@ -11,6 +11,7 @@ from typing import Optional
 from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel
 
+from backend.config import settings
 from backend.services import auth
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -35,16 +36,19 @@ def _validate(username: str, password: str):
         raise HTTPException(400, "Password needs: " + ", ".join(issues).lower())
 
 
+def _session_user(authorization: str):
+    u = auth.user_from_bearer(authorization)
+    if not u:
+        return None
+    return {"username": u["username"], "full_name": u["full_name"], "role": u["role"],
+            "property_id": u["property_id"]}
+
+
 @router.get("/status")
 def status(authorization: str = Header(default="")):
-    authed, user = False, None
-    if authorization.lower().startswith("bearer "):
-        claims = auth.verify_token(authorization.split(" ", 1)[1].strip())
-        if claims:
-            authed = True
-            user = {"username": claims.get("sub"), "full_name": claims.get("name", ""),
-                    "role": claims.get("role")}
-    return {"needs_setup": auth.user_count() == 0, "authenticated": authed, "user": user}
+    user = _session_user(authorization)
+    return {"needs_setup": auth.user_count() == 0, "authenticated": bool(user), "user": user,
+            "allow_registration": settings.allow_registration}
 
 
 @router.post("/setup")
@@ -55,16 +59,19 @@ def setup(creds: Credentials):
         raise HTTPException(403, "Invalid setup key. It is shown in the server terminal on first "
                                  "run and saved in data/setup_key.txt.")
     _validate(creds.username, creds.password)
-    auth.create_user(creds.username.strip(), creds.password, role="admin",
+    auth.create_user(creds.username.strip(), creds.password, role="superadmin",
                      full_name=(creds.full_name or "").strip())
     auth.clear_setup_key()
     return _issue({"username": creds.username.strip(),
-                   "full_name": (creds.full_name or "").strip(), "role": "admin"})
+                   "full_name": (creds.full_name or "").strip(), "role": "superadmin",
+                   "property_id": None})
 
 
 @router.post("/register")
 def register(creds: Credentials):
-    """Self-service registration -> regular `user` role. Admins manage roles afterwards."""
+    """Self-service registration -> regular `user`. Disabled unless ALLOW_REGISTRATION is set."""
+    if not settings.allow_registration:
+        raise HTTPException(403, "Self-registration is disabled. Ask an administrator for an account.")
     if auth.user_count() == 0:
         raise HTTPException(400, "Create the first admin account via setup first")
     _validate(creds.username, creds.password)
@@ -97,10 +104,7 @@ def forgot():
 
 @router.get("/me")
 def me(authorization: str = Header(default="")):
-    if not authorization.lower().startswith("bearer "):
-        raise HTTPException(401, "Authentication required")
-    claims = auth.verify_token(authorization.split(" ", 1)[1].strip())
-    if not claims:
+    user = _session_user(authorization)
+    if not user:
         raise HTTPException(401, "Invalid or expired session")
-    return {"username": claims.get("sub"), "full_name": claims.get("name", ""),
-            "role": claims.get("role")}
+    return user

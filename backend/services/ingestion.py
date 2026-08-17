@@ -39,21 +39,18 @@ def _chunk_metadata(doc: dict[str, Any], chunk: dict[str, Any], idx: int) -> dic
     return meta
 
 
-def index_document(doc_id: str) -> int:
-    """(Re)index a registered document. Returns the chunk count."""
+def index_document(doc_id: str, collection: str) -> int:
+    """(Re)index a registered document into its property's collection. Returns chunk count."""
     doc = registry.get_document(doc_id)
     if not doc:
         raise ValueError(f"Unknown document: {doc_id}")
 
     registry.set_index_status(doc_id, "indexing")
-    # Remove any prior chunks for this document (idempotent re-index).
-    vectorstore.delete_document(doc_id)
+    vectorstore.delete_document(collection, doc_id)  # idempotent re-index
 
     try:
         segments = documents.parse_file(Path(doc["stored_path"]))
-        chunks = documents.chunk_segments(
-            segments, settings.chunk_size, settings.chunk_overlap
-        )
+        chunks = documents.chunk_segments(segments, settings.chunk_size, settings.chunk_overlap)
         if not chunks:
             registry.set_index_status(doc_id, "empty", 0)
             return 0
@@ -63,7 +60,7 @@ def index_document(doc_id: str) -> int:
         metadatas = [_chunk_metadata(doc, c, i) for i, c in enumerate(chunks)]
         embeddings = embed_batch(texts)
 
-        vectorstore.add_chunks(ids, embeddings, texts, metadatas)
+        vectorstore.add_chunks(collection, ids, embeddings, texts, metadatas)
         registry.set_index_status(doc_id, "indexed", len(chunks))
         return len(chunks)
     except Exception as exc:
@@ -72,9 +69,9 @@ def index_document(doc_id: str) -> int:
 
 
 def register_and_index(filename: str, stored_path: Path, size_bytes: int,
-                       metadata: dict[str, Any],
-                       content_hash: str | None = None) -> dict[str, Any]:
-    """Create a registry entry for an already-saved file, then index it."""
+                       metadata: dict[str, Any], content_hash: str | None,
+                       property_id: int, collection: str) -> dict[str, Any]:
+    """Create a registry entry for an already-saved file, then index it into a property."""
     doc_id = uuid.uuid4().hex
     doc = {
         "id": doc_id,
@@ -85,21 +82,18 @@ def register_and_index(filename: str, stored_path: Path, size_bytes: int,
         "index_status": "pending",
         "stored_path": str(stored_path),
         "content_hash": content_hash,
+        "property_id": property_id,
     }
     for field in ("site", "department", "category", "version", "doc_date", "author", "status"):
         doc[field] = (metadata or {}).get(field)
     registry.add_document(doc)
-    index_document(doc_id)
+    index_document(doc_id, collection)
     return registry.get_document(doc_id)
 
 
-def import_folder(folder: Path | None = None) -> dict[str, Any]:
-    """Bulk-ingest every supported file in the import folder.
-
-    Skips files already indexed (by content hash), so it is safe to re-run after
-    dropping in more exports. This is the legitimate path for M365 data: a human
-    exports to files, drops them here, and the app indexes them locally.
-    """
+def import_folder(property_id: int, collection: str,
+                  folder: Path | None = None) -> dict[str, Any]:
+    """Bulk-ingest every supported file in the import folder into one property."""
     folder = folder or settings.import_dir
     folder.mkdir(parents=True, exist_ok=True)
     added, skipped, errors = [], [], []
@@ -109,22 +103,22 @@ def import_folder(folder: Path | None = None) -> dict[str, Any]:
         try:
             data = path.read_bytes()
             digest = hash_bytes(data)
-            if registry.find_by_hash(digest):
+            if registry.find_by_hash(digest, property_id):
                 skipped.append(path.name)
                 continue
             stored = settings.upload_dir / f"{uuid.uuid4().hex}{extension_of(path.name)}"
             shutil.copy2(path, stored)
-            register_and_index(sanitize_filename(path.name), stored, len(data), {}, digest)
+            register_and_index(sanitize_filename(path.name), stored, len(data), {}, digest,
+                               property_id, collection)
             added.append(path.name)
-        except Exception as exc:  # keep going on a bad file
+        except Exception as exc:
             errors.append({"file": path.name, "error": str(exc)})
-    return {"added": added, "skipped": skipped, "errors": errors,
-            "import_dir": str(folder)}
+    return {"added": added, "skipped": skipped, "errors": errors, "import_dir": str(folder)}
 
 
-def remove_document(doc_id: str) -> None:
+def remove_document(doc_id: str, collection: str) -> None:
     doc = registry.get_document(doc_id)
-    vectorstore.delete_document(doc_id)
+    vectorstore.delete_document(collection, doc_id)
     registry.delete_document(doc_id)
     if doc and doc.get("stored_path"):
         try:
