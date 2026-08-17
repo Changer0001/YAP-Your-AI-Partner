@@ -63,11 +63,13 @@ uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
 ## First use
 
-1. Open **http://127.0.0.1:8000** → **Documents** → upload a PDF/DOCX/XLSX/TXT/MD/CSV
-   (optionally set Site, Version, Date…).
-2. Go to **Chat** and ask a question. The answer cites the documents it used.
-3. Use **Search** to inspect the index directly (no AI), and **Dashboard** /
-   **Settings** for stats and system/model status.
+1. Open **http://127.0.0.1:8000**. On first run you'll be asked to **create an admin account**
+   (username + password). After that you sign in each session.
+2. **Documents** → upload a PDF/DOCX/XLSX/TXT/MD/CSV (optionally set Site, Version, Date…), or drop
+   many exported files into `data/import/` and click **Import from folder**.
+3. Go to **Chat** and ask a question. The answer cites the documents it used.
+4. **Search** inspects the index directly (no AI); **Integrations & Security** shows connector/M365
+   authorization status; **Dashboard** / **Settings** show stats and system/model status.
 
 ## Configuration (`.env`)
 
@@ -83,13 +85,18 @@ uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
 ## Security
 
-- `.env` is gitignored; **never commit secrets**.
-- Uploads are extension-checked, size-limited, filename-sanitised, and stored under
-  generated names (no path traversal).
-- The LLM cannot execute shell commands; documents cannot execute code.
+- **Authentication:** all data endpoints require a signed session token. First run creates an admin
+  account; passwords are scrypt-hashed, tokens are HMAC-signed and expiring, login is rate-limited.
+  The signing key auto-generates in `data/secret.key` (gitignored).
+- **HTTP hardening:** security headers (CSP, `X-Frame-Options: DENY`, `nosniff`, no-referrer) on
+  every response; unhandled errors return a generic message (no internals leaked).
+- `.env` and `data/` are gitignored; **never commit secrets**.
+- Uploads are extension-checked, size-limited, filename-sanitised, and stored under generated names
+  (no path traversal). The LLM cannot execute shell commands; documents cannot execute code.
 - Retrieved document text is treated as **untrusted data** — the model is
   instructed never to follow instructions embedded in it (prompt-injection defence).
-- Binds to `127.0.0.1` by default.
+- Binds to `127.0.0.1` by default. For remote access use a private VPN (e.g. Tailscale), **not** a
+  public port-forward.
 
 ## Project layout
 
