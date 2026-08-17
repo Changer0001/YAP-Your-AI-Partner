@@ -63,8 +63,9 @@ uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
 ## First use
 
-1. Open **http://127.0.0.1:8000**. On first run you'll be asked to **create an admin account**
-   (username + password). After that you sign in each session.
+1. Open **http://127.0.0.1:8000**. On first run you'll **create an admin account**; after that you
+   sign in each session. Additional people can **Create account** (they get the `user` role); admins
+   manage roles, resets, and access from the **Users** page. Toggle **light/dark** from the top bar.
 2. **Documents** → upload a PDF/DOCX/XLSX/TXT/MD/CSV (optionally set Site, Version, Date…), or drop
    many exported files into `data/import/` and click **Import from folder**.
 3. Go to **Chat** and ask a question. The answer cites the documents it used.
