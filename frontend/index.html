@@ -4,56 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>IT Copilot</title>
+  <meta name="color-scheme" content="light dark" />
   <link rel="stylesheet" href="/styles.css" />
+  <script src="/app.js" defer></script>
 </head>
 <body>
-  <!-- Auth gate (login / first-run setup) -->
-  <div id="auth-overlay" class="auth-overlay hidden">
-    <div class="auth-card">
-      <div class="auth-brand"><span class="brand-mark">◈</span> IT COPILOT</div>
-      <div id="auth-body"><!-- login or setup form --></div>
-    </div>
-  </div>
-
-  <!-- Main application -->
-  <div id="app" class="hidden">
-    <aside class="sidebar">
-      <div class="brand">
-        <span class="brand-mark">◈</span>
-        <span class="brand-name">IT COPILOT</span>
-      </div>
-      <nav class="nav">
-        <a href="#dashboard" data-view="dashboard" class="nav-item"><span class="ic">▦</span> Dashboard</a>
-        <a href="#chat" data-view="chat" class="nav-item"><span class="ic">✦</span> Chat</a>
-        <a href="#documents" data-view="documents" class="nav-item"><span class="ic">▤</span> Documents</a>
-        <a href="#search" data-view="search" class="nav-item"><span class="ic">⌕</span> Search</a>
-        <a href="#integrations" data-view="integrations" class="nav-item"><span class="ic">⛊</span> Integrations</a>
-        <a href="#settings" data-view="settings" class="nav-item"><span class="ic">⚙</span> Settings</a>
-      </nav>
-      <div class="sidebar-foot">
-        <span id="local-badge" class="badge badge-muted">● checking…</span>
-      </div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <h1 id="view-title">Dashboard</h1>
-        <div class="topbar-right">
-          <span id="local-badge-top" class="badge badge-muted">● LOCAL</span>
-          <div class="user-menu">
-            <button id="user-btn" class="user-btn"><span id="user-avatar" class="avatar">U</span>
-              <span id="user-name">user</span> <span class="caret">▾</span></button>
-            <div id="user-dropdown" class="user-dropdown hidden">
-              <button id="logout-btn" class="dropdown-item">Sign out</button>
-            </div>
-          </div>
-        </div>
-      </header>
-      <section id="view" class="view"><!-- views render here --></section>
-    </main>
-  </div>
-
+  <div id="root"><!-- app.js renders the auth layout or the app shell here --></div>
+  <div id="modal-root"></div>
   <div id="toasts" class="toasts"></div>
-  <script src="/app.js"></script>
 </body>
 </html>
