@@ -1,0 +1,20 @@
+# Secrets / config
+.env
+
+# Local data (documents, vectors, registry) — never leaves the machine
+data/
+!data/.gitkeep
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.log
