@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# One-command launcher for IT Copilot (local, private).
+# One-command launcher for YAP (local, private).
+# Bind address/port come from .env (HOST/PORT). Default is localhost only.
+# To reach YAP from other devices on your LAN, set HOST=0.0.0.0 in .env.
 set -e
 cd "$(dirname "$0")"
 
@@ -24,6 +26,17 @@ else
   echo "NOTE: Ollama not found. Install from https://ollama.com and pull the models."
 fi
 
+# Read HOST/PORT from .env (falls back to localhost:8000)
+HOST="$(grep -E '^HOST=' .env 2>/dev/null | tail -1 | cut -d= -f2)"
+PORT="$(grep -E '^PORT=' .env 2>/dev/null | tail -1 | cut -d= -f2)"
+HOST="${HOST:-127.0.0.1}"
+PORT="${PORT:-8000}"
+
 echo ""
-echo "IT Copilot → http://127.0.0.1:8000"
-exec uvicorn backend.main:app --host 127.0.0.1 --port 8000
+if [ "$HOST" = "0.0.0.0" ]; then
+  LANIP="$(hostname -I 2>/dev/null | awk '{print $1}')"
+  echo "YAP → http://${LANIP:-<this-machine-ip>}:${PORT}  (reachable on your LAN)"
+else
+  echo "YAP → http://${HOST}:${PORT}"
+fi
+exec uvicorn backend.main:app --host "$HOST" --port "$PORT"
