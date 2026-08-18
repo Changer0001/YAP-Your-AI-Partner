@@ -12,7 +12,8 @@ import csv
 from pathlib import Path
 from typing import Optional
 
-SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".txt", ".md", ".markdown", ".csv"}
+SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".txt", ".md", ".markdown", ".csv",
+                        ".cfg", ".conf", ".log", ".ini"}
 
 
 def parse_file(path: Path) -> list[dict]:
@@ -25,7 +26,7 @@ def parse_file(path: Path) -> list[dict]:
         return _parse_xlsx(path)
     if ext == ".csv":
         return _parse_csv(path)
-    if ext in (".txt", ".md", ".markdown"):
+    if ext in (".txt", ".md", ".markdown", ".cfg", ".conf", ".log", ".ini"):
         return _parse_text(path)
     raise ValueError(f"Unsupported file type: {ext}")
 

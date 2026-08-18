@@ -8,7 +8,8 @@ import os
 import re
 from pathlib import Path
 
-ALLOWED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".txt", ".md", ".markdown", ".csv"}
+ALLOWED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".txt", ".md", ".markdown", ".csv",
+                      ".cfg", ".conf", ".log", ".ini"}
 
 
 def sanitize_filename(name: str) -> str:
