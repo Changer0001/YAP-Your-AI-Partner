@@ -1,0 +1,5 @@
+incident_id,date,site,device,summary,root_cause,resolution,status
+INC-098,2026-05-03,Downtown Hotel,AP-A-102,Restaurant AP offline,PoE port disabled after patching,Re-enabled PoE on switch port,Closed
+INC-105,2026-06-11,Downtown Hotel,FW-A,Guest Wi-Fi could reach staff subnet,Missing deny policy,Added GUEST->STAFF deny (CHG-2140),Closed
+INC-114,2026-07-20,Downtown Hotel,SW-CORE-A,POS terminal could not connect,Access port set to VLAN 10 instead of 55,Set port back to VLAN 55,Closed
+INC-121,2026-07-28,Downtown Hotel,WLC-A,Intermittent Wi-Fi drops in lobby,Channel interference,Adjusted AP channel plan,Closed
