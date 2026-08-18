@@ -1,0 +1,7 @@
+hostname,site,model,role,mgmt_ip,location
+SW-CORE-A,Downtown Hotel,Cisco Catalyst 9300,Core switch,10.20.0.2,MDF
+SW-ACCESS-A1,Downtown Hotel,Cisco Catalyst 9200,Access switch,10.20.0.3,IDF-1
+FW-A,Downtown Hotel,FortiGate 60F,Firewall,10.20.0.1,MDF
+WLC-A,Downtown Hotel,Aruba 7005,Wireless controller,10.20.90.5,MDF
+AP-A-101,Downtown Hotel,Aruba AP-515,Access point,10.20.90.11,Lobby
+AP-A-102,Downtown Hotel,Aruba AP-515,Access point,10.20.90.12,Restaurant

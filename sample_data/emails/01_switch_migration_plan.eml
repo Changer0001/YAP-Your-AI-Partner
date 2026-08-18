@@ -1,0 +1,16 @@
+From: Alex Rivera <alex.rivera@example.com>
+To: net-team@example.com
+Subject: Switch migration - Downtown - planned Friday
+Date: Fri, 10 Jul 2026 09:00:00 -0700
+Message-ID: <migration-001@example.com>
+Content-Type: text/plain; charset="utf-8"
+
+Team,
+
+We're planning to migrate SW-ACCESS-A1 to the new core (SW-CORE-A) this Friday evening
+at the Downtown property. POS terminals stay on VLAN 55 and there should be no IP changes.
+
+Please review the trunk allowed-VLAN list before the maintenance window.
+
+Thanks,
+Alex

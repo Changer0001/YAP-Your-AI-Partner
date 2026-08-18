@@ -1,0 +1,21 @@
+From: Sam Chen <sam.chen@example.com>
+To: net-team@example.com
+Subject: Resolved - POS terminal at Downtown restaurant could not connect
+Date: Mon, 20 Jul 2026 11:15:00 -0700
+Message-ID: <incident-114@example.com>
+Content-Type: text/plain; charset="utf-8"
+
+Incident INC-114 resolved.
+
+Symptom: the restaurant POS terminal at the Downtown property could not connect and was
+pulling a 169.254 address.
+
+Root cause: the switch access port (Gi1/0/11 on SW-CORE-A) had been changed to VLAN 10
+instead of the POS VLAN 55, so DHCP failed.
+
+Resolution: set the port back to "switchport access vlan 55" and re-enabled PortFast +
+BPDU Guard. Terminal pulled a 10.20.55.x address and connected. Verified stable.
+
+Lesson learned: double-check access VLAN after any patching work.
+
+Sam

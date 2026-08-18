@@ -1,0 +1,14 @@
+From: Sam Chen <sam.chen@example.com>
+To: net-team@example.com
+Subject: RE: Switch migration - Downtown - planned Friday
+Date: Thu, 16 Jul 2026 16:30:00 -0700
+Message-ID: <migration-002@example.com>
+In-Reply-To: <migration-001@example.com>
+References: <migration-001@example.com>
+Content-Type: text/plain; charset="utf-8"
+
+Update: the migration is POSTPONED to next Tuesday. The core uplink port needed a config
+fix first (the EtherChannel was not bundling). Final config is confirmed now and POS
+remains on VLAN 55. New maintenance window: Tuesday 21:00.
+
+Sam
