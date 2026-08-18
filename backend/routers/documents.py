@@ -83,6 +83,36 @@ def ingest_url(body: UrlBody, prop: dict = Depends(current_property)):
         raise HTTPException(500, f"Failed to ingest URL: {exc}")
 
 
+@router.post("/email")
+async def ingest_email(file: UploadFile = File(...), prop: dict = Depends(current_property)):
+    from backend.services.email_ingest import EMAIL_EXTENSIONS
+
+    filename = sanitize_filename(file.filename or "")
+    if extension_of(filename) not in EMAIL_EXTENSIONS:
+        raise HTTPException(400, "Unsupported email file. Allowed: .eml, .mbox, .pst")
+
+    # Stream to a temp file so large PST/mbox files don't load into memory.
+    tmp = settings.upload_dir / f"email_{uuid.uuid4().hex}{extension_of(filename)}"
+    max_bytes = settings.email_max_upload_mb * 1024 * 1024
+    size = 0
+    try:
+        with open(tmp, "wb") as out:
+            while True:
+                chunk = await file.read(1024 * 1024)
+                if not chunk:
+                    break
+                size += len(chunk)
+                if size > max_bytes:
+                    raise HTTPException(413, f"File too large (limit {settings.email_max_upload_mb} MB)")
+                out.write(chunk)
+        try:
+            return ingestion.ingest_email_file(tmp, prop["id"], prop["collection"])
+        except ValueError as exc:
+            raise HTTPException(400, str(exc))
+    finally:
+        tmp.unlink(missing_ok=True)  # the per-email .txt docs are kept; the source file isn't
+
+
 @router.patch("/{doc_id}")
 def update_metadata(doc_id: str, updates: dict, prop: dict = Depends(current_property)):
     _owned(doc_id, prop)

@@ -136,6 +136,35 @@ def ingest_url(url: str, property_id: int, collection: str) -> dict[str, Any]:
                               {"author": page["url"]}, digest, property_id, collection)
 
 
+def ingest_email_file(path: Path, property_id: int, collection: str) -> dict[str, Any]:
+    """Parse an exported email file (.eml/.mbox/.pst) and index each message into a property."""
+    from backend.services import email_ingest
+
+    added, skipped, errors = 0, 0, []
+    for msg in email_ingest.iter_messages(path):
+        try:
+            info = email_ingest.parse_message(msg)
+            if not info["body"] and not info["attachments"]:
+                continue
+            text = email_ingest.build_document_text(info)
+            digest = hash_bytes(text.encode("utf-8"))
+            if registry.find_by_hash(digest, property_id):
+                skipped += 1
+                continue
+            stored = settings.upload_dir / f"{uuid.uuid4().hex}.txt"
+            stored.write_text(text, encoding="utf-8")
+            filename = (info["subject"] or "email")[:150]
+            metadata = {"category": "email", "author": (info["from"] or "")[:200],
+                        "doc_date": info["date"]}
+            register_and_index(filename, stored, len(text.encode("utf-8")), metadata, digest,
+                               property_id, collection)
+            added += 1
+        except Exception as exc:
+            errors.append(str(exc)[:200])
+    return {"added": added, "skipped": skipped, "errors": errors[:20],
+            "count": added + skipped}
+
+
 def remove_document(doc_id: str, collection: str) -> None:
     doc = registry.get_document(doc_id)
     vectorstore.delete_document(collection, doc_id)

@@ -38,6 +38,7 @@ class Settings:
 
     # --- Uploads / security ---
     max_upload_mb: int = int(_get("MAX_UPLOAD_MB", "25"))
+    email_max_upload_mb: int = int(_get("EMAIL_MAX_UPLOAD_MB", "300"))  # PST/mbox can be large
 
     # --- Server ---
     host: str = _get("HOST", "127.0.0.1")
