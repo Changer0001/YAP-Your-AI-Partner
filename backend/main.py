@@ -1,4 +1,4 @@
-"""IT Copilot — FastAPI application entrypoint.
+"""YAP — FastAPI application entrypoint.
 
 Local-first: binds to localhost by default, uses only local models/storage, serves the SPA, and
 requires authentication for all data endpoints. Run with:
@@ -24,7 +24,7 @@ from backend.services import auth as auth_service
 from backend.services import properties as properties_service
 from backend.services import registry
 
-logger = logging.getLogger("it_copilot")
+logger = logging.getLogger("yap")
 
 
 def _migrate_multitenant():
@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="IT Copilot", version="1.1.0",
+app = FastAPI(title="YAP", version="1.1.0",
               description="Local, private IT knowledge base powered by Qwen 2.5 3B.",
               lifespan=lifespan)
 
@@ -92,7 +92,7 @@ async def unhandled_exception(request: Request, exc: Exception):
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "app": "IT Copilot", "mode": "local"}
+    return {"status": "ok", "app": "YAP", "mode": "local"}
 
 
 # Public auth endpoints.

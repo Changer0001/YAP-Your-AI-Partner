@@ -25,4 +25,4 @@ def test_knowledge_query_passthrough():
 
 def test_identity_response_is_deterministic():
     r = classify("who are you").response
-    assert "IT Copilot" in r  # from config, not from documents
+    assert "YAP" in r  # from config, not from documents

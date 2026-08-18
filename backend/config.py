@@ -44,7 +44,7 @@ class Settings:
     port: int = int(_get("PORT", "8000"))
 
     # --- Assistant identity (from config, never from company documents) ---
-    assistant_name: str = _get("ASSISTANT_NAME", "IT Copilot")
+    assistant_name: str = _get("ASSISTANT_NAME", "YAP")
     assistant_owner: str = _get("ASSISTANT_OWNER", "your IT team")
     org_name: str = _get("ORG_NAME", "")
 

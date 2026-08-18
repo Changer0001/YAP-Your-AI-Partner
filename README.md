@@ -1,4 +1,4 @@
-# IT Copilot — Local, Private IT Knowledge Base
+# YAP — Local, Private IT Knowledge Base
 
 A completely **local** AI assistant for IT work. Load your own IT documentation
 (SOPs, network docs, configs, PDFs, Word, Excel, notes…) and ask questions about

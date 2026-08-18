@@ -1,6 +1,6 @@
 {
-  "name": "IT Copilot",
-  "short_name": "IT Copilot",
+  "name": "YAP",
+  "short_name": "YAP",
   "description": "Private local AI for IT — search your knowledge and get answers with sources.",
   "start_url": "/",
   "scope": "/",
