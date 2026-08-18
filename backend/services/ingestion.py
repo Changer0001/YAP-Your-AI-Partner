@@ -165,6 +165,26 @@ def ingest_email_file(path: Path, property_id: int, collection: str) -> dict[str
             "count": added + skipped}
 
 
+def ingest_text(title: str, text: str, property_id: int, collection: str,
+                source: str = "") -> dict[str, Any]:
+    """Index pasted text (e.g. a copied Teams conversation or a quick note)."""
+    title = (title or "Pasted note").strip()
+    header = f"Title: {title}\n"
+    if source:
+        header += f"Source: {source}\n"
+    body = header + "\n" + text.strip()
+    digest = hash_bytes(body.encode("utf-8"))
+    existing = registry.find_by_hash(digest, property_id)
+    if existing:
+        return {**existing, "duplicate": True}
+    stored = settings.upload_dir / f"{uuid.uuid4().hex}.md"
+    stored.write_text(body, encoding="utf-8")
+    metadata = {"category": "teams" if "teams" in source.lower() else "note",
+                "author": source[:200] or None}
+    return register_and_index(title[:150], stored, len(body.encode("utf-8")), metadata, digest,
+                              property_id, collection)
+
+
 def remove_document(doc_id: str, collection: str) -> None:
     doc = registry.get_document(doc_id)
     vectorstore.delete_document(collection, doc_id)

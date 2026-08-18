@@ -73,6 +73,23 @@ class UrlBody(BaseModel):
     url: str
 
 
+class PasteBody(BaseModel):
+    title: Optional[str] = None
+    text: str
+    source: Optional[str] = None
+
+
+@router.post("/paste")
+def paste_text(body: PasteBody, prop: dict = Depends(current_property)):
+    if not (body.text or "").strip():
+        raise HTTPException(400, "Nothing to add — paste some text first")
+    try:
+        return ingestion.ingest_text(body.title or "", body.text, prop["id"],
+                                     prop["collection"], body.source or "")
+    except Exception as exc:
+        raise HTTPException(500, f"Failed to add note: {exc}")
+
+
 @router.post("/url")
 def ingest_url(body: UrlBody, prop: dict = Depends(current_property)):
     try:
