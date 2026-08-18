@@ -51,6 +51,20 @@ Everything runs on one computer. See `docs/` for the deeper design rationale.
 That creates a virtualenv, installs dependencies, copies `.env.example` → `.env`
 (first run), and starts the app at **http://127.0.0.1:8000**.
 
+### Install as an always-on service (recommended)
+
+```bash
+./install.sh
+```
+Sets YAP up as a **systemd service** so it starts on boot and auto-restarts — no need to keep a
+terminal open. If **Tailscale** is installed, it also publishes YAP over **HTTPS** (valid cert, no
+"not secure" warning) so phones can install it as a proper app.
+
+- Manage: `sudo systemctl {status|restart|stop} yap`
+- Logs: `journalctl -u yap -f`
+- Update: `git pull && sudo systemctl restart yap`
+- Reach from other devices on your LAN: set `HOST=0.0.0.0` in `.env`, then restart.
+
 <details><summary>Manual start (instead of run.sh)</summary>
 
 ```bash
