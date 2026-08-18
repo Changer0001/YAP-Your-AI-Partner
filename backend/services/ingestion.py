@@ -116,6 +116,26 @@ def import_folder(property_id: int, collection: str,
     return {"added": added, "skipped": skipped, "errors": errors, "import_dir": str(folder)}
 
 
+def ingest_url(url: str, property_id: int, collection: str) -> dict[str, Any]:
+    """Fetch a public web page and index its text into a property."""
+    from backend.services import webfetch
+
+    page = webfetch.fetch_url(url)  # raises ValueError on any problem
+    body = f"Source URL: {page['url']}\nTitle: {page['title']}\n\n{page['text']}"
+    digest = hash_bytes(body.encode("utf-8"))
+    existing = registry.find_by_hash(digest, property_id)
+    if existing:
+        return {**existing, "duplicate": True}
+
+    stored = settings.upload_dir / f"{uuid.uuid4().hex}.txt"
+    stored.write_text(body, encoding="utf-8")
+    filename = (page["title"] or url)[:180]
+    if not filename.lower().endswith((".txt", ".md", ".html")):
+        filename += " (web)"
+    return register_and_index(filename, stored, len(body.encode("utf-8")),
+                              {"author": page["url"]}, digest, property_id, collection)
+
+
 def remove_document(doc_id: str, collection: str) -> None:
     doc = registry.get_document(doc_id)
     vectorstore.delete_document(collection, doc_id)

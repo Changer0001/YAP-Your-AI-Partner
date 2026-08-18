@@ -3,6 +3,7 @@ import uuid
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from pydantic import BaseModel
 
 from backend.config import settings
 from backend.services import ingestion, registry
@@ -66,6 +67,20 @@ async def upload_document(
 @router.post("/import")
 def import_from_folder(prop: dict = Depends(current_property)):
     return ingestion.import_folder(prop["id"], prop["collection"])
+
+
+class UrlBody(BaseModel):
+    url: str
+
+
+@router.post("/url")
+def ingest_url(body: UrlBody, prop: dict = Depends(current_property)):
+    try:
+        return ingestion.ingest_url(body.url, prop["id"], prop["collection"])
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    except Exception as exc:
+        raise HTTPException(500, f"Failed to ingest URL: {exc}")
 
 
 @router.patch("/{doc_id}")
