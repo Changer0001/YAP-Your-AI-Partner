@@ -50,6 +50,51 @@ detects passwords/keys/tokens and keeps them out of the vector index and out of 
 - **Connector credentials (future):** an in-app "Disconnect / revoke" action deletes the local token
   cache; you also revoke consent in **My Account → App permissions**.
 
+## Hardening (optional, for extra assurance)
+
+Run the safe, reversible parts automatically:
+```bash
+./harden.sh          # sets data/ to owner-only (700), .env/secret.key to 600, then verifies
+./privacy_check.sh   # read-only check: nothing tracked in git, no external AI, telemetry off
+```
+
+### Encryption at rest
+So the knowledge base is unreadable if the laptop is lost/stolen:
+- **Best: full-disk encryption.** Enable LUKS at OS install (Ubuntu installer → "Encrypt the new
+  Ubuntu installation"). Retrofitting requires a reinstall.
+- **Folder-level (existing system): gocryptfs** — encrypt just the data directory:
+  ```bash
+  sudo apt install gocryptfs
+  mkdir -p ~/yap-cipher ~/yap-plain
+  gocryptfs -init ~/yap-cipher          # choose a strong passphrase
+  gocryptfs ~/yap-cipher ~/yap-plain    # mount the decrypted view (needs the passphrase)
+  ```
+  Then set `DATA_DIR=/home/<you>/yap-plain` in `.env` and restart YAP. Data on disk
+  (`~/yap-cipher`) is encrypted; the app sees the decrypted mount only while it's unlocked.
+
+### Optional: strict outbound firewall
+The app already sends **no** document data out (local Ollama only), so this is belt-and-suspenders.
+⚠️ **Careful — a default-deny outbound policy will break things you rely on unless you allow them:**
+Tailscale (your phone access!), OS/security updates, `git pull`, `ollama pull`. Only do this if you
+understand it. Example with `ufw` (adjust before enabling):
+```bash
+sudo ufw default deny outgoing
+sudo ufw allow out on lo
+sudo ufw allow out on tailscale0          # keep Tailscale working
+sudo ufw allow out 53                      # DNS
+sudo ufw allow out 443                     # updates / model + package downloads
+sudo ufw allow out 123                     # NTP
+sudo ufw enable
+```
+Inference and your documents never need outbound at all, so local Q&A keeps working.
+
+### Secure deletion
+To wipe a document's underlying file beyond a normal delete:
+```bash
+shred -u data/uploads/<file>     # then delete the doc in the UI to clear its chunks + registry row
+```
+Or wipe everything: stop YAP, delete `data/`, restart.
+
 ## Boundary the app enforces
 ```
 Application config  ≠  Knowledge base  ≠  Conversation memory  ≠  M365 source data
