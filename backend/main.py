@@ -17,10 +17,11 @@ from fastapi.staticfiles import StaticFiles
 from backend.config import settings
 from backend.routers import admin
 from backend.routers import auth as auth_router
-from backend.routers import chat, documents, integrations
+from backend.routers import chat, conversations, documents, integrations
 from backend.routers import properties as properties_router
 from backend.routers import search, system
 from backend.services import auth as auth_service
+from backend.services import conversations as conversations_service
 from backend.services import properties as properties_service
 from backend.services import registry
 
@@ -41,6 +42,7 @@ async def lifespan(app: FastAPI):
     registry.init_db()
     auth_service.init_db()
     properties_service.init_db()
+    conversations_service.init_db()
     _migrate_multitenant()
     if auth_service.user_count() == 0:
         key = auth_service.setup_key()
@@ -101,6 +103,7 @@ app.include_router(auth_router.router)
 # All data endpoints require a valid session token.
 _auth = [Depends(auth_service.require_auth)]
 app.include_router(chat.router, dependencies=_auth)
+app.include_router(conversations.router, dependencies=_auth)
 app.include_router(documents.router, dependencies=_auth)
 app.include_router(search.router, dependencies=_auth)
 app.include_router(system.router, dependencies=_auth)

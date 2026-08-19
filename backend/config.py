@@ -44,9 +44,10 @@ class Settings:
     host: str = _get("HOST", "127.0.0.1")
     port: int = int(_get("PORT", "8000"))
 
-    # --- Assistant identity (from config, never from company documents) ---
-    assistant_name: str = _get("ASSISTANT_NAME", "YAP")
-    assistant_owner: str = _get("ASSISTANT_OWNER", "your IT team")
+    # --- YAP identity (single source of truth; never from documents/RAG) ---
+    yap_name: str = _get("YAP_NAME", "YAP")
+    yap_full_name: str = _get("YAP_FULL_NAME", "Your AI Partner")
+    yap_founder: str = _get("YAP_FOUNDER", "Burak Y.")
     org_name: str = _get("ORG_NAME", "")
 
     # --- Accounts ---
