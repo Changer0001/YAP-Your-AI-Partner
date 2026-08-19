@@ -385,3 +385,26 @@ body::before {
 :root:not([data-theme="dark"]) .auth-brand, [data-theme="light"] .auth-brand { background: linear-gradient(150deg, rgba(255,255,255,.4), rgba(255,255,255,.05)); }
 .auth-form { background: var(--glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-brd); border-radius: 20px; padding: 32px 28px; box-shadow: var(--shadow-lg); }
+
+/* ---------- Property picker in the sidebar (mobile-friendly) ---------- */
+.side-prop { padding: 2px 8px 12px; border-bottom: 1px solid var(--glass-brd); margin-bottom: 10px; }
+.side-prop-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--text-3); font-weight: 650; margin: 0 4px 6px; display: block; }
+.prop-select { width: 100%; height: 42px; font-size: 15px; padding: 0 12px; border-radius: var(--r-sm);
+  background: var(--surface); border: 1px solid var(--border-2); color: var(--text);
+  -webkit-appearance: none; appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-3) 50%), linear-gradient(135deg, var(--text-3) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+.prop-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.prop-static { display: flex; align-items: center; gap: 9px; width: 100%; height: 42px; padding: 0 12px;
+  border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--border); color: var(--text); font-weight: 550; }
+.prop-static .ic { color: var(--accent); }
+
+@media (max-width: 860px) {
+  .topbar { padding: 12px 16px; }
+  .topbar h1 { font-size: 16px; }
+  .content { padding: 18px 14px; }
+  .iconbtn { width: 40px; height: 40px; }         /* bigger tap targets */
+  .user-btn { padding: 6px 10px 6px 6px; }
+  .h-page { font-size: 22px; }
+}
