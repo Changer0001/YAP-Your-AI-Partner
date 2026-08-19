@@ -408,3 +408,63 @@ body::before {
   .user-btn { padding: 6px 10px 6px 6px; }
   .h-page { font-size: 22px; }
 }
+
+/* ================= iOS safe areas + reliable viewport (fixes top buttons) ================= */
+/* Dynamic viewport units so 100vh doesn't hide UI under Safari chrome / notch. */
+#app, .shell { height: 100vh; }
+@supports (height: 100svh) { #app, .shell { height: 100svh; } }
+@supports (height: 100dvh) { #app, .shell { height: 100dvh; } }
+.auth { min-height: 100vh; }
+@supports (min-height: 100svh) { .auth { min-height: 100svh; } }
+
+/* Push the header/buttons BELOW the status bar / Dynamic Island so taps reach them. */
+.topbar { padding-top: calc(14px + env(safe-area-inset-top, 0px)); }
+.sidebar { padding-top: calc(18px + env(safe-area-inset-top, 0px)); }
+.auth-brand { padding-top: calc(56px + env(safe-area-inset-top, 0px)); }
+.auth-form-wrap { padding-top: calc(40px + env(safe-area-inset-top, 0px)); }
+.content { padding-bottom: calc(26px + env(safe-area-inset-bottom, 0px)); }
+
+/* Background nebula/stars must NEVER intercept touches. */
+body::before, body::after { pointer-events: none !important; }
+
+/* Comfortable touch targets on phones (>= 44px). */
+@media (max-width: 860px) {
+  .iconbtn { width: 44px; height: 44px; }
+  .user-btn { min-height: 40px; }
+  .nav-item { padding: 12px 12px; }
+  .topbar { gap: 10px; }
+}
+
+/* ================= Chat + conversation sidebar ================= */
+.chat-layout { display: grid; grid-template-columns: 264px 1fr; height: 100%; position: relative; }
+.conv-panel { border-right: 1px solid var(--glass-brd); background: var(--glass); backdrop-filter: blur(10px);
+  padding: 16px 12px; display: flex; flex-direction: column; overflow: hidden; }
+.conv-list { margin-top: 12px; overflow-y: auto; flex: 1; }
+.conv-group-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3);
+  font-weight: 650; margin: 14px 8px 6px; }
+.conv-item { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 9px 10px;
+  border-radius: var(--r-sm); cursor: pointer; color: var(--text-2); }
+.conv-item:hover { background: var(--surface-2); color: var(--text); }
+.conv-item.active { background: var(--accent-soft); color: var(--accent-text); }
+.conv-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; flex: 1; }
+.conv-row-actions { display: none; gap: 2px; }
+.conv-item:hover .conv-row-actions { display: flex; }
+.iconbtn.xs { width: 28px; height: 28px; }
+.iconbtn.xs svg.ic { width: 15px; height: 15px; }
+.conv-empty { color: var(--text-3); text-align: center; padding: 24px 10px; font-size: 13px; }
+.chat-head { display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-bottom: 1px solid var(--border);
+  background: var(--glass); backdrop-filter: blur(10px); }
+.chat-head .chat-title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conv-toggle { display: none; }
+.conv-scrim { display: none; }
+#chat-main { display: flex; flex-direction: column; min-width: 0; }
+#chat-main .chat-scroll { flex: 1; overflow-y: auto; }
+
+@media (max-width: 860px) {
+  .chat-layout { grid-template-columns: 1fr; }
+  .conv-panel { position: absolute; left: 0; top: 0; bottom: 0; width: 270px; z-index: 30;
+    transform: translateX(-100%); transition: transform .22s ease; box-shadow: var(--shadow-lg); }
+  .conv-panel.open { transform: none; }
+  .conv-toggle { display: inline-grid; }
+  .conv-scrim.show { display: block; position: absolute; inset: 0; background: rgba(0,0,0,.4); z-index: 25; }
+}

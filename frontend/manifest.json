@@ -1,7 +1,7 @@
 {
   "name": "YAP",
   "short_name": "YAP",
-  "description": "Private local AI for IT — search your knowledge and get answers with sources.",
+  "description": "Your AI Partner — a private, local AI assistant that remembers your conversations and works with your knowledge.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
