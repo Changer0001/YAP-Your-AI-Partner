@@ -328,3 +328,60 @@ label { display: block; font-size: 13px; font-weight: 550; color: var(--text-2);
   .grid.cols-3 { grid-template-columns: 1fr; } .grid.cols-2 { grid-template-columns: 1fr; }
   .content { padding: 20px 18px; }
 }
+
+/* ===================== Galaxy universe background ===================== */
+:root { --glass: rgba(255,255,255,.74); --glass-brd: rgba(150,140,220,.30); --star: rgba(90,70,150,.55); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --glass: rgba(19,17,42,.60); --glass-brd: rgba(150,140,255,.16); --star: rgba(255,255,255,.95); } }
+[data-theme="dark"] { --glass: rgba(19,17,42,.60); --glass-brd: rgba(150,140,255,.16); --star: rgba(255,255,255,.95); }
+
+/* Nebula clouds — blurred, mixed colors (violet · magenta · blue · teal) */
+body::after {
+  content: ""; position: fixed; inset: -12%; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(closest-side at 18% 22%, rgba(124,108,255,.55), transparent),
+    radial-gradient(closest-side at 80% 16%, rgba(224,92,196,.45), transparent),
+    radial-gradient(closest-side at 68% 72%, rgba(60,120,255,.42), transparent),
+    radial-gradient(closest-side at 26% 82%, rgba(64,214,200,.30), transparent),
+    radial-gradient(closest-side at 50% 46%, rgba(150,90,255,.26), transparent);
+  filter: blur(70px) saturate(1.15);
+}
+:root:not([data-theme="dark"]) body::after { opacity: .5; }
+[data-theme="light"] body::after { opacity: .5; }
+
+/* Starfield */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    radial-gradient(1.6px 1.6px at 12% 18%, var(--star), transparent 60%),
+    radial-gradient(1.2px 1.2px at 26% 62%, var(--star), transparent 60%),
+    radial-gradient(1.8px 1.8px at 40% 12%, rgba(180,200,255,.9), transparent 60%),
+    radial-gradient(1.1px 1.1px at 55% 40%, var(--star), transparent 60%),
+    radial-gradient(1.5px 1.5px at 66% 22%, rgba(230,180,255,.9), transparent 60%),
+    radial-gradient(1.2px 1.2px at 78% 55%, var(--star), transparent 60%),
+    radial-gradient(1.7px 1.7px at 88% 30%, rgba(180,220,255,.9), transparent 60%),
+    radial-gradient(1.1px 1.1px at 33% 84%, var(--star), transparent 60%),
+    radial-gradient(1.4px 1.4px at 62% 82%, rgba(255,210,235,.85), transparent 60%),
+    radial-gradient(1.2px 1.2px at 8% 46%, var(--star), transparent 60%),
+    radial-gradient(1.3px 1.3px at 48% 68%, var(--star), transparent 60%),
+    radial-gradient(1.6px 1.6px at 92% 74%, rgba(200,210,255,.85), transparent 60%),
+    radial-gradient(1px 1px at 20% 33%, var(--star), transparent 60%),
+    radial-gradient(1px 1px at 72% 8%, var(--star), transparent 60%),
+    radial-gradient(1px 1px at 5% 75%, var(--star), transparent 60%),
+    radial-gradient(1px 1px at 95% 50%, var(--star), transparent 60%),
+    radial-gradient(1px 1px at 37% 47%, var(--star), transparent 60%),
+    radial-gradient(1px 1px at 58% 15%, var(--star), transparent 60%);
+  background-repeat: no-repeat;
+}
+
+/* Let the universe show through; glassy surfaces for a premium, cloudy feel */
+.content { background: transparent; }
+.topbar { background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--glass-brd); }
+.sidebar { background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-right: 1px solid var(--glass-brd); }
+
+/* Dramatic auth screen floating over the galaxy */
+.auth { background: transparent; }
+.auth-brand { background: linear-gradient(150deg, rgba(10,9,23,.35), rgba(10,9,23,.04)); border-right: 1px solid var(--glass-brd); }
+:root:not([data-theme="dark"]) .auth-brand, [data-theme="light"] .auth-brand { background: linear-gradient(150deg, rgba(255,255,255,.4), rgba(255,255,255,.05)); }
+.auth-form { background: var(--glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-brd); border-radius: 20px; padding: 32px 28px; box-shadow: var(--shadow-lg); }
