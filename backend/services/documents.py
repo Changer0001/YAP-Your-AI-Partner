@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Optional
 
 SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".txt", ".md", ".markdown", ".csv",
-                        ".cfg", ".conf", ".log", ".ini"}
+                        ".cfg", ".conf", ".log", ".ini", ".json"}
 
 
 def parse_file(path: Path) -> list[dict]:
@@ -26,9 +26,37 @@ def parse_file(path: Path) -> list[dict]:
         return _parse_xlsx(path)
     if ext == ".csv":
         return _parse_csv(path)
+    if ext == ".json":
+        return _parse_json(path)
     if ext in (".txt", ".md", ".markdown", ".cfg", ".conf", ".log", ".ini"):
         return _parse_text(path)
     raise ValueError(f"Unsupported file type: {ext}")
+
+
+def _parse_json(path: Path) -> list[dict]:
+    """Flatten JSON into readable, searchable 'path: value' lines (records, configs, exports)."""
+    import json
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8", errors="ignore"))
+    except Exception:
+        return _parse_text(path)  # not valid JSON -> index the raw text
+
+    lines: list[str] = []
+
+    def walk(prefix: str, obj) -> None:
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                walk(f"{prefix}.{k}" if prefix else str(k), v)
+        elif isinstance(obj, list):
+            for i, v in enumerate(obj):
+                walk(f"{prefix}[{i}]", v)
+        else:
+            lines.append(f"{prefix}: {obj}" if prefix else str(obj))
+
+    walk("", data)
+    text = "\n".join(lines).strip()
+    return [{"text": text, "page": None, "section": None}] if text else []
 
 
 def _parse_pdf(path: Path) -> list[dict]:

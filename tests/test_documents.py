@@ -42,3 +42,18 @@ def test_unsupported_extension(tmp_path: Path):
         assert False, "should have raised"
     except ValueError:
         pass
+
+
+def test_parse_json(tmp_path):
+    f = tmp_path / "inv.json"
+    f.write_text('{"site":"Downtown","devices":[{"host":"SW-01","vlan":55},{"host":"SW-02","vlan":60}]}')
+    segs = parse_file(f)
+    text = segs[0]["text"]
+    assert "SW-01" in text and "vlan: 55" in text and "site: Downtown" in text
+
+
+def test_parse_bad_json_falls_back_to_text(tmp_path):
+    f = tmp_path / "broken.json"
+    f.write_text("{not valid json but has VLAN 99}")
+    segs = parse_file(f)
+    assert "VLAN 99" in segs[0]["text"]
