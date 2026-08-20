@@ -56,10 +56,10 @@ def test_rbac_and_tenant_isolation(client):
     # superadmin creates users in specific properties
     assert c.post("/api/admin/users", headers=H,
                   json={"username": "u@x.com", "password": "Us3r!pass", "role": "user",
-                        "property_id": default_id}).status_code == 200
+                        "property_ids": [default_id]}).status_code == 200
     assert c.post("/api/admin/users", headers=H,
                   json={"username": "b-admin@x.com", "password": "Adm1n!pass", "role": "admin",
-                        "property_id": site_b["id"]}).status_code == 200
+                        "property_ids": [site_b["id"]]}).status_code == 200
 
     # regular user: forbidden from admin + property management
     utok = c.post("/api/auth/login", json={"username": "u@x.com", "password": "Us3r!pass"}).json()["token"]
@@ -92,7 +92,7 @@ def test_disabled_user_blocked_immediately(client):
     H = _h(su["token"])
     pid = c.get("/api/properties", headers=H).json()["properties"][0]["id"]
     c.post("/api/admin/users", headers=H,
-           json={"username": "u@x.com", "password": "Us3r!pass", "role": "user", "property_id": pid})
+           json={"username": "u@x.com", "password": "Us3r!pass", "role": "user", "property_ids": [pid]})
     utok = c.post("/api/auth/login", json={"username": "u@x.com", "password": "Us3r!pass"}).json()["token"]
     assert c.get("/api/documents", headers=_h(utok)).status_code == 200
     # disable -> the existing token stops working immediately (role/state read from DB)

@@ -15,8 +15,9 @@ class PropertyBody(BaseModel):
 def list_props(user: dict = Depends(auth.require_auth)):
     if user["role"] == "superadmin":
         return {"properties": properties.list_properties(), "can_manage": True}
-    p = properties.get_property(user.get("property_id")) if user.get("property_id") else None
-    return {"properties": [p] if p else [], "can_manage": False}
+    ids = user.get("property_ids") or ([user["property_id"]] if user.get("property_id") else [])
+    props = [p for p in (properties.get_property(i) for i in ids) if p]
+    return {"properties": props, "can_manage": False}
 
 
 @router.post("")

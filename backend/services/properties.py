@@ -85,26 +85,37 @@ def ensure_default() -> dict[str, Any]:
     return create_property("Default", collection=LEGACY_COLLECTION)
 
 
+def allowed_property_ids(user: dict) -> Optional[set[int]]:
+    """The set of property ids a user may access, or None for superadmin (all)."""
+    if user["role"] == "superadmin":
+        return None
+    ids = set(user.get("property_ids") or ([] if user.get("property_id") is None else [user["property_id"]]))
+    return ids
+
+
 def current_property(user: dict = Depends(auth.require_auth),
                      x_property_id: str = Header(default="")) -> dict[str, Any]:
-    """Resolve the property a request operates on.
+    """Resolve the property a request operates on, validated against what the user may access.
 
-    - superadmin: the property named in X-Property-Id (else the first). Full visibility.
-    - admin/user: their assigned property; they cannot override it.
+    - superadmin: any property (X-Property-Id, else the first).
+    - admin/user: only among their assigned properties; the header is honored only if allowed.
     """
-    if user["role"] == "superadmin":
-        if x_property_id and x_property_id.isdigit():
-            p = get_property(int(x_property_id))
+    allowed = allowed_property_ids(user)
+    if allowed is not None and not allowed:
+        raise HTTPException(403, "No property is assigned to your account. Ask an administrator.")
+
+    # honor an explicit selection if the user is allowed to use it
+    if x_property_id and x_property_id.isdigit():
+        pid = int(x_property_id)
+        if allowed is None or pid in allowed:
+            p = get_property(pid)
             if p:
                 return p
-        props = list_properties()
-        if not props:
-            raise HTTPException(400, "No properties exist yet")
-        return props[0]
-    pid = user.get("property_id")
-    if not pid:
-        raise HTTPException(403, "No property is assigned to your account. Ask an administrator.")
-    p = get_property(pid)
-    if not p:
-        raise HTTPException(403, "Your assigned property no longer exists.")
-    return p
+
+    # default: first available/allowed property
+    candidates = list_properties() if allowed is None else [get_property(i) for i in sorted(allowed)]
+    for p in candidates:
+        if p:
+            return p
+    raise HTTPException(400 if allowed is None else 403,
+                        "No properties exist yet" if allowed is None else "Your assigned property no longer exists.")

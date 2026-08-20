@@ -20,14 +20,14 @@ class NewUser(BaseModel):
     password: str
     full_name: Optional[str] = ""
     role: str = "user"
-    property_id: Optional[int] = None
+    property_ids: Optional[list[int]] = None
 
 
 class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     role: Optional[str] = None
     disabled: Optional[bool] = None
-    property_id: Optional[int] = None
+    property_ids: Optional[list[int]] = None
 
 
 class PasswordReset(BaseModel):
@@ -59,14 +59,14 @@ def create_user(body: NewUser, actor: dict = Depends(auth.require_admin)):
         raise HTTPException(400, "Password needs: " + ", ".join(issues).lower())
     if _is_super(actor):
         role = body.role if body.role in ("admin", "user") else "user"
-        pid = body.property_id
-        if not pid or not properties.get_property(pid):
-            raise HTTPException(400, "A valid property is required")
+        pids = [p for p in (body.property_ids or []) if properties.get_property(p)]
+        if not pids:
+            raise HTTPException(400, "Assign at least one valid property")
     else:
         role = "user"  # property admins can only create users
-        pid = actor.get("property_id")
+        pids = [actor.get("property_id")] if actor.get("property_id") else []
     auth.create_user(body.username.strip(), body.password, role=role,
-                     full_name=(body.full_name or "").strip(), property_id=pid)
+                     full_name=(body.full_name or "").strip(), property_ids=pids)
     return {"ok": True, "username": body.username.strip()}
 
 
@@ -86,12 +86,14 @@ def update_user(username: str, body: UserUpdate, actor: dict = Depends(auth.requ
     disabling = (body.disabled is True and user["role"] in ("admin", "superadmin"))
     if (demoting or disabling) and auth.admin_count() <= 1:
         raise HTTPException(400, "Cannot remove the last active administrator")
-    pid = body.property_id if (_is_super(actor) and user["role"] != "superadmin") else None
-    if pid is not None and not properties.get_property(pid):
-        raise HTTPException(400, "Invalid property")
     auth.update_user(username, full_name=body.full_name, role=new_role,
-                     disabled=None if body.disabled is None else int(body.disabled),
-                     property_id=pid)
+                     disabled=None if body.disabled is None else int(body.disabled))
+    # Property assignment (superadmin only, and not for superadmin accounts)
+    if _is_super(actor) and body.property_ids is not None and user["role"] != "superadmin":
+        pids = [p for p in body.property_ids if properties.get_property(p)]
+        if not pids:
+            raise HTTPException(400, "Assign at least one valid property")
+        auth.set_user_properties(username, pids)
     return {"ok": True}
 
 

@@ -41,7 +41,7 @@ def _session_user(authorization: str):
     if not u:
         return None
     return {"username": u["username"], "full_name": u["full_name"], "role": u["role"],
-            "property_id": u["property_id"]}
+            "property_id": u["property_id"], "property_ids": u.get("property_ids", [])}
 
 
 @router.get("/status")

@@ -132,6 +132,12 @@ def init_db() -> None:
                          "last_login": "TEXT", "property_id": "INTEGER"}.items():
             if col not in cols:
                 conn.execute(f"ALTER TABLE users ADD COLUMN {col} {ddl}")
+        # Many-to-many: a user can be assigned one OR MORE properties.
+        conn.execute("""CREATE TABLE IF NOT EXISTS user_properties (
+            username TEXT NOT NULL, property_id INTEGER NOT NULL,
+            PRIMARY KEY (username, property_id))""")
+        conn.execute("INSERT OR IGNORE INTO user_properties (username, property_id) "
+                     "SELECT username, property_id FROM users WHERE property_id IS NOT NULL")
 
 
 def user_count() -> int:
@@ -173,14 +179,37 @@ def clear_setup_key() -> None:
 
 
 def create_user(username: str, password: str, role: str = "user",
-                full_name: str = "", property_id: Optional[int] = None) -> None:
+                full_name: str = "", property_ids: Optional[list[int]] = None) -> None:
+    property_ids = [int(p) for p in (property_ids or [])]
+    primary = property_ids[0] if property_ids else None
     salt, pwhash = hash_password(password)
     with _conn() as conn:
         conn.execute(
             "INSERT INTO users (username, full_name, salt, password_hash, role, disabled, created_at, property_id) "
             "VALUES (?, ?, ?, ?, ?, 0, ?, ?)",
-            (username, full_name, salt, pwhash, role, _now(), property_id),
+            (username, full_name, salt, pwhash, role, _now(), primary),
         )
+        for pid in property_ids:
+            conn.execute("INSERT OR IGNORE INTO user_properties (username, property_id) VALUES (?, ?)",
+                         (username, pid))
+
+
+def get_user_properties(username: str) -> list[int]:
+    with _conn() as conn:
+        rows = conn.execute("SELECT property_id FROM user_properties WHERE username = ? ORDER BY property_id",
+                            (username,)).fetchall()
+    return [r[0] for r in rows]
+
+
+def set_user_properties(username: str, property_ids: list[int]) -> None:
+    property_ids = [int(p) for p in property_ids]
+    primary = property_ids[0] if property_ids else None
+    with _conn() as conn:
+        conn.execute("DELETE FROM user_properties WHERE username = ?", (username,))
+        for pid in property_ids:
+            conn.execute("INSERT OR IGNORE INTO user_properties (username, property_id) VALUES (?, ?)",
+                         (username, pid))
+        conn.execute("UPDATE users SET property_id = ? WHERE username = ?", (primary, username))
 
 
 def get_user(username: str) -> Optional[dict[str, Any]]:
@@ -190,9 +219,12 @@ def get_user(username: str) -> Optional[dict[str, Any]]:
 
 
 def _public(row: dict[str, Any]) -> dict[str, Any]:
+    pids = get_user_properties(row["username"])
+    if not pids and row.get("property_id"):
+        pids = [row["property_id"]]
     return {"username": row["username"], "full_name": row.get("full_name") or "",
             "role": row.get("role") or "user", "disabled": bool(row.get("disabled")),
-            "property_id": row.get("property_id"),
+            "property_id": row.get("property_id"), "property_ids": pids,
             "created_at": row.get("created_at"), "last_login": row.get("last_login")}
 
 
@@ -251,10 +283,13 @@ def promote_first_admin_to_super() -> None:
 
 
 def assign_missing_property(property_id: int) -> None:
-    """Migration: give any non-superadmin without a property the default one."""
+    """Migration: give any non-superadmin without a property the default one (users + mapping)."""
     with _conn() as conn:
         conn.execute("UPDATE users SET property_id=? WHERE property_id IS NULL AND role!='superadmin'",
                      (property_id,))
+        conn.execute("INSERT OR IGNORE INTO user_properties (username, property_id) "
+                     "SELECT username, ? FROM users WHERE role!='superadmin' "
+                     "AND username NOT IN (SELECT username FROM user_properties)", (property_id,))
 
 
 def authenticate(username: str, password: str) -> Optional[dict[str, Any]]:

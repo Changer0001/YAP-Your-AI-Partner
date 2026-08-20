@@ -1,7 +1,7 @@
 /* YAP service worker — makes the app installable and usable offline (shell only).
    Network-first for the app shell so updates always load when online; API is never cached.
    Bump CACHE to force clients onto a new version. */
-const CACHE = "yap-v7";
+const CACHE = "yap-v8";
 const SHELL = ["/", "/app.js", "/styles.css", "/manifest.json", "/icon-192.png"];
 
 self.addEventListener("install", (e) => {
