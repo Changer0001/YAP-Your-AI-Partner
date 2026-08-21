@@ -145,6 +145,29 @@ def _sources_from_hits(hits: list[dict]) -> list[dict]:
     return out
 
 
+def _extract_citations(text: str) -> list[int]:
+    """Extract citation numbers [1], [2], etc. from answer text."""
+    import re
+    return sorted(set(int(m) for m in re.findall(r'\[(\d+)\]', text)))
+
+
+def _validate_citations(answer: str, available_citations: list[int]) -> dict:
+    """Validate that answer only cites sources that actually exist in retrieved documents.
+
+    Returns: {"valid": bool, "claimed": list[int], "invalid": list[int], "uncited": list[int]}
+    """
+    claimed = _extract_citations(answer)
+    invalid = [c for c in claimed if c not in available_citations]
+    uncited = [c for c in available_citations if c not in claimed and c <= 3]  # flag only first 3
+
+    return {
+        "valid": len(invalid) == 0,
+        "claimed": claimed,
+        "invalid": invalid,
+        "uncited": uncited
+    }
+
+
 def chat_turn(user: dict, conversation_id: Optional[str], question: str,
               prop: dict) -> dict[str, Any]:
     user_id = user["username"]
@@ -208,6 +231,18 @@ def chat_turn(user: dict, conversation_id: Optional[str], question: str,
             answer = _llm(msgs, temperature=0.15, num_predict=500)
             sources = _sources_from_hits(hits)
             mode = "knowledge_base" if hits else "general"
+
+            # Validate citations — flag if model invented sources
+            available_citations = list(range(1, len(sources) + 1))
+            citations_valid = _validate_citations(answer, available_citations)
+            if not citations_valid["valid"]:
+                # Log invalid citations for monitoring (don't break the response)
+                import logging
+                logging.warning(f"Hallucination detected: claimed invalid citations {citations_valid['invalid']} "
+                              f"but only {available_citations} exist. Answer: {answer[:100]}...")
+                # Add metadata flag so frontend can show warning
+                sources.append({"n": 0, "origin": "hallucination_warning",
+                              "message": f"Answer may cite non-existent sources: {citations_valid['invalid']}"})
 
     conversations.add_message(conversation_id, user_id, "assistant", answer,
                               metadata={"mode": mode, "sources": sources})
