@@ -32,9 +32,17 @@ class Settings:
     # --- Retrieval / RAG parameters (configurable) ---
     chunk_size: int = int(_get("CHUNK_SIZE", "250"))          # words per chunk
     chunk_overlap: int = int(_get("CHUNK_OVERLAP", "50"))     # words overlap
+    semantic_chunking: bool = _get("SEMANTIC_CHUNKING", "false").lower() in ("1", "true", "yes")
     top_k: int = int(_get("TOP_K", "5"))                      # chunks retrieved
-    similarity_threshold: float = float(_get("SIMILARITY_THRESHOLD", "0.2"))
+    similarity_threshold: float = float(_get("SIMILARITY_THRESHOLD", "0.3"))  # Higher for more confidence
     max_context_chars: int = int(_get("MAX_CONTEXT_CHARS", "6000"))
+
+    # --- Hallucination reduction ---
+    use_reranker: bool = _get("USE_RERANKER", "false").lower() in ("1", "true", "yes")
+    reranker_model: str = _get("RERANKER_MODEL", "bge-reranker-v2-m3")
+    llm_temperature: float = float(_get("LLM_TEMPERATURE", "0.15"))  # Lower = less random/hallucination
+    llm_top_p: float = float(_get("LLM_TOP_P", "0.85"))      # Narrower sampling
+    llm_top_k: int = int(_get("LLM_TOP_K", "20"))             # Limit token choices
 
     # --- Uploads / security ---
     max_upload_mb: int = int(_get("MAX_UPLOAD_MB", "25"))

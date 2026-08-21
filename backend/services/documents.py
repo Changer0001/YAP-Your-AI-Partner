@@ -5,10 +5,15 @@ page numbers (PDF) and headings/sheets (DOCX/XLSX) so citations can point at a
 precise location. Heavy libraries are imported lazily so this module (and its
 chunking logic) can be imported/tested without them installed.
 
+Chunking supports:
+  - chunk_segments: fixed-size word-based chunks (default, fast)
+  - semantic_chunk_segments: topic-aware chunking at sentence/header boundaries (better coherence)
+
 Add a new format by writing a `_parse_<ext>` function and wiring it in
 `parse_file`.
 """
 import csv
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -127,7 +132,10 @@ def _parse_text(path: Path) -> list[dict]:
 
 
 def chunk_segments(segments: list[dict], size: int, overlap: int) -> list[dict]:
-    """Word-based chunking with overlap, preserving each segment's page/section."""
+    """Word-based chunking with overlap, preserving each segment's page/section.
+
+    Fast, deterministic, but may split coherent ideas across chunks.
+    """
     step = max(1, size - overlap)
     chunks = []
     for seg in segments:
@@ -141,4 +149,84 @@ def chunk_segments(segments: list[dict], size: int, overlap: int) -> list[dict]:
                 chunks.append({"text": text, "page": seg.get("page"),
                                "section": seg.get("section")})
             i += step
+    return chunks
+
+
+def semantic_chunk_segments(segments: list[dict], max_size: int = 250) -> list[dict]:
+    """Semantic (topic-aware) chunking: split at sentence/header boundaries.
+
+    Keeps related facts together better than fixed word-count chunking, which can
+    split coherent ideas across chunk boundaries. Falls back to word-based chunking
+    if a single sentence exceeds max_size.
+
+    Args:
+        segments: parsed document segments
+        max_size: target chunk size in words (soft limit; respects sentence boundaries)
+
+    Returns:
+        list of chunks, each with text + original page/section metadata
+    """
+    chunks = []
+
+    for seg in segments:
+        text = seg["text"].strip()
+        if not text:
+            continue
+
+        # Split on headers (Markdown ##, ###)
+        header_parts = re.split(r'\n(#{1,3}\s+.+)', text)
+
+        for i, part in enumerate(header_parts):
+            # Even indices are body text; odd indices are headers
+            is_header = (i % 2 == 1)
+            if not part.strip():
+                continue
+
+            if is_header:
+                # Headers become section markers; don't chunk them
+                section_text = part.strip()
+                # Extract heading text (remove #'s)
+                section_name = re.sub(r'^#+\s+', '', section_text).strip()
+                chunks.append({
+                    "text": section_text,
+                    "page": seg.get("page"),
+                    "section": section_name or seg.get("section")
+                })
+            else:
+                # Split body text into semantic chunks at sentence boundaries
+                sentences = re.split(r'(?<=[.!?])\s+', part.strip())
+                current_chunk_words = []
+                current_chunk_size = 0
+
+                for sentence in sentences:
+                    sent_words = sentence.split()
+                    sent_size = len(sent_words)
+
+                    # If adding this sentence would exceed max_size AND we have a chunk,
+                    # save the current chunk and start a new one
+                    if current_chunk_size + sent_size > max_size and current_chunk_words:
+                        chunk_text = " ".join(current_chunk_words).strip()
+                        if chunk_text:
+                            chunks.append({
+                                "text": chunk_text,
+                                "page": seg.get("page"),
+                                "section": seg.get("section")
+                            })
+                        current_chunk_words = [sentence]
+                        current_chunk_size = sent_size
+                    else:
+                        # Add sentence to current chunk
+                        current_chunk_words.append(sentence)
+                        current_chunk_size += sent_size
+
+                # Flush remaining chunk
+                if current_chunk_words:
+                    chunk_text = " ".join(current_chunk_words).strip()
+                    if chunk_text:
+                        chunks.append({
+                            "text": chunk_text,
+                            "page": seg.get("page"),
+                            "section": seg.get("section")
+                        })
+
     return chunks

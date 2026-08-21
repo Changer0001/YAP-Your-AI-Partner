@@ -50,7 +50,11 @@ def index_document(doc_id: str, collection: str) -> int:
 
     try:
         segments = documents.parse_file(Path(doc["stored_path"]))
-        chunks = documents.chunk_segments(segments, settings.chunk_size, settings.chunk_overlap)
+        # Use semantic chunking if enabled (keeps related facts together)
+        if settings.semantic_chunking:
+            chunks = documents.semantic_chunk_segments(segments, settings.chunk_size)
+        else:
+            chunks = documents.chunk_segments(segments, settings.chunk_size, settings.chunk_overlap)
         if not chunks:
             registry.set_index_status(doc_id, "empty", 0)
             return 0

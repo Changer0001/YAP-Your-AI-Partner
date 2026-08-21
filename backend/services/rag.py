@@ -1,16 +1,18 @@
 """RAG retrieval pipeline.
 
     question -> embed -> metadata filter -> semantic search -> threshold ->
-    dedup -> ranked chunks -> context construction
+    dedup -> [optional rerank] -> ranked chunks -> context construction
 
 All parameters (top_k, similarity threshold, context size) are configurable via
-settings/.env.
+settings/.env. Optional reranking step improves answer quality by re-ordering chunks
+by relevance.
 """
 from typing import Any, Optional
 
 from backend.config import settings
 from backend.services import vectorstore
 from backend.services.embeddings import embed_text
+from backend.services import reranker
 
 
 def retrieve(collection: str, question: str, filters: Optional[dict[str, Any]] = None,
@@ -22,9 +24,10 @@ def retrieve(collection: str, question: str, filters: Optional[dict[str, Any]] =
     qvec = embed_text(question)
     hits = vectorstore.query(collection, qvec, top_k, _build_where(filters))
 
-    # similarity threshold
+    # similarity threshold (primary filter)
     hits = [h for h in hits if h["similarity"] >= threshold]
-    # already ranked by Chroma (distance); keep order, remove near-duplicates
+
+    # Remove near-duplicates (keep order from initial retrieval)
     seen: set[str] = set()
     deduped = []
     for h in hits:
@@ -33,6 +36,11 @@ def retrieve(collection: str, question: str, filters: Optional[dict[str, Any]] =
             continue
         seen.add(key)
         deduped.append(h)
+
+    # Optional: rerank chunks by relevance to put best match first
+    if settings.use_reranker and deduped:
+        deduped = reranker.rerank_chunks(question, deduped)
+
     return deduped
 
 
