@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # Ollama — LLM inference engine (CPU or GPU)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: yap-ollama
+    ports:
+      - "11434:11434"  # Ollama API
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      # For GPU: set CUDA_VISIBLE_DEVICES or use runtime: nvidia
+      # For CPU only: default works
+      - OLLAMA_HOST=0.0.0.0:11434
+    # Uncomment for NVIDIA GPU support (requires nvidia-docker)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # YAP — Local AI Assistant
+  yap:
+    build: .
+    container_name: yap-app
+    ports:
+      - "8000:8000"  # YAP web interface
+    depends_on:
+      ollama:
+        condition: service_healthy
+    volumes:
+      - yap_data:/app/data  # Persistent: documents, conversations, DB
+    environment:
+      # Ollama connection
+      OLLAMA_HOST: "http://ollama:11434"
+
+      # Server
+      HOST: "0.0.0.0"
+      PORT: "8000"
+
+      # Models
+      CHAT_MODEL: "qwen2.5:3b"
+      EMBED_MODEL: "nomic-embed-text"
+
+      # Retrieval (tuned for hallucination reduction)
+      TOP_K: "5"
+      SIMILARITY_THRESHOLD: "0.3"
+      CHUNK_SIZE: "250"
+      CHUNK_OVERLAP: "50"
+      SEMANTIC_CHUNKING: "false"  # Set to true for better quality
+
+      # LLM sampling (low temp = grounded)
+      LLM_TEMPERATURE: "0.15"
+      LLM_TOP_P: "0.85"
+      LLM_TOP_K: "20"
+
+      # Features
+      ALLOW_REGISTRATION: "false"
+      USE_RERANKER: "false"  # Set to true if GPU available + quality matters
+
+      # YAP identity
+      YAP_NAME: "YAP"
+      YAP_FULL_NAME: "Your AI Partner"
+      YAP_FOUNDER: "Burak Y."
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/auth/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    # Uncomment to see logs: tail -f /dev/null
+    # stdin_open: true
+    # tty: true
+
+volumes:
+  ollama_data:
+    driver: local
+  yap_data:
+    driver: local
+
+# Networks (optional, for multi-service setups)
+networks:
+  default:
+    name: yap-network

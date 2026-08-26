@@ -1,0 +1,13 @@
+fastapi==0.109.0
+uvicorn==0.27.0
+pydantic==2.5.0
+python-dotenv==1.0.0
+chromadb==0.4.22
+pypdf==4.0.1
+python-docx==0.8.11
+openpyxl==3.11.0
+ollama==0.0.54
+requests==2.31.0
+email-validator==2.1.0.post1
+python-multipart==0.0.6
+slowapi==0.1.9
